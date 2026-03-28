@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f36490821e116aacb2cc22",
+  "question_ids": [
+    "longbenchv2_66f36490821e116aacb2cc22"
+  ],
+  "question_ids_hash": "d9a3f4b7daa942d8",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f36490821e116aacb2cc22",
+      "generated_text": "The report discusses the construction of intelligent courts under Section XI. It emphasizes technological development, such as big data, artificial intelligence, and cloud computing, and highlights specific initiatives like electronic litigation modules, intelligent assistant systems, and big data platforms for case management and decision-making. While options B and D are mentioned in the context of technological development, the core of promoting smart courts is described as using technology to transform workflows and improve efficiency through systems like electronic litigation, intelligent assistants, and data-driven management.\n\nOption A directly reflects this: technology empowerment to change working methods and improve office efficiency, which is the central theme.\n\nD is too vague and less specific than A.\n\nCorrect answer: A"
+    }
+  ]
+}

@@ -48,7 +48,8 @@ def main():
         '--dataset-name',
         type=str,
         default='quality',
-        help='Dataset name. Options: quality, longhealth, longhealthX (e.g., longhealth10), lqa32k (default: quality)'
+        help='Dataset name. Options: quality, longhealth, longhealthX (e.g., longhealth10), lqa32k, '
+             'ruler_4k, ruler_128k, ruler_4k_niah_single_1 (default: quality)'
     )
     parser.add_argument(
         '--n-articles',
@@ -158,10 +159,11 @@ def main():
         help='Device to use (cpu or cuda). If not specified, uses cuda if available, else cpu'
     )
     parser.add_argument(
-        '--long-context',
-        action='store_true',
-        help='Enable long context support with YaRN rope scaling. '
-             'Sets max_model_len=131072 for vLLM and enables YaRN for Qwen3-4B.'
+        '--max-model-len',
+        type=int,
+        default=None,
+        help='Maximum model context length. Sets max_model_len for vLLM and enables '
+             'YaRN rope scaling for extended context support. Example: 131072 for 128K context.'
     )
 
     # Configuration files
@@ -285,12 +287,10 @@ def main():
         print(f"  - use_kv_based: {bool(args.use_kv_based)}")
 
     # Initialize evaluator
-    # Convert --long-context flag to max_model_len value
-    max_model_len = 131072 if args.long_context else None
     evaluator = QAEvaluator(
         model_name=args.model_name,
         device=args.device,
-        max_model_len=max_model_len,
+        max_model_len=args.max_model_len,
     )
 
     # Run evaluation

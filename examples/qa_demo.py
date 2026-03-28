@@ -54,6 +54,8 @@ research institutions worldwide and operates a deep-sea research vessel, \
 the RV Coral Pioneer, launched in 2019.
 """
 
+REPEAT_PROMPT = "Please repeat the context above verbatim, word for word, without any additions or omissions."
+
 QUESTIONS = [
     {
         "question": "When did Verandia declare independence?",
@@ -164,6 +166,60 @@ def print_results(results, label):
         print(f"  Answer: {r['answer_text'][:120]}...")
 
 
+def run_verbatim_repeat_test(
+    model,
+    tokenizer,
+    article,
+    *,
+    compacted_cache,
+    original_seq_len,
+    model_name=None,
+    max_new_tokens=2048,
+    label="Cache",
+):
+    """Ask the model to repeat the article verbatim using a compacted cache.
+
+    Returns a dict with the generated text and a character-level overlap metric.
+    """
+    prompt = format_question(tokenizer, REPEAT_PROMPT, options=None, model_name=model_name)
+    answers = generate_with_compacted_cache_batch(
+        model=model,
+        tokenizer=tokenizer,
+        prompts=[prompt],
+        compacted_cache=compacted_cache,
+        max_new_tokens=max_new_tokens,
+        original_seq_len=original_seq_len,
+    )
+    generated = answers[0].strip()
+
+    # Strip a leading <think>...</think> block if present (thinking mode)
+    import re as _re
+    generated_clean = _re.sub(r"<think>.*?</think>", "", generated, flags=_re.DOTALL).strip()
+
+    # Word-level recall: fraction of article words found anywhere in the output
+    article_words = article.split()
+    generated_lower = generated_clean.lower()
+    matched = sum(1 for w in article_words if w.lower() in generated_lower)
+    word_recall = matched / len(article_words) if article_words else 0.0
+
+    print(f"\n{'='*60}")
+    print(f"  Verbatim Repeat Test — {label}")
+    print(f"{'='*60}")
+    print(f"  Article length  : {len(article)} chars / {len(article_words)} words")
+    print(f"  Generated length: {len(generated_clean)} chars")
+    print(f"  Word recall     : {matched}/{len(article_words)} ({word_recall:.1%})")
+    print(f"\n  --- Generated output (first 500 chars) ---")
+    print(f"  {generated_clean[:500]}")
+    print(f"  {'...' if len(generated_clean) > 500 else ''}")
+
+    return {
+        "generated": generated_clean,
+        "word_recall": word_recall,
+        "matched_words": matched,
+        "total_words": len(article_words),
+    }
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -202,8 +258,17 @@ def main():
         original_seq_len=seq_len,
         model_name=args.model,
     )
-    del original_cache
     print_results(original_results, "Original (full cache)")
+
+    print("\nRunning verbatim repeat test with ORIGINAL cache ...")
+    original_repeat = run_verbatim_repeat_test(
+        model, tokenizer, ARTICLE,
+        compacted_cache=original_cache,
+        original_seq_len=seq_len,
+        model_name=args.model,
+        label="Original (full cache)",
+    )
+    del original_cache
 
     # 4. Compact the KV cache
     algorithm_kwargs = {
@@ -250,6 +315,15 @@ def main():
     )
     print_results(compacted_results, f"Compacted ({args.target_size:.0%} of article)")
 
+    print("\nRunning verbatim repeat test with COMPACTED cache ...")
+    compacted_repeat = run_verbatim_repeat_test(
+        model, tokenizer, ARTICLE,
+        compacted_cache=compacted_cache,
+        original_seq_len=seq_len,
+        model_name=args.model,
+        label=f"Compacted ({args.target_size:.0%} of article)",
+    )
+
     # 6. Summary
     orig_acc = sum(r["correct"] for r in original_results)
     comp_acc = sum(r["correct"] for r in compacted_results)
@@ -260,6 +334,8 @@ def main():
     print(f"  Compacted to   : {target_article_tokens} tokens ({args.target_size:.0%})")
     print(f"  Original acc   : {orig_acc}/{len(QUESTIONS)}")
     print(f"  Compacted acc  : {comp_acc}/{len(QUESTIONS)}")
+    print(f"  Orig repeat    : {original_repeat['matched_words']}/{original_repeat['total_words']} words ({original_repeat['word_recall']:.1%})")
+    print(f"  Comp repeat    : {compacted_repeat['matched_words']}/{compacted_repeat['total_words']} words ({compacted_repeat['word_recall']:.1%})")
     print(f"  Compaction time: {dt:.2f}s")
     print()
 

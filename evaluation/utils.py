@@ -142,13 +142,18 @@ def load_model_and_tokenizer(
         model_kwargs["dtype"] = dtype
 
     # Enable YaRN rope scaling for extended context if max_model_len is specified
-    if model_name == "Qwen/Qwen3-4B" and max_model_len is not None:
-        model_kwargs["rope_scaling"] = {
-            "rope_type": "yarn",
-            "factor": max_model_len/32768,
-            "original_max_position_embeddings": 32768,
-        }
-        print(f"Enabling YaRN rope scaling for long context support")
+    if max_model_len is not None:
+        # Determine the model's native max position embeddings
+        from transformers import AutoConfig
+        config = AutoConfig.from_pretrained(model_name)
+        original_max_pos = getattr(config, 'max_position_embeddings', 32768)
+        if max_model_len > original_max_pos:
+            model_kwargs["rope_scaling"] = {
+                "rope_type": "yarn",
+                "factor": max_model_len / original_max_pos,
+                "original_max_position_embeddings": original_max_pos,
+            }
+            print(f"Enabling YaRN rope scaling: {original_max_pos} -> {max_model_len} (factor={max_model_len/original_max_pos:.1f}x)")
 
     # Use Qwen3ForCausalLM for qwen3 models, otherwise use AutoModelForCausalLM
     if "qwen" in model_name.lower():
@@ -260,19 +265,24 @@ def initialize_vllm(
         "enable_sleep_mode": True,
     }
 
-    # Add max_model_len and rope_scaling if specified
-    if model_name == "Qwen/Qwen3-4B" and max_model_len is not None:
+    # Set max_model_len and rope_scaling if specified
+    if max_model_len is not None:
         llm_kwargs["max_model_len"] = max_model_len
-        # Enable YaRN rope scaling for extended context
-        # This allows the model to handle longer sequences than its default
-        llm_kwargs["hf_overrides"] = {
-            "rope_scaling": {
-                "rope_type": "yarn",
-                "factor": max_model_len/32768,
-                "original_max_position_embeddings": 32768,
+        # Enable YaRN rope scaling if extending beyond native context
+        from transformers import AutoConfig
+        config = AutoConfig.from_pretrained(model_name)
+        original_max_pos = getattr(config, 'max_position_embeddings', 32768)
+        if max_model_len > original_max_pos:
+            llm_kwargs["hf_overrides"] = {
+                "rope_scaling": {
+                    "rope_type": "yarn",
+                    "factor": max_model_len / original_max_pos,
+                    "original_max_position_embeddings": original_max_pos,
+                }
             }
-        }
-        print(f"Using extended context: max_model_len={max_model_len} with YaRN rope scaling")
+            print(f"Using extended context: max_model_len={max_model_len} with YaRN rope scaling (factor={max_model_len/original_max_pos:.1f}x)")
+        else:
+            print(f"Setting max_model_len={max_model_len} (within native {original_max_pos})")
 
     vllm_model = LLM(**llm_kwargs)
     # Put it to sleep immediately to free GPU memory
@@ -410,7 +420,9 @@ def format_question(
     tokenizer,
     question: str,
     options: Optional[List[str]] = None,
-    model_name: Optional[str] = None
+    model_name: Optional[str] = None,
+    enable_thinking: bool = True,
+    answer_prefix: Optional[str] = None,
 ) -> str:
     """
     Format question as prompt using chat template.
@@ -425,6 +437,13 @@ def format_question(
         Multiple choice options. If provided, formats with letters (A, B, C, D, E, etc.)
     model_name : str, optional
         Model name to determine prompt format (used to detect Llama models)
+    enable_thinking : bool
+        Whether to enable thinking mode in the chat template (default: True).
+        Set to False for tasks like RULER where thinking tokens would interfere
+        with string-match scoring.
+    answer_prefix : str, optional
+        If provided, appended after the generation prompt to guide the model's response.
+        Used by RULER tasks (e.g., "The special magic number for X is").
 
     Returns
     -------
@@ -475,11 +494,15 @@ def format_question(
         question_messages,
         tokenize=False,
         add_generation_prompt=True,
-        enable_thinking=True
+        enable_thinking=enable_thinking
     )
     # Strip the first <bos> token for Gemma models
     if is_gemma:
         result = result[len("<bos>"):]
+
+    # Append answer prefix for guided generation (e.g., RULER tasks)
+    if answer_prefix:
+        result = result + answer_prefix
 
     return result
 

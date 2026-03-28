@@ -20,7 +20,8 @@ All loaders return a list of articles/documents with the following structure:
 import json
 import re
 import zipfile
-from typing import Dict, List
+from pathlib import Path
+from typing import Dict, List, Optional
 
 from huggingface_hub import hf_hub_download
 
@@ -438,6 +439,83 @@ def load_longsweb_data(context_length: str = '64K') -> List[Dict]:
     return data
 
 
+def load_longbench_v2_data(
+    difficulty: str = None,
+    length: str = None,
+    max_tokens: int = None,
+) -> List[Dict]:
+    """
+    Load LongBench v2 dataset from HuggingFace.
+
+    The LongBench v2 dataset contains 503 long-context multiple-choice questions (4 options)
+    across 6 domains: Single-Document QA, Multi-Document QA, Long In-context Learning,
+    Long Structured Data Understanding, Code Repository Understanding, Long-dialogue History Understanding.
+
+    Parameters
+    ----------
+    difficulty : str, optional
+        Filter by difficulty level: 'easy' or 'hard'. If None, load all.
+    length : str, optional
+        Filter by context length category: 'short', 'medium', or 'long'. If None, load all.
+    max_tokens : int, optional
+        Maximum context length in approximate tokens (chars / 4). If set, only include
+        examples whose context is shorter than this threshold.
+
+    Returns
+    -------
+    data : list of dict
+        List of articles in standardized format
+    """
+    from datasets import load_dataset as hf_load_dataset
+
+    print(f"Loading LongBench v2 from HuggingFace...")
+    if difficulty:
+        print(f"  Filtering by difficulty: {difficulty}")
+    if length:
+        print(f"  Filtering by length: {length}")
+    if max_tokens:
+        print(f"  Filtering by max_tokens: {max_tokens:,}")
+
+    dataset = hf_load_dataset('THUDM/LongBench-v2', split='train')
+
+    letter_to_idx = {'A': 1, 'B': 2, 'C': 3, 'D': 4}
+    data = []
+    skipped_by_length = 0
+
+    for entry in dataset:
+        # Apply filters
+        if difficulty and entry['difficulty'] != difficulty:
+            continue
+        if length and entry['length'] != length:
+            continue
+        if max_tokens and len(entry['context']) > max_tokens * 4:
+            skipped_by_length += 1
+            continue
+
+        options = [entry['choice_A'], entry['choice_B'], entry['choice_C'], entry['choice_D']]
+        gold_label = letter_to_idx.get(entry['answer'], 1)
+        entry_id = entry['_id']
+
+        article_entry = {
+            'article_id': f"longbenchv2_{entry_id}",
+            'title': f"{entry['domain']} / {entry['sub_domain']}",
+            'article': entry['context'],
+            'questions': [{
+                'question': entry['question'],
+                'options': options,
+                'gold_label': gold_label,
+                'question_unique_id': f"longbenchv2_{entry_id}",
+            }],
+        }
+        data.append(article_entry)
+
+    total_questions = sum(len(a['questions']) for a in data)
+    print(f"Loaded {len(data)} articles with {total_questions} total questions")
+    if skipped_by_length:
+        print(f"  Skipped {skipped_by_length} articles exceeding {max_tokens:,} token limit")
+    return data
+
+
 def load_aime_data() -> List[Dict]:
     """
     Load AIME 2025 dataset from HuggingFace.
@@ -493,6 +571,119 @@ def load_aime_data() -> List[Dict]:
     return data
 
 
+def load_ruler_data(
+    context_length: int = 4096,
+    task_filter: Optional[str] = None,
+) -> List[Dict]:
+    """
+    Load RULER benchmark dataset.
+
+    Loads from the HuggingFace dataset ``simonjegou/ruler`` (pre-generated from the
+    NVIDIA RULER benchmark). Each example becomes one "article" with one "question".
+
+    The standardized format uses a special ``ruler_outputs`` field (list of reference
+    answer strings) instead of ``options``/``gold_label``, and ``answer_prefix`` for
+    guided generation. Scoring uses string-match rather than MCQ parsing.
+
+    Parameters
+    ----------
+    context_length : int
+        Target context length in tokens. Available on HuggingFace: 4096, 8192, 16384.
+        For other lengths, pre-generate data with ``scripts/generate_ruler_data.py``
+        and the loader will read from ``data/ruler/{context_length}/``.
+    task_filter : str, optional
+        If provided, only load examples whose ``task`` field matches this string
+        (e.g., 'niah_single_1', 'vt', 'cwe', 'fwe', 'qa_1').
+
+    Returns
+    -------
+    data : list of dict
+        List of articles in standardized format with additional RULER-specific fields.
+    """
+    from datasets import load_dataset as hf_load_dataset
+
+    config_name = str(context_length)
+    hf_configs = {'4096', '8192', '16384'}
+
+    # Try local pre-generated data first, then HuggingFace
+    local_dir = Path(f'data/ruler/{config_name}')
+    if local_dir.exists():
+        # Load from local JSONL files
+        print(f"Loading RULER {config_name} from local directory: {local_dir}")
+        rows = []
+        for jsonl_file in sorted(local_dir.glob('*.jsonl')):
+            with open(jsonl_file) as f:
+                for line in f:
+                    if line.strip():
+                        rows.append(json.loads(line))
+        if not rows:
+            raise ValueError(f"No JSONL data found in {local_dir}")
+    elif config_name in hf_configs:
+        print(f"Loading RULER {config_name} from HuggingFace (simonjegou/ruler)...")
+        dataset = hf_load_dataset('simonjegou/ruler', config_name, split='test')
+        rows = list(dataset)
+    else:
+        raise ValueError(
+            f"RULER context length {config_name} not available. "
+            f"HuggingFace has: {sorted(hf_configs)}. "
+            f"For other lengths, pre-generate data with: "
+            f"python scripts/generate_ruler_data.py --context-length {context_length}"
+        )
+
+    # Apply task filter
+    if task_filter:
+        rows = [r for r in rows if r['task'] == task_filter]
+        if not rows:
+            available_tasks = sorted(set(r['task'] for r in rows))
+            raise ValueError(f"No examples for task '{task_filter}'. Available: {available_tasks}")
+
+    # Group by unique context to avoid redundant KV cache extraction.
+    # Many RULER examples share the same context with different questions.
+    context_groups = {}
+    for idx, row in enumerate(rows):
+        context = row['context']
+        task = row['task']
+        answer = row['answer']  # list of strings
+        question = row['question']
+        answer_prefix = row.get('answer_prefix', '')
+        max_new_tokens = row.get('max_new_tokens', 128)
+
+        # Use context hash as group key (contexts can be very long)
+        ctx_key = hash(context)
+        if ctx_key not in context_groups:
+            context_groups[ctx_key] = {
+                'context': context,
+                'questions': [],
+                'article_idx': len(context_groups),
+            }
+
+        context_groups[ctx_key]['questions'].append({
+            'question': question,
+            'ruler_outputs': answer,
+            'answer_prefix': answer_prefix,
+            'max_new_tokens': max_new_tokens,
+            'task': task,
+            'question_unique_id': f"ruler_{config_name}_{task}_{idx}",
+        })
+
+    # Convert to standardized format
+    data = []
+    for ctx_key, group in context_groups.items():
+        article_entry = {
+            'article_id': f"ruler_{config_name}_{group['article_idx']}",
+            'title': f"RULER {config_name} (article {group['article_idx']})",
+            'article': group['context'],
+            'questions': group['questions'],
+        }
+        data.append(article_entry)
+
+    tasks_found = sorted(set(q['task'] for a in data for q in a['questions']))
+    total_questions = sum(len(a['questions']) for a in data)
+    print(f"Loaded {len(data)} articles with {total_questions} total questions")
+    print(f"  Tasks: {tasks_found}")
+    return data
+
+
 # Registry of available dataset loaders
 DATASET_LOADERS = {
     'quality': load_quality_data,
@@ -500,6 +691,8 @@ DATASET_LOADERS = {
     'longcodeqa': load_longcodeqa_data,
     'longsweb': load_longsweb_data,
     'aime2025': load_aime_data,
+    'longbenchv2': load_longbench_v2_data,
+    'ruler': load_ruler_data,
 }
 
 # Default dataset paths
@@ -525,6 +718,10 @@ def load_dataset(dataset_name: str, include_diagnosis: bool = True) -> List[Dict
           at specified context length (downloaded from HuggingFace)
         - 'longsweb' or 'longswebXXk': Load LongSWE-bench dataset for perplexity evaluation
           on patches. Options: 'longsweb' (default 64K), 'longsweb32k', 'longsweb64k', 'longsweb128k'
+        - 'longbenchv2': Load LongBench v2 (503 long-context MCQ examples)
+        - 'longbenchv2_easy'/'longbenchv2_hard': Filter by difficulty
+        - 'longbenchv2_short'/'longbenchv2_medium'/'longbenchv2_long': Filter by length category
+        - 'longbenchv2_100k': Only contexts under ~100k tokens (similarly '32k', '64k', etc.)
     include_diagnosis : bool
         Whether to include diagnosis in patient info (default: True)
 
@@ -595,12 +792,66 @@ def load_dataset(dataset_name: str, include_diagnosis: bool = True) -> List[Dict
     elif dataset_name == 'aime2025':
         return load_aime_data()
 
+    elif dataset_name.startswith('ruler'):
+        # Parse context length and optional task filter from dataset name
+        # Formats: 'ruler_4k', 'ruler_128k', 'ruler_4k_niah_single_1'
+        suffix = dataset_name[len('ruler'):]
+        if not suffix or not suffix.startswith('_'):
+            raise ValueError(
+                f"RULER dataset name must include context length, e.g. 'ruler_4k', 'ruler_128k'. "
+                f"Optionally filter by task: 'ruler_4k_niah_single_1'"
+            )
+        suffix = suffix[1:]  # strip leading '_'
+
+        # Parse context length (first token before optional task filter)
+        # Context length is like '4k', '8k', '16k', '32k', '64k', '128k'
+        match = re.match(r'^(\d+k)', suffix)
+        if not match:
+            raise ValueError(
+                f"Could not parse RULER context length from '{dataset_name}'. "
+                f"Expected format: 'ruler_4k', 'ruler_128k', etc."
+            )
+        context_str = match.group(1)
+        context_length = int(context_str[:-1]) * 1024  # '4k' -> 4096
+        task_filter = suffix[len(context_str):]
+        if task_filter:
+            task_filter = task_filter.lstrip('_')
+        else:
+            task_filter = None
+        return load_ruler_data(context_length=context_length, task_filter=task_filter)
+
+    elif dataset_name.startswith('longbenchv2'):
+        # Parse optional filters from dataset name
+        # Formats: 'longbenchv2', 'longbenchv2_easy', 'longbenchv2_hard',
+        #          'longbenchv2_short', 'longbenchv2_medium', 'longbenchv2_long',
+        #          'longbenchv2_100k' (max 100k tokens)
+        suffix = dataset_name[len('longbenchv2'):]
+        difficulty = None
+        length = None
+        max_tokens = None
+        if suffix:
+            suffix = suffix.lstrip('_')
+            if suffix in ('easy', 'hard'):
+                difficulty = suffix
+            elif suffix in ('short', 'medium', 'long'):
+                length = suffix
+            elif re.match(r'^\d+k$', suffix):
+                max_tokens = int(suffix[:-1]) * 1000
+            else:
+                raise ValueError(
+                    f"Unknown LongBench v2 filter: '{suffix}'. "
+                    f"Use 'easy'/'hard' for difficulty, 'short'/'medium'/'long' for length, "
+                    f"or 'Nk' (e.g., '100k') for max token limit."
+                )
+        return load_longbench_v2_data(difficulty=difficulty, length=length, max_tokens=max_tokens)
+
     else:
         raise ValueError(
             f"Unknown dataset: {dataset_name}. "
             f"Supported formats: 'quality', 'longhealth', 'longhealthX' (e.g., 'longhealth10'), "
             f"'lqaXX' (e.g., 'lqa32k', 'lqa128k', 'lqa1m'), 'longsweb' or 'longswebXXk' (e.g., 'longsweb64k', 'longsweb128k'), "
-            f"'aime2025'"
+            f"'aime2025', 'longbenchv2' (or 'longbenchv2_easy', 'longbenchv2_hard', 'longbenchv2_short', 'longbenchv2_100k', etc.), "
+            f"'ruler_Xk' (e.g., 'ruler_4k', 'ruler_128k', 'ruler_4k_niah_single_1')"
         )
 
 
@@ -628,3 +879,28 @@ def is_perplexity_dataset(dataset_name: str) -> bool:
         True if the dataset uses perplexity-based evaluation
     """
     return any(dataset_name.startswith(prefix) for prefix in PERPLEXITY_DATASET_PREFIXES)
+
+
+# Datasets that use string-match evaluation (RULER benchmark)
+RULER_DATASET_PREFIX = 'ruler'
+
+
+def is_ruler_dataset(dataset_name: str) -> bool:
+    """
+    Check if a dataset uses RULER-style string-match evaluation.
+
+    RULER datasets have questions with 'ruler_outputs' (list of reference answer strings)
+    instead of 'options'/'gold_label'. Evaluation uses substring matching rather than
+    MCQ parsing.
+
+    Parameters
+    ----------
+    dataset_name : str
+        Name of the dataset
+
+    Returns
+    -------
+    bool
+        True if the dataset uses RULER-style evaluation
+    """
+    return dataset_name.startswith(RULER_DATASET_PREFIX)

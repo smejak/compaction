@@ -145,7 +145,7 @@ echo "Start time: $(date -d @$start_time)"
 echo "Running on node: $(hostname)"
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
-python -u -m evaluation.run_qa_evaluation --name "$name" $dataset_flag --n-articles "$n_articles" --start-article "$start_article" --compute-stats "$compute_stats" --methods $methods_formatted --target-size "$target_size" --query-config "$query_config" --algorithm-config "$algorithm_config" $model_flag $perplexity_only_flag $budget_flag $chunking_flag $batch_size_flag $log_dir_flag --long-context
+python -u -m evaluation.run_qa_evaluation --name "$name" $dataset_flag --n-articles "$n_articles" --start-article "$start_article" --compute-stats "$compute_stats" --methods $methods_formatted --target-size "$target_size" --query-config "$query_config" --algorithm-config "$algorithm_config" $model_flag $perplexity_only_flag $budget_flag $chunking_flag $batch_size_flag $log_dir_flag --max-model-len 131072
 
 end_time=$(date +%s)
 elapsed=$((end_time - start_time))

@@ -35,7 +35,26 @@ from .utils import (
     reload_model_to_gpu,
     compute_article_indices,
 )
-from .datasets import load_dataset, is_perplexity_dataset
+from .datasets import load_dataset, is_perplexity_dataset, is_ruler_dataset
+
+
+def ruler_string_match_all(pred: str, refs: List[str]) -> float:
+    """Score a single RULER prediction: fraction of reference answers found as substrings."""
+    return sum(1.0 if r.lower() in pred.lower() else 0.0 for r in refs) / len(refs)
+
+
+def ruler_string_match_part(pred: str, refs: List[str]) -> float:
+    """Score a single RULER prediction: 1.0 if any reference answer found as substring."""
+    return max(1.0 if r.lower() in pred.lower() else 0.0 for r in refs)
+
+
+def ruler_score_prediction(pred: str, refs: List[str], task: str) -> float:
+    """Score a single RULER prediction using the appropriate metric for the task."""
+    task_category = task.split('_')[0]
+    if task_category == 'qa':
+        return ruler_string_match_part(pred, refs)
+    else:
+        return ruler_string_match_all(pred, refs)
 
 
 class QAEvaluator:
@@ -86,6 +105,7 @@ class QAEvaluator:
         max_new_tokens: int,
         batch_size: int,
         results_per_question: List[Dict],
+        is_ruler_eval: bool = False,
     ):
         """
         Evaluate questions using batched generation with compacted cache.
@@ -104,6 +124,9 @@ class QAEvaluator:
             Batch size for generation
         results_per_question : list
             List to append results to (modified in place)
+        is_ruler_eval : bool
+            If True, use RULER-style formatting (no MCQ, thinking OFF, answer_prefix)
+            and string-match scoring instead of MCQ parsing
         """
         num_questions = len(questions)
 
@@ -131,15 +154,31 @@ class QAEvaluator:
             # Print questions in batch
             for i, (q_text, opts, g_label) in enumerate(zip(question_texts, options_list, gold_labels)):
                 q_idx = batch_start + i
-                print(f"\nQ{q_idx+1}: {q_text}")
-                if opts:
+                print(f"\nQ{q_idx+1}: {q_text[:200]}")
+                if is_ruler_eval:
+                    refs = batch_questions[i].get('ruler_outputs', [])
+                    print(f"  Expected answers: {refs}")
+                elif opts:
                     for idx, opt in enumerate(opts):
                         print(f"  {chr(65+idx)}. {opt}")
                     print(f"  Gold answer: {chr(64+g_label)} ({g_label})")
 
-            # Format prompts
-            formatted_questions = [format_question(self.tokenizer, q_text, opts, self.model_name)
-                                 for q_text, opts in zip(question_texts, options_list)]
+            # Format prompts — RULER uses thinking OFF and answer_prefix
+            if is_ruler_eval:
+                formatted_questions = [
+                    format_question(
+                        self.tokenizer, q['question'], options=None,
+                        model_name=self.model_name, enable_thinking=False,
+                        answer_prefix=q.get('answer_prefix', ''),
+                    )
+                    for q in batch_questions
+                ]
+                # Use per-task max_new_tokens for RULER (override the global default)
+                batch_max_new_tokens = batch_questions[0].get('max_new_tokens', max_new_tokens)
+            else:
+                formatted_questions = [format_question(self.tokenizer, q_text, opts, self.model_name)
+                                     for q_text, opts in zip(question_texts, options_list)]
+                batch_max_new_tokens = max_new_tokens
 
             # Batch generate with compacted cache
             gen_start_time = time.time()
@@ -154,7 +193,7 @@ class QAEvaluator:
                 tokenizer=self.tokenizer,
                 prompts=formatted_questions,
                 compacted_cache=compacted_cache_gpu,
-                max_new_tokens=max_new_tokens,
+                max_new_tokens=batch_max_new_tokens,
                 original_seq_len=seq_len,
             )
             del compacted_cache_gpu
@@ -182,32 +221,52 @@ class QAEvaluator:
 
                 num_gen_tokens = batch_token_counts[i]
 
-                # Parse the model's choice if options were provided
-                model_choice = None
-                is_correct = None
-                if opts:
-                    model_choice = parse_model_choice(answer, max_options=len(opts))
-                    if model_choice is not None:
-                        print(f"  Parsed choice: {chr(64+model_choice)} ({model_choice})")
-                        if g_label is not None:
-                            is_correct = (model_choice == g_label)
-                            print(f"  Correct: {is_correct}")
-                    else:
-                        print(f"  Warning: Could not parse model choice from answer")
+                if is_ruler_eval:
+                    # RULER string-match scoring
+                    refs = q.get('ruler_outputs', [])
+                    task = q.get('task', '')
+                    score = ruler_score_prediction(answer, refs, task)
+                    is_correct = score == 1.0
+                    print(f"  RULER score: {score:.2f} | Task: {task} | Refs: {refs}")
 
-                # Store results
-                question_result = {
-                    'question_id': q.get('question_unique_id', f'q_{q_idx}'),
-                    'question': q_text,
-                    'options': opts,
-                    'gold_label': g_label,
-                    'model_answer_text': answer,
-                    'model_choice': model_choice,
-                    'is_correct': is_correct,
-                    'generation_time': gen_time / actual_batch_size,  # Approximate per-question time
-                    'num_generated_tokens': num_gen_tokens,
-                    'time_per_token': batch_time_per_token  # Use batch-level time per token
-                }
+                    question_result = {
+                        'question_id': q.get('question_unique_id', f'q_{q_idx}'),
+                        'question': q_text,
+                        'task': task,
+                        'ruler_outputs': refs,
+                        'model_answer_text': answer,
+                        'ruler_score': score,
+                        'is_correct': is_correct,
+                        'generation_time': gen_time / actual_batch_size,
+                        'num_generated_tokens': num_gen_tokens,
+                        'time_per_token': batch_time_per_token,
+                    }
+                else:
+                    # MCQ scoring
+                    model_choice = None
+                    is_correct = None
+                    if opts:
+                        model_choice = parse_model_choice(answer, max_options=len(opts))
+                        if model_choice is not None:
+                            print(f"  Parsed choice: {chr(64+model_choice)} ({model_choice})")
+                            if g_label is not None:
+                                is_correct = (model_choice == g_label)
+                                print(f"  Correct: {is_correct}")
+                        else:
+                            print(f"  Warning: Could not parse model choice from answer")
+
+                    question_result = {
+                        'question_id': q.get('question_unique_id', f'q_{q_idx}'),
+                        'question': q_text,
+                        'options': opts,
+                        'gold_label': g_label,
+                        'model_answer_text': answer,
+                        'model_choice': model_choice,
+                        'is_correct': is_correct,
+                        'generation_time': gen_time / actual_batch_size,
+                        'num_generated_tokens': num_gen_tokens,
+                        'time_per_token': batch_time_per_token,
+                    }
                 results_per_question.append(question_result)
 
             print(f"  Batch generation: {gen_time:.2f}s, {total_tokens_in_batch} tokens, {batch_time_per_token:.3f}s/token")
@@ -228,6 +287,7 @@ class QAEvaluator:
         batch_size: Optional[int] = None,
         ignore_article_indices: bool = False,
         is_perplexity_eval: bool = False,
+        is_ruler_eval: bool = False,
     ) -> Dict:
         """
         Evaluate a compaction method on a single article.
@@ -766,18 +826,26 @@ class QAEvaluator:
                         prompts = []
                         for q in batch_questions:
                             question_text = q['question']
-                            options = q.get('options', None)
-                            question_formatted = format_question(self.tokenizer, question_text, options, self.model_name)
+                            if is_ruler_eval:
+                                question_formatted = format_question(
+                                    self.tokenizer, question_text, options=None,
+                                    model_name=self.model_name, enable_thinking=False,
+                                    answer_prefix=q.get('answer_prefix', ''),
+                                )
+                            else:
+                                options = q.get('options', None)
+                                question_formatted = format_question(self.tokenizer, question_text, options, self.model_name)
                             full_prompt = context_for_generation + question_formatted
                             prompts.append(full_prompt)
 
-                        # Generate batch
+                        # Generate batch — use per-task max_new_tokens for RULER
+                        batch_max_new_tokens = batch_questions[0].get('max_new_tokens', max_new_tokens) if is_ruler_eval else max_new_tokens
                         gen_start = time.time()
                         gen_params = get_generation_params(self.model)
                         answers = generate_with_vllm_batch(
                             vllm_model=self.vllm_model,
                             full_prompts=prompts,
-                            max_new_tokens=max_new_tokens,
+                            max_new_tokens=batch_max_new_tokens,
                             temperature=gen_params['temperature'],
                             top_k=gen_params['top_k'],
                             top_p=gen_params['top_p'],
@@ -786,30 +854,48 @@ class QAEvaluator:
 
                         # Process results
                         for i, (q, answer) in enumerate(zip(batch_questions, answers)):
-                            correct_answer = q.get('gold_label', None)
-                            model_choice = parse_model_choice(answer)
-                            is_correct = model_choice == correct_answer if model_choice and correct_answer else False
-
                             gen_tokens = self.tokenizer.encode(answer, add_special_tokens=False)
                             num_gen_tokens = len(gen_tokens)
-
-                            print(f"Q{batch_start + i + 1}: {q['question'][:50]}...")
-                            print(f"  A: {answer[:100]}... | Choice: {model_choice} | Correct: {correct_answer} | {'✓' if is_correct else '✗'}")
-
                             per_question_time = gen_time / len(batch_questions)
                             time_per_token = per_question_time / num_gen_tokens if num_gen_tokens > 0 else 0.0
-                            results_per_question.append({
-                                'question_id': q.get('question_unique_id', f'q_{batch_start + i}'),
-                                'question': q['question'],
-                                'options': q.get('options', []),
-                                'gold_label': correct_answer,
-                                'model_answer_text': answer,
-                                'model_choice': model_choice,
-                                'is_correct': is_correct,
-                                'generation_time': per_question_time,
-                                'num_generated_tokens': num_gen_tokens,
-                                'time_per_token': time_per_token,
-                            })
+
+                            if is_ruler_eval:
+                                refs = q.get('ruler_outputs', [])
+                                task = q.get('task', '')
+                                score = ruler_score_prediction(answer, refs, task)
+                                is_correct = score == 1.0
+                                print(f"Q{batch_start + i + 1}: {q['question'][:80]}...")
+                                print(f"  A: {answer[:100]}... | Score: {score:.2f} | Task: {task}")
+                                results_per_question.append({
+                                    'question_id': q.get('question_unique_id', f'q_{batch_start + i}'),
+                                    'question': q['question'],
+                                    'task': task,
+                                    'ruler_outputs': refs,
+                                    'model_answer_text': answer,
+                                    'ruler_score': score,
+                                    'is_correct': is_correct,
+                                    'generation_time': per_question_time,
+                                    'num_generated_tokens': num_gen_tokens,
+                                    'time_per_token': time_per_token,
+                                })
+                            else:
+                                correct_answer = q.get('gold_label', None)
+                                model_choice = parse_model_choice(answer)
+                                is_correct = model_choice == correct_answer if model_choice and correct_answer else False
+                                print(f"Q{batch_start + i + 1}: {q['question'][:50]}...")
+                                print(f"  A: {answer[:100]}... | Choice: {model_choice} | Correct: {correct_answer} | {'✓' if is_correct else '✗'}")
+                                results_per_question.append({
+                                    'question_id': q.get('question_unique_id', f'q_{batch_start + i}'),
+                                    'question': q['question'],
+                                    'options': q.get('options', []),
+                                    'gold_label': correct_answer,
+                                    'model_answer_text': answer,
+                                    'model_choice': model_choice,
+                                    'is_correct': is_correct,
+                                    'generation_time': per_question_time,
+                                    'num_generated_tokens': num_gen_tokens,
+                                    'time_per_token': time_per_token,
+                                })
                 finally:
                     # Put vLLM back to sleep
                     self.vllm_model.sleep()
@@ -843,6 +929,7 @@ class QAEvaluator:
                     max_new_tokens=max_new_tokens,
                     batch_size=effective_batch_size,
                     results_per_question=results_per_question,
+                    is_ruler_eval=is_ruler_eval,
                 )
         else:
             print(f"\n{'='*60}")
@@ -1003,6 +1090,10 @@ class QAEvaluator:
         else:
             test_stats_time = 0.0
 
+        # Clean up temporary tensor caches from compaction_stats (not JSON-serializable)
+        compaction_stats.pop('_original_chunk_caches', None)
+        compaction_stats.pop('_compacted_chunk_caches', None)
+
         # Compute perplexity if requested (for QA datasets, not perplexity-based datasets)
         # Skip if is_perplexity_eval since perplexity was already computed above
         if compute_perplexity and not is_perplexity_eval:
@@ -1062,6 +1153,57 @@ class QAEvaluator:
                 'note': 'Perplexity-based evaluation - computed perplexity on ground_truth',
                 'is_perplexity_eval': True,
             }
+        elif is_ruler_eval and not perplexity_only:
+            # RULER string-match evaluation
+            total_questions = len(results_per_question)
+
+            # Compute generation timing metrics
+            total_gen_time = sum(r.get('generation_time', 0.0) for r in results_per_question)
+            total_gen_tokens = sum(r.get('num_generated_tokens', 0) for r in results_per_question)
+            avg_gen_time_per_question = total_gen_time / total_questions if total_questions > 0 else 0.0
+            avg_time_per_token = total_gen_time / total_gen_tokens if total_gen_tokens > 0 else 0.0
+
+            # Overall accuracy (average of per-question ruler_scores)
+            avg_ruler_score = sum(r.get('ruler_score', 0.0) for r in results_per_question) / total_questions if total_questions > 0 else 0.0
+            correct_answers = sum(1 for r in results_per_question if r.get('is_correct', False))
+
+            # Per-task breakdown
+            from collections import defaultdict
+            task_scores = defaultdict(list)
+            for r in results_per_question:
+                task_scores[r.get('task', 'unknown')].append(r.get('ruler_score', 0.0))
+            per_task_accuracy = {task: sum(scores) / len(scores) * 100 for task, scores in sorted(task_scores.items())}
+
+            qa_results = {
+                'num_questions': len(questions),
+                'results_per_question': results_per_question,
+                'total_questions': total_questions,
+                'correct_answers': correct_answers,
+                'parseable_answers': total_questions,  # All RULER answers are "parseable"
+                'accuracy': avg_ruler_score,
+                'parse_rate': 1.0,
+                'ruler_avg_score': avg_ruler_score * 100,
+                'ruler_per_task_score': per_task_accuracy,
+                'is_ruler_eval': True,
+                'total_generation_time': total_gen_time,
+                'total_generated_tokens': total_gen_tokens,
+                'avg_generation_time_per_question': avg_gen_time_per_question,
+                'avg_time_per_token': avg_time_per_token,
+            }
+
+            print(f"\n{'='*60}")
+            print(f"RULER Results Summary:")
+            print(f"  Total questions: {total_questions}")
+            print(f"  Average RULER score: {avg_ruler_score * 100:.1f}%")
+            print(f"  Exact match (all refs found): {correct_answers}/{total_questions} ({correct_answers/total_questions:.1%})")
+            print(f"  Per-task scores:")
+            for task, score in per_task_accuracy.items():
+                count = len(task_scores[task])
+                print(f"    {task}: {score:.1f}% ({count} questions)")
+            print(f"  Total generation time: {total_gen_time:.2f}s")
+            if avg_time_per_token > 0:
+                print(f"  Avg time per token: {avg_time_per_token:.3f}s/token ({1.0/avg_time_per_token:.1f} tokens/s)")
+            print(f"{'='*60}")
         elif not perplexity_only:
             total_questions = len(results_per_question)
             correct_answers = sum(1 for r in results_per_question if r.get('is_correct', False))
@@ -1893,6 +2035,11 @@ class QAEvaluator:
         if is_perplexity_eval:
             print(f"Dataset '{dataset_name}' uses perplexity-based evaluation (ground_truth instead of options)")
 
+        # Detect if this is a RULER string-match dataset
+        is_ruler_eval = is_ruler_dataset(dataset_name)
+        if is_ruler_eval:
+            print(f"Dataset '{dataset_name}' uses RULER string-match evaluation")
+
         all_results = []
 
         for method_name in compaction_methods:
@@ -1902,6 +2049,26 @@ class QAEvaluator:
 
             for article_idx in article_indices:
                 article_data = dataset[article_idx]
+
+                # TEMPORARY DEBUG: Print sample context and question for inspection
+                print(f"\n{'='*60}")
+                print(f"DEBUG: Article {article_idx} — {article_data.get('title', 'N/A')}")
+                print(f"  article_id: {article_data.get('article_id', 'N/A')}")
+                context = article_data.get('article', '')
+                print(f"  context length: {len(context)} chars")
+                print(f"  context preview (first 500 chars):\n{context[:500]}")
+                print(f"  context preview (last 300 chars):\n...{context[-300:]}")
+                print(f"  num questions: {len(article_data.get('questions', []))}")
+                for qi, q in enumerate(article_data.get('questions', [])[:3]):
+                    print(f"  --- Question {qi} ---")
+                    print(f"    question: {q.get('question', '')[:300]}")
+                    if 'options' in q:
+                        for oi, opt in enumerate(q['options']):
+                            print(f"    {chr(65+oi)}) {opt[:150]}")
+                        print(f"    gold_label: {q.get('gold_label')}")
+                    if 'ground_truth' in q:
+                        print(f"    ground_truth: {str(q['ground_truth'])[:200]}")
+                print(f"{'='*60}\n")
 
                 result = self.evaluate_compaction_on_article(
                     article_data=article_data,
@@ -1918,6 +2085,7 @@ class QAEvaluator:
                     batch_size=batch_size,
                     ignore_article_indices=ignore_article_indices,
                     is_perplexity_eval=is_perplexity_eval,
+                    is_ruler_eval=is_ruler_eval,
                 )
 
                 all_results.append(result)
