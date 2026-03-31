@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ebe0fb5a08c7b9b35e14f5",
+  "question_ids": [
+    "longbenchv2_66ebe0fb5a08c7b9b35e14f5"
+  ],
+  "question_ids_hash": "eabd3c6e899ebeeb",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ebe0fb5a08c7b9b35e14f5",
+      "generated_text": "The question asks which reason was *not* mentioned when the court analyzed why PepsiCo\u2019s advertisement did not constitute a unilateral offer in the form of a reward.\n\nLet\u2019s briefly evaluate each option:\n\nA. \"A reward advertisement is an offer to anyone who performs the obligations mentioned in the advertisement.\"  \n\u2192 This is actually stated in the judgment. The court cites *Carlill v. Carbolic Smoke Ball Co.* and says: \u201cadvertisements offering rewards ... are offers to anybody who performs the conditions named in the advertisement.\u201d So this *was* mentioned.\n\nB. \"As long as someone fulfills the content specified in the reward advertisement, the advertiser must fulfill their obligation.\"  \n\u2192 This is not stated. The court says that if someone performs the conditions, they *accept the offer*, and the advertiser is bound. But it does *not* say that the advertiser must fulfill their obligation *as long as* the condition is met \u2014 that would be a stronger, more absolute statement. The court emphasizes that the offer is valid *if* the condition is met, but doesn't say the advertiser is *obligated* to fulfill it in all cases. This statement is too absolute and not directly supported by the text.\n\nC. \"A reasonable and objective person would not consider PepsiCo's advertisement to be an offer.\"  \n\u2192 This is explicitly stated in the judgment. The court says: \u201cno objective person could reasonably have concluded that the commercial actually offered consumers a Harrier Jet.\u201d So this *was* mentioned.\n\nD. \"Reward advertisements that ask people to take specific actions are generally based on non-commercial reasons.\"  \n\u2192 This is not directly stated. The court does mention that reward cases involve non-commercial reasons (e.g., finding a crooked board, proving someone wrong), but it does not say that *all* such advertisements are based on non-commercial reasons. This is a generalization not directly supported or emphasized in the judgment.\n\nBetween B and D, B is more clearly a misstatement \u2014 it says the advertiser *must* fulfill the obligation, which is not what the court said. The court said the offer is accepted upon performance, but didn\u2019t say the advertiser is *obligated* to fulfill it in a blanket sense.\n\nTherefore, the reason *not* mentioned is:\n\nB"
+    }
+  ]
+}

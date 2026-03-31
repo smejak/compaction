@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f920d8bb02136c067c4b81",
+  "question_ids": [
+    "longbenchv2_66f920d8bb02136c067c4b81"
+  ],
+  "question_ids_hash": "d57f7cfcdf435b3b",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f920d8bb02136c067c4b81",
+      "generated_text": "The frequent cholera outbreaks in the novel symbolize the impermanence of life and the fragility of human existence. Cholera is a deadly disease that spreads rapidly and claims lives, reflecting the instability and unpredictability of fate. The outbreaks are tied to the city's decaying conditions, showing how societal neglect and environmental decay lead to suffering and death. The recurring epidemics mirror the characters' struggles with mortality and the transient nature of their lives, especially in a setting where death is a constant presence.\n\nB"
+    }
+  ]
+}

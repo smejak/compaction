@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ee8bab821e116aacb21e44",
+  "question_ids": [
+    "longbenchv2_66ee8bab821e116aacb21e44"
+  ],
+  "question_ids_hash": "aa663e193ebe3895",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ee8bab821e116aacb21e44",
+      "generated_text": "The glacier mouse is a moss ball on a glacier that forms on debris and can roll. The rolling motion is linked to the formation of an ice pedestal beneath it as the surrounding ice melts. The moss ball shields the ice below from melt, and when the ice pedestal grows, the moss ball eventually rolls off it. This process is driven by melt and thermal insulation. The rolling allows the moss ball to move downslope, which helps it find new areas with favorable conditions. The rolling is not primarily for discharging water, getting nutrients, or hiding from the sun. Instead, it's a movement that occurs as a result of the thermal insulation and melt processes, helping the moss ball to maintain a stable microclimate. The primary role is to allow the moss ball to move and maintain a favorable microhabitat, which is essentially preserving its internal temperature and protecting it from extreme cold.\n\nD"
+    }
+  ]
+}

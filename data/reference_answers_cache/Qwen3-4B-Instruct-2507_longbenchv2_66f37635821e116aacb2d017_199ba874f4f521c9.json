@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f37635821e116aacb2d017",
+  "question_ids": [
+    "longbenchv2_66f37635821e116aacb2d017"
+  ],
+  "question_ids_hash": "199ba874f4f521c9",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f37635821e116aacb2d017",
+      "generated_text": "China is modernizing its energy governance by promoting market-oriented reforms, eliminating monopolies, and enhancing competition. It has reduced the monopoly of power grid enterprises, introduced market competition in power generation and sales, and encouraged private investment. It has also established a unified national electricity market with transparent pricing mechanisms and expanded market participation. This aligns with strengthening legal supervision and breaking monopolies.\n\nC"
+    }
+  ]
+}

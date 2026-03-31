@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_67286533bb02136c067d919f",
+  "question_ids": [
+    "longbenchv2_67286533bb02136c067d919f"
+  ],
+  "question_ids_hash": "015611c7cefeeccd",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_67286533bb02136c067d919f",
+      "generated_text": "The event type \"approach\" in aviation context refers to the phase of flight when an aircraft is descending toward the runway to land. The document states the pilot executed a \"missed approach,\" which is a standard aviation term for a go-around when landing is not possible.\n\nAmong the options:\n- \"aba\" is not a standard event type for this context.\n- \"aai\" could relate to \"approach\" but is not standard.\n- \"acd\" stands for \"approach\" in some aviation event types.\n- \"aaz\" is not standard.\n\nGiven standard aviation terminology, \"approach\" is typically categorized under event types like \"acd\" in such databases.\n\nC"
+    }
+  ]
+}

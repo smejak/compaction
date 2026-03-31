@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f19f04821e116aacb27bab",
+  "question_ids": [
+    "longbenchv2_66f19f04821e116aacb27bab"
+  ],
+  "question_ids_hash": "672d016c482cef83",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f19f04821e116aacb27bab",
+      "generated_text": "D\n\nThe handbook states that if the distance is > 45 mm, you must use the 24 V DC terminals for infeed. It does not say that the maximum distance is 4.5 cm. Also, the handbook mentions that the 3RC7 ILM Power Cable can be used for distances up to 45 mm, not 4.5 cm. Therefore, D is incorrect."
+    }
+  ]
+}

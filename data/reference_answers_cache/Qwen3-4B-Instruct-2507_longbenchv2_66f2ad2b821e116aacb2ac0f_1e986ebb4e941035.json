@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f2ad2b821e116aacb2ac0f",
+  "question_ids": [
+    "longbenchv2_66f2ad2b821e116aacb2ac0f"
+  ],
+  "question_ids_hash": "1e986ebb4e941035",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f2ad2b821e116aacb2ac0f",
+      "generated_text": "The question asks which option is *not* an improvement of GeoBFN over BFN.\n\nLet's briefly evaluate each:\n\nA. Processing discrete input data (like atom charges) \u2013 GeoBFN explicitly handles discrete variables (charges) and improves on BFN's handling of discrete data. This is an improvement.\n\nB. Considering atom coordinates and types simultaneously \u2013 BFN processes each variable independently. GeoBFN uses an EGNN to model interdependencies across coordinates and types, which is a key improvement.\n\nC. Equivariant to topological rotation \u2013 This is a core innovation in GeoBFN, using equivariant modeling to preserve symmetry in molecular geometry. This is a major improvement over standard BFN.\n\nD. Adopting an early mode-seeking sampling strategy \u2013 This is a specific technique to fix mode-redundancy in discretized variables. While it improves performance, it's a sampling strategy, not a fundamental architectural improvement over BFN's core method.\n\nHowever, the key point is that BFN already handles discrete data (via categorical distributions) and processes variables independently. The \"improvement\" in D is more of a workaround than a fundamental enhancement over BFN's original capabilities.\n\nBut the paper clearly states that GeoBFN introduces equivariance and better handling of discrete modalities.\n\nAmong these, the one that is *not* a direct improvement in the method's core design is D, as it's a sampling strategy, not a fundamental methodological improvement.\n\nD"
+    }
+  ]
+}

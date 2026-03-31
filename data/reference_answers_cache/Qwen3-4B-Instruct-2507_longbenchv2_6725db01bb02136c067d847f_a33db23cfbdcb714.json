@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6725db01bb02136c067d847f",
+  "question_ids": [
+    "longbenchv2_6725db01bb02136c067d847f"
+  ],
+  "question_ids_hash": "a33db23cfbdcb714",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6725db01bb02136c067d847f",
+      "generated_text": "The document expresses curiosity about something odd or unexpected\u2014goldfish in a picture. This suggests mild intrigue or wonder, not strong negative or positive emotion. Among the options, \"aan\" (curiosity) and \"aao\" (interest) are neutral-positive, while \"abb\" (interest) and \"aav\" (interest) are also possible. However, \"aan\" is specifically associated with curiosity, which fits best with the tone of the statement.\n\nA"
+    }
+  ]
+}

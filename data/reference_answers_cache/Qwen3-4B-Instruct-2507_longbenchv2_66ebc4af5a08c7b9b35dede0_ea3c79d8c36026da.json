@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ebc4af5a08c7b9b35dede0",
+  "question_ids": [
+    "longbenchv2_66ebc4af5a08c7b9b35dede0"
+  ],
+  "question_ids_hash": "ea3c79d8c36026da",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ebc4af5a08c7b9b35dede0",
+      "generated_text": "Step by step:\n\n- Option A: The passage states DigiRL achieves 49.5% absolute improvement over supervised fine-tuning and outperforms Filtered BC (e.g., 61.5% to 71.9% in General, 57.8% to 61.4% in Web Shopping), not a 3.6% or 10% increase. So A is incorrect.\n\n- Option B: The passage explicitly lists the actions: tapping and sliding based on normalized (x, y) coordinates, typing text strings of variable length, and pressing special buttons (HOME, BACK, ENTER). This matches the description in the \"action space\" section. So B is correct.\n\n- Option C: The automatic curriculum uses an instruction-level value function to prioritize tasks with high learning signal (i.e., difficult tasks), not to filter out easy ones. So C is incorrect.\n\n- Option D: The passage states cross-entropy loss is used for training both value functions (instruction-level and step-level), not just the policy. So D is incorrect.\n\nCorrect option: B\n\nB"
+    }
+  ]
+}

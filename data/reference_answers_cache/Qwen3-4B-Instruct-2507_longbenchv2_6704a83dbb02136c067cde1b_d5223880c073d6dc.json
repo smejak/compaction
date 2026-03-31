@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6704a83dbb02136c067cde1b",
+  "question_ids": [
+    "longbenchv2_6704a83dbb02136c067cde1b"
+  ],
+  "question_ids_hash": "d5223880c073d6dc",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6704a83dbb02136c067cde1b",
+      "generated_text": "Step by step:\n\n- Literacy as social practice emphasizes that literacy is a context-dependent, socially embedded practice. It recognizes that identities are formed through social interactions and that power relations shape which practices are valued. It does not assume homogeneity.\n\n- Multiliteracies expands the definition of literacy beyond print to include visual, audio, and digital modes, recognizing diversity in communication. However, it does not inherently ignore power; rather, it critiques the overemphasis on print and privileges in traditional education. But it can be critiqued for potentially overlooking deeper power dynamics if not critically engaged.\n\n- Critical literacy explicitly ties literacy to power, identity, and social justice. It emphasizes that literacy is not neutral but a site of struggle over knowledge, representation, and agency. It demands analysis of who controls literacy and how that shapes identity and access.\n\n- Option A is incorrect because literacy as social practice does not assume homogeneity; it values diversity. Multiliteracies does not merely add technology without questioning power.\n\n- Option B claims multiliteracies prioritizes technological proficiency over critical engagement \u2014 this is an overstatement and not well supported by the text. The text shows multiliteracies critiques print dominance, not that it marginalizes non-dominant voices.\n\n- Option C is wrong because it says all three perspectives converge on a universal skill set \u2014 this contradicts the text, which emphasizes cultural and power-based differences.\n\n- Option D correctly identifies that multiliteracies expands representation and may downplay critical analysis of power \u2014 thus, it can unintentionally overshadow critical literacy\u2019s focus on power and privilege. This reflects the tension in applying these theories.\n\nD"
+    }
+  ]
+}

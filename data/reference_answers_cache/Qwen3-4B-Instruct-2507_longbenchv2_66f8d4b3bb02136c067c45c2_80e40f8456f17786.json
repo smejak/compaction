@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f8d4b3bb02136c067c45c2",
+  "question_ids": [
+    "longbenchv2_66f8d4b3bb02136c067c45c2"
+  ],
+  "question_ids_hash": "80e40f8456f17786",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f8d4b3bb02136c067c45c2",
+      "generated_text": "The best policy mix balances fiscal sustainability, private sector engagement, and the energy transition while maintaining stability. Option D addresses fiscal sustainability through blended finance and export-led development, engages the private sector via SLBs and FDI, supports the energy transition through green hydrogen and solar exports, and maintains social stability by retaining subsidies domestically and using revenues for retraining and welfare. It avoids abrupt subsidy removal (C) and aggressive carbon pricing (A), and provides a more gradual, market-driven transition than B.\n\nD"
+    }
+  ]
+}

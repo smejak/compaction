@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ec3d1d821e116aacb1c622",
+  "question_ids": [
+    "longbenchv2_66ec3d1d821e116aacb1c622"
+  ],
+  "question_ids_hash": "377b2108b4bbc677",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ec3d1d821e116aacb1c622",
+      "generated_text": "Step by step:\n\nA. The report mentions establishing a guiding fund for sci-tech innovations to encourage long-term and patient capital to invest in early-stage, small companies and hard and core technologies. It does not mention \"early, large, and information technology-based technology\" \u2014 this is a distortion. So A is incorrect.\n\nB. The report explicitly mentions accelerating construction of major infrastructure projects including the Shanghai section of Shanghai-Nantong Railway Phase II and the Shanghai section of Shanghai-Chongqing-Chengdu High-Speed Railway. This matches exactly. So B is correct.\n\nC. The report says to improve the government-supported financing guarantee system and credit award and subsidy policies for micro, small and medium-sized enterprises (MSMEs), but it says nothing about \"increasing efforts to cultivate medium-sized enterprises.\" \"Medium-sized\" is not specifically mentioned. So C is incorrect.\n\nD. The report mentions promoting high-quality clustering of modern services in areas like the North Bund and Suhewan, but does not specifically mention Lujiazui or Xujiahui in that context. Lujiazui is mentioned in the context of CBDs, but not for modern service clusters. So D is not fully supported.\n\nCorrect answer: B\n\nB"
+    }
+  ]
+}

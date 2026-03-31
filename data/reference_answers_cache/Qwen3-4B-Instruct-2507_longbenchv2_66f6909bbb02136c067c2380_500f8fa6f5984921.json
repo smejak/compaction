@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f6909bbb02136c067c2380",
+  "question_ids": [
+    "longbenchv2_66f6909bbb02136c067c2380"
+  ],
+  "question_ids_hash": "500f8fa6f5984921",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f6909bbb02136c067c2380",
+      "generated_text": "C\n\nC"
+    }
+  ]
+}

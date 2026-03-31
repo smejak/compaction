@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ecfe1e821e116aacb1e41c",
+  "question_ids": [
+    "longbenchv2_66ecfe1e821e116aacb1e41c"
+  ],
+  "question_ids_hash": "b2c6a5b47bd7c289",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ecfe1e821e116aacb1e41c",
+      "generated_text": "Step-by-step:\n\n- The document explicitly states that China's statistics are more focused on production-side data (like industrial production) than expenditure-side data (like consumption and services).\n- It notes that production data is better at capturing growth momentum than expenditure data because the statistical infrastructure is geared toward production.\n- However, it also points out that services (tertiary sector) is difficult to measure due to the historical lack of recognition in the national accounts system.\n- The document states that GDP data is smooth and often masks real volatility, leading to skepticism.\n- Industrial production (IP) is described as reliable and high-frequency, but it excludes construction and services, and only covers a portion of the economy.\n- Option A correctly identifies the limited coverage of small enterprises in IP, which is a key limitation.\n- Option B is incorrect because the document says GDP is smooth, not that IP should be weighted more heavily.\n- Option C is partially correct but misrepresents the issue \u2014 the document says production-side data is better, not that it overestimates momentum.\n- Option D mentions revisions, but the document says revisions are more relevant to services, not that they undermine IP comparisons.\n\nBest choice: A\n\nA"
+    }
+  ]
+}

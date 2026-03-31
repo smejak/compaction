@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f3c806821e116aacb2ed77",
+  "question_ids": [
+    "longbenchv2_66f3c806821e116aacb2ed77"
+  ],
+  "question_ids_hash": "184883c33890266b",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f3c806821e116aacb2ed77",
+      "generated_text": "Step by step:\n\n- HSBC's analysis emphasizes domestic market recovery, especially in lower-tier cities, and notes margin improvements due to cost efficiency and pricing dynamics. It also touches on outbound travel but doesn't highlight inbound travel as a core driver.\n- Deutsche Bank explicitly highlights outbound travel and international expansion as key growth drivers, with specific mention of inbound travel as a major opportunity due to visa-free policies and potential market size.\n- J.P. Morgan focuses on domestic margin improvements through cost reduction and operational efficiency, particularly in marketing spend, and notes domestic volume growth.\n- Goldman Sachs emphasizes outbound travel and international OTA growth, but its analysis is more about market size and execution capability, not cost efficiency or domestic package tours.\n\nKey divergence: \n- Deutsche Bank specifically points to inbound travel as a significant opportunity (especially visa-free entry), which is not emphasized by HSBC or Goldman Sachs.\n- HSBC does not highlight inbound travel as a strategic divergence point.\n- J.P. Morgan and Goldman Sachs do not contrast in the way described in option C.\n\nThus, option C best captures a strategic divergence: Deutsche Bank's focus on inbound travel as a key growth driver vs. HSBC's focus on domestic recovery and cost efficiency.\n\nC"
+    }
+  ]
+}

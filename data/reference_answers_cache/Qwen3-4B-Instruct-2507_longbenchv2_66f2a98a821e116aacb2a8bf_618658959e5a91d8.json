@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f2a98a821e116aacb2a8bf",
+  "question_ids": [
+    "longbenchv2_66f2a98a821e116aacb2a8bf"
+  ],
+  "question_ids_hash": "618658959e5a91d8",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f2a98a821e116aacb2a8bf",
+      "generated_text": "NCB and DS-1000 are distinct benchmarks with different focuses. DS-1000 is specifically for data science code generation with a focus on data science libraries. NCB, on the other hand, is designed to mirror real-world coding tasks across multiple domains including software, front-end, system administration, and AI, making it more comprehensive in terms of real-world engineering issues. \n\nNCB introduces a semi-automated pipeline to improve efficiency in constructing test cases, which reduces the time and manpower required. This is a significant improvement over manual construction processes, which is a key point in the provided text.\n\nOption A is incorrect because NCB does not generate a more extensive test set than DS-1000 and does not open-source 140 test cases as stated.\n\nOption B is partially correct but not the best answer as it's too vague and doesn't capture the core technical improvement.\n\nOption C directly addresses the key technical improvement: the semi-automated pipeline reducing data pressure (time and manpower) in benchmark construction.\n\nOption D is false as DS-1000 is not NCB's follow-up work.\n\nC"
+    }
+  ]
+}

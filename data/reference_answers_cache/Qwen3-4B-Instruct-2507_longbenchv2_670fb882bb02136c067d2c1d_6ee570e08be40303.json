@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670fb882bb02136c067d2c1d",
+  "question_ids": [
+    "longbenchv2_670fb882bb02136c067d2c1d"
+  ],
+  "question_ids_hash": "6ee570e08be40303",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670fb882bb02136c067d2c1d",
+      "generated_text": "The key evidence points to the mop and bucket being used to hide the murder weapon and set up the alibi. The murderer needed to enter the keeper's work area, which requires a bucket and mop. The bucket used was the old, cracked one from the locker, not the standard blue one used by keepers. This indicates the murderer was not a keeper, as they would have used the standard blue bucket. The only person who had access to the locker and the mop was Funami, who admitted to going to the restroom to clean up coffee spills. However, the real clue is that the toilet paper used in the alibi was not from the men's restroom, but from the office trash can, which Funami took. This confirms Funami as the culprit.\n\nA"
+    }
+  ]
+}

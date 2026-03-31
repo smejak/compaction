@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670fbb1fbb02136c067d2ca4",
+  "question_ids": [
+    "longbenchv2_670fbb1fbb02136c067d2ca4"
+  ],
+  "question_ids_hash": "28ca2d12cdb825d5",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670fbb1fbb02136c067d2ca4",
+      "generated_text": "The murderer used a toilet paper trick to create a false alibi by setting a timed device that would dissolve over time, allowing the body to fall into the shark tank after the murder. The key evidence is that the toilet paper roll used in the trick was found in the men's restroom, and the murderer used a bucket to carry it to the scene. \n\nThe only person who had a reason to go to the men's restroom and who had a motive related to the victim (Amamiya) is Funami. He spilled coffee on a file and needed to clean it up, which required him to go to the restroom. He admitted to going to the restroom around ten o'clock, which aligns with the time of the murder. \n\nAdditionally, the toilet paper roll core was found in the office trash can, which Funami would have taken after cleaning up the coffee spill. This confirms he had a solid alibi for the time of the murder.\n\nC"
+    }
+  ]
+}

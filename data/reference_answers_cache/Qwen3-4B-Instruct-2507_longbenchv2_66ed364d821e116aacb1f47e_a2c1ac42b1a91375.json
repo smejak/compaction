@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ed364d821e116aacb1f47e",
+  "question_ids": [
+    "longbenchv2_66ed364d821e116aacb1f47e"
+  ],
+  "question_ids_hash": "a2c1ac42b1a91375",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ed364d821e116aacb1f47e",
+      "generated_text": "The question asks which article dynamically models the temporal sequence of single-frame distribution functions.\n\nLet's evaluate each option:\n\nA. \"Point-Supervised Video Temporal Grounding\" - This paper uses attention-based grounding and generates pseudo labels from a point supervision, but does not explicitly model a temporal sequence of single-frame distribution functions.\n\nB. \"Probability Distribution Based Frame-supervised Language-driven Action Localization\" - This paper explicitly uses distribution functions (Beta, Gaussian, Triangular) to model the probability of action frames and boundaries. It uses these distributions across time, and the paper specifically discusses modeling the probability changes over time based on temporal distance and visual similarity. It introduces a dynamic process where the probability distribution evolves over time relative to the annotated frame.\n\nC. The file name \"Mm - 2024 - Explicit Granularity and Implicit Scale Correspondence Learning for Point-Supervised Video Moment Localization\" suggests it's about granularity and scale, not specifically about modeling temporal sequences of single-frame distribution functions.\n\nD. \"D3G: Exploring Gaussian Prior for Temporal Sentence Grounding with Glance Annotation\" - This paper uses Gaussian distributions to model relevance, but it's more focused on using Gaussian functions to model the probability of frames being action frames, not explicitly modeling a temporal sequence of single-frame distribution functions.\n\nThe key phrase is \"dynamically models the temporal sequence of single-frame distribution functions.\" This is most directly described in option B, where the paper discusses using distribution functions (like Beta) to model the probability of frames over time, with temporal distance and visual similarity.\n\nB"
+    }
+  ]
+}

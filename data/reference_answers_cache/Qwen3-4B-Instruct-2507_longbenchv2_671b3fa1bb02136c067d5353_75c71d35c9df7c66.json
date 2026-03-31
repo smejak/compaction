@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_671b3fa1bb02136c067d5353",
+  "question_ids": [
+    "longbenchv2_671b3fa1bb02136c067d5353"
+  ],
+  "question_ids_hash": "75c71d35c9df7c66",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_671b3fa1bb02136c067d5353",
+      "generated_text": "Step 1: Look at the utility arrays for each player to determine who got the most utility.\n\nStep 2: Sum the utility for each player.\n\nPlayer_0 utility: [0,5,10,5,10,5,10,5,0,5,0,5,10,10,10,10,10,10,10,10]  \nSum = 0+5+10+5+10+5+10+5+0+5+0+5+10+10+10+10+10+10+10+10 = 130\n\nPlayer_1 utility: [0,5,5,5,10,5,5,5,5,5,0,5,10,10,5,10,5,10,10,10]  \nSum = 0+5+5+5+10+5+5+5+5+5+0+5+10+10+5+10+5+10+10+10 = 120\n\nPlayer_2 utility: all 5s except one 0 \u2192 19 rounds \u00d7 5 = 95, minus 5 (from round 9) \u2192 95 - 5 = 90? Wait: 19 rounds: 19\u00d75 = 95, but one 0 \u2192 95 - 5 = 90? No: 19\u00d75 = 95, one 0 \u2192 95 - 5 = 90 \u2192 total = 90\n\nPlayer_3 utility: [0,5,10,10,5,10,10,5,0,5,0,5,5,5,5,10,5,5,10,10]  \nSum = 0+5+10+10+5+10+10+5+0+5+0+5+5+5+5+10+5+5+10+10 = 100\n\nPlayer_4 utility: all 5s \u2192 20\u00d75 = 100\n\nPlayer_5 utility: [0,5,10,10,5,10,5,5,0,5,5,10,10,10,10,5,10,10,5,10]  \nSum = 0+5+10+10+5+10+5+5+0+5+5+10+10+10+10+5+10+10+5+10 = 130\n\nPlayer_6 utility: [0,5,5,5,10,5,5,5,0,5,0,5,5,10,10,5,5,5,5,5]  \nSum = 0+5+5+5+10+5+5+5+0+5+0+5+5+10+10+5+5+5+5+5 = 90\n\nPlayer_7 utility: [0,10,5,10,10,5,5,5,0,5,0,10,10,5,5,10,5,5,5,10]  \nSum = 0+10+5+10+10+5+5+5+0+5+0+10+10+5+5+10+5+5+5+10 = 110\n\nPlayer_8 utility: all 5s except one 0 \u2192 19\u00d75 = 95 \u2192 total = 95 (round 10 is 0) \u2192 19\u00d75 = 95 \u2192 95 - 5 = 90\n\nPlayer_9 utility: [0,10,5,10,5,10,10,5,0,5,0,5,10,5,10,10,5,5,10,5]  \nSum = 0+10+5+10+5+10+10+5+0+5+0+5+10+5+10+10+5+5+10+5 = 110\n\nNow compare top utilities:\n\n- Player_0: 130\n- Player_5: 130\n- Others: less\n\nSo player_0 and player_5 have the highest utility.\n\nAnswer: C\n\nC"
+    }
+  ]
+}

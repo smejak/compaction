@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_67040276bb02136c067cd8ae",
+  "question_ids": [
+    "longbenchv2_67040276bb02136c067cd8ae"
+  ],
+  "question_ids_hash": "f55771d500e22003",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_67040276bb02136c067cd8ae",
+      "generated_text": "Step by step:\n\n- The question asks how to reconcile gender disparities in Islamic inheritance laws with contemporary feminist legal theories in multicultural societies like Malaysia.\n\n- Option A suggests awareness through education, which is beneficial but passive and does not directly address legal inequities or systemic gender disparities.\n\n- Option B proposes a legal change based on economic contribution, which aligns with feminist principles of equity and recognizes real-world contributions\u2014this is feasible within Islamic jurisprudence via ijtihad (interpretation), and is context-sensitive.\n\n- Option C calls for a complete overhaul, which is not supported by the paper. The article argues for reinterpretation, not abolition, and emphasizes reform within Islamic legal methodology, not a total change.\n\n- Option D suggests incorporating feminist perspectives through selective reinterpretation based on socio-economic context\u2014this directly aligns with the paper\u2019s argument that Islamic law can be reinterpreted via ijtihad, qiyas, and istihsan to reflect modern realities without violating core principles.\n\n- The paper explicitly supports a nuanced, context-sensitive reinterpretation of Islamic law, not a complete overhaul or mere education.\n\nTherefore, the best choice is D.\n\nD"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f4cd2c821e116aacb316ef",
+  "question_ids": [
+    "longbenchv2_66f4cd2c821e116aacb316ef"
+  ],
+  "question_ids_hash": "81c293971f56b462",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f4cd2c821e116aacb316ef",
+      "generated_text": "The question asks which scenario best captures the intricate relationship between human capital, economic resilience, and social equity in the context of global market dynamics and internal socio-political structures.\n\nLet\u2019s briefly evaluate each option:\n\nA focuses on environmental degradation and health crises from chemical intensification. While valid, it emphasizes environmental and health outcomes over the systemic interplay of human capital, economic resilience, and social equity.\n\nB highlights dependency on imports, trade imbalance, and civil unrest. It connects human capital neglect to political instability, which touches on socio-political structures, but it\u2019s more focused on trade and external dependency than on the core of human capital development and equity.\n\nC emphasizes lack of innovation, climate vulnerability, and rural poverty, linking it to welfare spending. It shows a chain from human capital neglect to climate adaptation failure and poverty, but it doesn\u2019t strongly emphasize social equity or access to emerging markets.\n\nD directly links the absence of human capital investment to a cycle of poverty, social inequalities, and exclusion of marginalized groups. It explicitly addresses social equity, access to markets, and inclusive growth\u2014key elements of the question. It also reflects how human capital development is foundational to resilience and equity in a globalized economy.\n\nD best captures the systemic implications of neglecting agricultural human capital in terms of economic resilience and social equity.\n\nD"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670493d4bb02136c067cdcd9",
+  "question_ids": [
+    "longbenchv2_670493d4bb02136c067cdcd9"
+  ],
+  "question_ids_hash": "65bedf47a7e24562",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670493d4bb02136c067cdcd9",
+      "generated_text": "Step by step:\n\n- The marriage of Rebeca and Pietro Crespi was postponed due to several factors:\n  - The construction of the church (A) \u2014 Rebeca's future was tied to the church being built, and it took years, so the wedding was delayed.\n  - The hesitation of Rebeca (B) \u2014 she was impatient and wanted to marry sooner, but the delays were due to external factors, not her hesitation per se.\n  - The personality of Pietro Crespi (C) \u2014 he was not adventurous; he respected his word and did not want to rush into marriage. This contributed to the delay.\n  - The behaviour of Amaranta (D) \u2014 Amaranta tried to sabotage the wedding by poisoning Rebeca and later by creating obstacles (e.g., the mothballs, the laudanum). This is a direct interference.\n\nBut the question asks which factor did *not* result in the deferment.\n\n- The hesitation of Rebeca (B) is not clearly stated as a cause of deferment. She wanted to marry, and her impatience is shown, but the delays were due to external factors (construction, Pietro's nature, Amaranta's sabotage).\n\n- The construction of the church (A) was a major reason.\n- Pietro's personality (C) caused delay.\n- Amaranta's behaviour (D) caused sabotage and delays.\n\nBut Rebeca's own hesitation (B) is not presented as a factor that *defers* the marriage \u2014 rather, she is proactive and impatient.\n\nThus, the factor that did *not* result in deferment is:\n\nB\n\nB"
+    }
+  ]
+}

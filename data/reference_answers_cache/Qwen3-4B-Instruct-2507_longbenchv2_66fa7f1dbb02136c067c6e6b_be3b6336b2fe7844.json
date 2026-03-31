@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66fa7f1dbb02136c067c6e6b",
+  "question_ids": [
+    "longbenchv2_66fa7f1dbb02136c067c6e6b"
+  ],
+  "question_ids_hash": "be3b6336b2fe7844",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66fa7f1dbb02136c067c6e6b",
+      "generated_text": "Step by step:\n\n- ALTUVIIIO: Treats hemophilia A (a blood disease) \u2192 used for blood disorders.\n- Dupixent: Treats asthma, atopic dermatitis, COPD (inflammation-related, not blood disease) \u2192 not a blood disease treatment.\n- Sarclisa: Treats multiple myeloma (a blood cancer) \u2192 blood disease.\n- Tolebrutinib: Treats multiple sclerosis (neurological, not blood disease) \u2192 not a blood disease treatment.\n- Aubagio: Treats multiple sclerosis (neurological) \u2192 not a blood disease treatment.\n- Placebo: Not a treatment, just a control \u2192 not used to treat any disease, including blood diseases.\n\nSo, which cannot usually be used to treat blood diseases?\n\n- Dupixent \u2192 no\n- Tolebrutinib \u2192 no\n- Aubagio \u2192 no\n- Placebo \u2192 no\n\nALTUVIIIO \u2192 yes (blood disease)\n\nSo the ones that cannot treat blood diseases: \u2461, \u2463, \u2464, \u2465\n\nThat matches option D.\n\nD"
+    }
+  ]
+}

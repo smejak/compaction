@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ebed525a08c7b9b35e1cb4",
+  "question_ids": [
+    "longbenchv2_66ebed525a08c7b9b35e1cb4"
+  ],
+  "question_ids_hash": "59510dd4cee2ff3f",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ebed525a08c7b9b35e1cb4",
+      "generated_text": "Miller argues that reading requires an active, responsible response that generates new language and renders justice to the book. He emphasizes that no one can do another's reading for them, and that each reader must bear witness anew. This implies that the reader must personally engage with the text and produce a new interpretation, not simply extract truth from a primary narrator.\n\nThe implied premise is that readers must personally respond and create new language\u2014thus, the obligation is not to extract truth from the primary narrator, nor is it about reaching a high standard or that interpretation transforms the text in a performative way (though that is mentioned later).\n\nThe core of the argument is that each must read for themselves and testify anew.\n\nA"
+    }
+  ]
+}

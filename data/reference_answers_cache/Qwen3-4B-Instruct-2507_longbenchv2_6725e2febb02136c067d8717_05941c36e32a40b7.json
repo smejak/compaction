@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6725e2febb02136c067d8717",
+  "question_ids": [
+    "longbenchv2_6725e2febb02136c067d8717"
+  ],
+  "question_ids_hash": "05941c36e32a40b7",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6725e2febb02136c067d8717",
+      "generated_text": "The narratives must follow the chronological order of events in the book.\n\n1. The team arrives at the cruise ship and is briefed on the plan \u2014 this happens early in the story (Chapter 1\u20132).\n2. Petra encounters the elderly tourists and requests the diary \u2014 this happens in Chapter 6, after she has been on a break.\n3. Rachael and Petra visit the longhouse \u2014 this happens in Chapter 11, after Petra has the diary.\n4. Petra bursts out of the longhouse into debris \u2014 this happens in Chapter 14, at the end of the longhouse scene.\n\nSo the correct chronological order is: 1 \u2192 3 \u2192 4 \u2192 2.\n\nWait \u2014 narrative 2 is \"Petra bursts out of the longhouse into a cloud of debris\" \u2014 this is the climax, after the longhouse visit.\n\nNarrative 3 is \"The narrator encounters two elderly tourists inside a cabin, and requests the woman to hand over Constable Paniula's diary\" \u2014 this happens before the longhouse visit.\n\nNarrative 4 is \"Rachael and Petra visited the reconstructed Viking longhouse\" \u2014 this happens after the diary request.\n\nSo order: 1 (arrival) \u2192 3 (diary request) \u2192 4 (longhouse visit) \u2192 2 (helicopter chaos)\n\nThat matches option D: 1342\n\nD"
+    }
+  ]
+}

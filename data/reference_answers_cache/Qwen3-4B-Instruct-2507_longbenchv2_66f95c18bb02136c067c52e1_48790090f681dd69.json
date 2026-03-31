@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f95c18bb02136c067c52e1",
+  "question_ids": [
+    "longbenchv2_66f95c18bb02136c067c52e1"
+  ],
+  "question_ids_hash": "48790090f681dd69",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f95c18bb02136c067c52e1",
+      "generated_text": "The document discusses the \"acquiescence doctrine,\" where congressional inaction can be interpreted as tacit approval of executive orders, but only if it is \"long continued\" and reflects a pattern of acceptance. It explicitly states that such inaction \"may reflect deep divisions\" and that assuming consent from silence is problematic because it ignores the possibility of minority control and the democratic process. The doctrine of separation of powers is not strengthened by this interpretation but is instead challenged, as it allows presidential action without clear congressional will.\n\nThe key factors influencing this interpretation include the duration and nature of inaction, the existence of precedent, and the political context. The document argues that assuming consent from silence is a flawed assumption and that the separation of powers doctrine is not reinforced but rather potentially undermined.\n\nOption C correctly reflects the document's nuanced view: inaction can be interpreted as tacit approval only under limited conditions (temporary function, no inherent powers), and the doctrine evolves toward shared responsibility without permanent power shifts.\n\nC"
+    }
+  ]
+}

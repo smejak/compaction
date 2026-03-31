@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670cf1c0bb02136c067d26e5",
+  "question_ids": [
+    "longbenchv2_670cf1c0bb02136c067d26e5"
+  ],
+  "question_ids_hash": "194c835d579bbaec",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670cf1c0bb02136c067d26e5",
+      "generated_text": "The key evidence points to Matthew Blakiston as the murderer. He has a clear motive: he blames Sir Magnus for the death of his son Tom and for the death of his wife Mary. He explicitly states he killed his wife and returns to the scene of the crime, leaving a handprint in the flower bed. He also had the opportunity to kill Sir Magnus when he visited the house at night, and he was the only one who had a personal, deep-seated hatred for Sir Magnus due to the abuse and control he exerted over his family. The handprint in the flower bed, left by Matthew when he was looking through the letter box, is a crucial physical clue directly linking him to the crime scene. While Robert Blakiston had a motive related to his brother and mother, the evidence strongly supports Matthew Blakiston as the one who killed Sir Magnus.\n\nB"
+    }
+  ]
+}

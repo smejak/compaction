@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6719bce5bb02136c067d4447",
+  "question_ids": [
+    "longbenchv2_6719bce5bb02136c067d4447"
+  ],
+  "question_ids_hash": "7d723967524db56e",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6719bce5bb02136c067d4447",
+      "generated_text": "To determine which player wins the most golds, we need to sum the \"utility\" values for each player, as utility represents the gold received in each round.\n\n- player_3: utility = [10,0,9,0,10,0,8,10,10,9,0,8,9,10,9,8,9,10,8,9] \u2192 Sum = 10+0+9+0+10+0+8+10+10+9+0+8+9+10+9+8+9+10+8+9 = 145\n- player_4: utility = [10,0,9,0,10,0,8,10,9,10,0,11,10,9,11,10,12,8,10,9] \u2192 Sum = 10+0+9+0+10+0+8+10+9+10+0+11+10+9+11+10+12+8+10+9 = 156\n- player_7: utility = [10,0,9,0,8,0,9,11,10,9,0,8,10,10,9,10,10,10,10,10] \u2192 Sum = 10+0+9+0+8+0+9+11+10+9+0+8+10+10+9+10+10+10+10+10 = 148\n- player_9: utility = [10,0,9,0,8,0,7,8,9,9,0,7,7,8,8,8,7,7,7,7] \u2192 Sum = 10+0+9+0+8+0+7+8+9+9+0+7+7+8+8+8+7+7+7+7 = 120\n\nThe highest sum is player_4 with 156 golds.\n\nB"
+    }
+  ]
+}

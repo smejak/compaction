@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ec0874821e116aacb194a4",
+  "question_ids": [
+    "longbenchv2_66ec0874821e116aacb194a4"
+  ],
+  "question_ids_hash": "53223cd1cf0fc1d3",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ec0874821e116aacb194a4",
+      "generated_text": "Step by step:\n\n- The question asks for the best explanation of how 2DGS achieves superior surface projection accuracy and the main mathematical reasoning.\n- 3DGS uses volumetric splatting with affine projections, which are perspective-accurate only near the center and suffer from depth inconsistency.\n- 2DGS collapses the 3D volume into 2D elliptical disks embedded in 3D space, with normals derived from tangent vectors, which are aligned with the surface.\n- The key innovation in 2DGS is the use of ray-splat intersection via homogeneous coordinates, which is more accurate than affine approximation.\n- This method ensures that the splat is projected along the actual ray, preserving surface consistency and avoiding the multi-view inconsistency of 3DGS.\n- Option A correctly identifies the use of 2D tangent planes and homogeneous transformations, and notes that surface normals are preserved by aligning with surface geometry.\n- Option B mentions \"depth-weighted variance reduction\" and \"conic surface projections\" \u2014 these are not explicitly in the paper.\n- Option C refers to \"depth distortion loss\" which is mentioned, but it's a regularization, not the primary mathematical reason for projection accuracy.\n- Option D mentions \"principal curvature alignment\" \u2014 not discussed in the paper; the paper uses tangent vectors to define normal, not curvature.\n\nBest match: A \u2014 it correctly identifies the core mathematical reasoning (homogeneous transformations on tangent planes) and surface normal consistency.\n\nA"
+    }
+  ]
+}

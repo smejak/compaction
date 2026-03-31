@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670397b5bb02136c067ccec6",
+  "question_ids": [
+    "longbenchv2_670397b5bb02136c067ccec6"
+  ],
+  "question_ids_hash": "b6cff1b571769e01",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670397b5bb02136c067ccec6",
+      "generated_text": "Step by step:\n\n- Scarlett marries Charles after being heartbroken by Ashley's engagement to Melanie.\n- She feels betrayed and humiliated, especially because Ashley had shown interest in her but then married Melanie.\n- She sees Charles as a way to show Ashley that she doesn\u2019t care about him \u2014 a form of retaliation.\n- She explicitly says, \u201cIf I married him right away, it would show Ashley that I didn\u2019t care a rap.\u201d\n- She also plans to hurt Melanie, who loves Charles, and wants to make her life difficult.\n- There is no indication she marries him for money or because he has parents.\n- The impulsive nature is there, but the core motivation is to show Ashley she doesn\u2019t care and to hurt Melanie.\n\nCorrect answer: C\n\nC"
+    }
+  ]
+}

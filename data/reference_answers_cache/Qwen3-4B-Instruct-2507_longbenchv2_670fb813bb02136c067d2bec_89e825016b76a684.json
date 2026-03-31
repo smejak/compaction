@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670fb813bb02136c067d2bec",
+  "question_ids": [
+    "longbenchv2_670fb813bb02136c067d2bec"
+  ],
+  "question_ids_hash": "89e825016b76a684",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670fb813bb02136c067d2bec",
+      "generated_text": "The murderer left the scene without getting wet because they used the right-side stage door, which was locked from the inside. The key evidence is that the umbrella was found in the men\u2019s restroom, and the murderer left it there. The murderer must have entered the gym from the right side stage, which was locked from the inside, and then left through the same door. The murderer did not need to go through the rain to leave the scene. The murderer was not wearing a raincoat, and there is no mention of a two-wheeled cart being used. The murderer left through the right-side stage door, which was locked from the inside, and thus did not get wet in the rain.\n\nA"
+    }
+  ]
+}

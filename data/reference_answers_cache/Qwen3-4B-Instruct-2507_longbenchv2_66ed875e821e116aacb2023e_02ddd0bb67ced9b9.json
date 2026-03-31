@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ed875e821e116aacb2023e",
+  "question_ids": [
+    "longbenchv2_66ed875e821e116aacb2023e"
+  ],
+  "question_ids_hash": "02ddd0bb67ced9b9",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ed875e821e116aacb2023e",
+      "generated_text": "Wang Hui and Badiou both critique the devaluation of political subjectivity and the neutralization of revolutionary potential in contemporary politics. Badiou's analysis in \"Saint Paul\" centers on how the modern world has replaced truth with cultural relativism and identitarian politics, which neutralize the revolutionary subject. Wang Hui's work similarly addresses how political subjectivity is eroded by institutionalized ideologies and cultural norms. Their shared concern is the neutralization of political agency.\n\nC"
+    }
+  ]
+}

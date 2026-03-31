@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f41e45821e116aacb30ec3",
+  "question_ids": [
+    "longbenchv2_66f41e45821e116aacb30ec3"
+  ],
+  "question_ids_hash": "ba1e5bd0e2fa01d7",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f41e45821e116aacb30ec3",
+      "generated_text": "Step by step:\n\n- Option A: The document emphasizes that immigrants, including those who come legally, enrich the nation, contribute to prosperity, and are part of the American story. It highlights that immigrants bring innovation, work, and resilience. This aligns with the idea that legal immigrants are supported because they contribute to economic and social development. This is consistent with the document.\n\n- Option B: President Biden does not claim that his policy on illegal immigration is more effective than his predecessor\u2019s. He criticizes the previous administration\u2019s use of Title 42, but does not say his policy is more effective. Also, he doesn\u2019t say it was blocked by Republican opposition in a way that prevents implementation \u2014 rather, he says Congress has failed to act. So this is inaccurate.\n\n- Option C: The document does not mention the U.S. refusing to accept illegal immigrants from Mexico. It talks about people fleeing from Central and South America, not a refusal from Mexico. Also, the reason given is not about \"unrest\" or illegal methods, but about a broken system and lack of legal pathways. This is not supported.\n\n- Option D: The document does mention actions to combat anti-Asian hate, including DOJ resources, USAID meetings, and EEOC data tools \u2014 but these are specifically for Asian Americans and Pacific Islanders, not general legal immigrants. So this misrepresents the scope.\n\nOnly Option A is broadly supported by the content, which celebrates immigrants as contributors to American strength and development.\n\nA"
+    }
+  ]
+}

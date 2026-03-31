@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66fbab85bb02136c067c81dc",
+  "question_ids": [
+    "longbenchv2_66fbab85bb02136c067c81dc"
+  ],
+  "question_ids_hash": "2f4190b9df5dafaf",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66fbab85bb02136c067c81dc",
+      "generated_text": "All the passages emphasize the role of the Chinese People's Political Consultative Conference (CPPCC), which is rooted in cooperation among various parties, groups, and sectors of society under the leadership of the Communist Party of China. Themes include multi-party cooperation, united front, democratic consultation, and unity among different groups. While patriotism, youth education, and national future are mentioned, the recurring and central theme across all texts is the cooperation between diverse groups.\n\nC. the cooperation between various people\n\nC"
+    }
+  ]
+}

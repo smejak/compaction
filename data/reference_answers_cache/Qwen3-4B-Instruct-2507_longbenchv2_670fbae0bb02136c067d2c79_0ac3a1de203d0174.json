@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670fbae0bb02136c067d2c79",
+  "question_ids": [
+    "longbenchv2_670fbae0bb02136c067d2c79"
+  ],
+  "question_ids_hash": "0ac3a1de203d0174",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670fbae0bb02136c067d2c79",
+      "generated_text": "The murder involved a timed alibi using toilet paper that dissolved in water. The murderer needed to create a false alibi by setting up a device that would delay the fall of the body into the shark tank. The key element was the toilet paper wrapped around the railing, which would dissolve over time, allowing the body to fall into the tank at a later time.\n\nTo achieve this, the murderer had to bring in a mop and a bucket. The mop was used to clean the area and likely to disguise the presence of the murder tools. The bucket was used to carry the toilet paper and to wet the scene, dissolving the paper over time.\n\nThe critical clue was that the mop and bucket were used to hide the murder weapon and to erase evidence. The mop was specifically used to clean the area, and the bucket was used to carry the toilet paper and to wet the scene.\n\nThe switch between the murderer and the deceased was the mop. The mop was used to clean the area and to hide the murder weapon. The bucket was used to carry the toilet paper and to wet the scene.\n\nD"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6725dbd1bb02136c067d8522",
+  "question_ids": [
+    "longbenchv2_6725dbd1bb02136c067d8522"
+  ],
+  "question_ids_hash": "5809d7fca7419998",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6725dbd1bb02136c067d8522",
+      "generated_text": "The document mentions infidelity and drunk proposals, which are negative and potentially harmful actions. The phrase \"I hope a happy and long married life for him\" suggests a sarcastic or ironic tone, indicating a negative emotion toward the situation. The emotions likely include disdain, irony, or criticism.\n\nLooking at the options:\n- A: aam (disapproval), aat (anxiety), aar (anxiety) \u2014 plausible, but aat and aar are not strongly tied to the content.\n- B: aal (anxiety), aai (anxiety), aav (disapproval) \u2014 aai and aal fit with anxiety, aav with disapproval.\n- C: aaz (disgust), aai (anxiety), aae (anxiety) \u2014 aaz fits with strong negative emotion, aai and aae with anxiety.\n- D: aaf (disapproval), aai (anxiety), aau (anxiety) \u2014 aaf fits, aai and aau with anxiety.\n\nThe strongest negative emotion here is disgust or disapproval toward infidelity and drunk proposals. \"aaz\" (disgust) is a strong fit. \"aai\" and \"aae\" (anxiety) are also present.\n\nC includes aaz (disgust), aai (anxiety), aae (anxiety) \u2014 a strong mix of negative emotions.\n\nAnswer: C"
+    }
+  ]
+}

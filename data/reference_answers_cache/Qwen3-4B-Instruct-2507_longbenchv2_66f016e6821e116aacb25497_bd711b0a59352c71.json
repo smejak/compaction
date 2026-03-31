@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f016e6821e116aacb25497",
+  "question_ids": [
+    "longbenchv2_66f016e6821e116aacb25497"
+  ],
+  "question_ids_hash": "bd711b0a59352c71",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f016e6821e116aacb25497",
+      "generated_text": "Step by step:\n\n- Option A: Building a wind farm near a Natura 2000 site triggers the Habitats Directive\u2019s appropriate assessment (AA) procedure. Even if a bird expert is hired, the risk of collision, displacement, or disturbance remains, and the client must prove no reasonable scientific doubt about adverse effects. This is a clear environmental law risk under EU biodiversity law.\n\n- Option B: Marine renewable energy (wave, tidal) projects are subject to the same AA requirements under the Habitats Directive. As a new technology, it involves high uncertainty, and the Court of Justice has set a strict \"no reasonable scientific doubt\" standard. This creates significant compliance risks.\n\n- Option C: Switching from electricity to fuel energy production is not directly regulated under EU environmental law in the way described. While fuel use may have indirect environmental impacts, it does not trigger specific EU environmental law risks like those under the Habitats Directive or renewable energy directives. This is not a direct compliance issue.\n\n- Therefore, only A and B involve direct, legally significant environmental risks under EU environmental law.\n\n- Since C does not present a direct compliance risk, D (\"all above\") is incorrect.\n\nCorrect answer: B\n\nB"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ebd0ea5a08c7b9b35dff57",
+  "question_ids": [
+    "longbenchv2_66ebd0ea5a08c7b9b35dff57"
+  ],
+  "question_ids_hash": "9cc07deb179e3b5f",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ebd0ea5a08c7b9b35dff57",
+      "generated_text": "Berkeley's argument hinges on the idea that ideas cannot exist outside perception. He ignores the possibility that general, non-episodic notions\u2014such as the concept of \"matter\" as a general category\u2014could exist independently of specific perceptions. These notions are not tied to particular sensory experiences but are abstract, universal concepts that can be formed through reason and are not reducible to individual ideas.\n\nD"
+    }
+  ]
+}

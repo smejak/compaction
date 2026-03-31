@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ec3aff821e116aacb1c52e",
+  "question_ids": [
+    "longbenchv2_66ec3aff821e116aacb1c52e"
+  ],
+  "question_ids_hash": "15a2dbec6980ca57",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ec3aff821e116aacb1c52e",
+      "generated_text": "Let's go step by step:\n\nA. The text says Eloise (Mrs. Renauld) fainted upon seeing her husband's body, and that her grief was genuine. She did not grieve because she no longer loved him \u2014 in fact, she loved him deeply and was devastated. So A is false.\n\nB. The text states that Paul Renauld wore his overcoat very long, and Jack Renauld wore his very short. The key detail is that Paul's overcoat was the one that matched the one found on the body of the tramp \u2014 and that it was a disguise. The overcoat was not a mistake \u2014 it was part of the plan to impersonate the tramp. So B is false.\n\nC. Bella Duveen is the one who confesses to the murder in Chapter 25, but she does so to save Jack Renauld from the guillotine. She claims she killed Paul Renauld, but Poirot reveals that she did not \u2014 she was acting to protect Jack. The real murderer is Marthe Daubreuil. So C is false.\n\nD. The text states that Marthe Daubreuil overheard Paul Renauld's quarrel with the tramp in the garden. She knew of his plan to feign death and used that information to plan her own murder. This is confirmed in Chapter 28, where Poirot says Marthe Daubreuil had a motive and knew the plans. So D is true.\n\nD"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_671b3cabbb02136c067d5252",
+  "question_ids": [
+    "longbenchv2_671b3cabbb02136c067d5252"
+  ],
+  "question_ids_hash": "ceb150903c95c027",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_671b3cabbb02136c067d5252",
+      "generated_text": "Player_3's utility is all 5s, with no 10s.  \nPlayer_1 has 10s and 5s, with some 10s.  \nPlayer_5 has many 10s and 5s.  \nPlayer_7 has alternating 10s and 5s, with many 10s.  \n\nPlayer_3 has the lowest utility across all rounds, as they never go to the bar when it's beneficial (only when it's safe), and thus never get the 10 utility.  \n\nB"
+    }
+  ]
+}

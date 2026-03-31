@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6703a0ecbb02136c067cd11b",
+  "question_ids": [
+    "longbenchv2_6703a0ecbb02136c067cd11b"
+  ],
+  "question_ids_hash": "fdc14f15c5c03e3f",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6703a0ecbb02136c067cd11b",
+      "generated_text": "The reports from the Diocesan Church Society of New Brunswick show a pattern of reports titled \"reports of the proceedings\" and \"reports of the Diocesan Church Society,\" often detailing church activities, financial matters, and administrative work. The reports from the late 19th century (e.g., 1880s-1890s) include specific mentions of church buildings, such as \"The progress of the church in the seven rural deaneries\" and \"The last paper gave some account of two districts which are calling out for help,\" suggesting a focus on church development and maintenance. There is no evidence of a significant increase in reports on social services or charitable activities during this period. The reports are primarily administrative and ecclesiastical, not focused on social welfare.\n\nTherefore, the most supported hypothesis is that the Church focused on expanding its physical infrastructure.\n\nA"
+    }
+  ]
+}

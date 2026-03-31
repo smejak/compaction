@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6725dc28bb02136c067d8555",
+  "question_ids": [
+    "longbenchv2_6725dc28bb02136c067d8555"
+  ],
+  "question_ids_hash": "925fe10c66dc9e24",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6725dc28bb02136c067d8555",
+      "generated_text": "The event type \"began\" refers to the start of the tour. Looking at the options, \"admx\" (A) is not a valid option. \"ace\" (B) could relate to a beginning or start. \"adm\" (C) is not clearly related. \"abv\" (D) is not clearly related. Given the context, \"began\" is most likely \"ace\" as it denotes the start.\n\nB"
+    }
+  ]
+}

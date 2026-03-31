@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_67062a63bb02136c067cf5ac",
+  "question_ids": [
+    "longbenchv2_67062a63bb02136c067cf5ac"
+  ],
+  "question_ids_hash": "0003a95b05907c91",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_67062a63bb02136c067cf5ac",
+      "generated_text": "Senior management positions typically value leadership, strategic thinking, and innovation. While tenure and salary are important, the combination of department, tenure, and background is key.\n\n- Corporate departments often have higher-level strategic roles and more senior management opportunities.\n- R&D is innovation-heavy, which aligns with technical innovation, but senior roles are often in strategic or business leadership, not just technical innovation.\n- Speciality Products and Manufacturing are more operational and may have more mid-level growth paths.\n- Technical innovation is a strong predictor of leadership in tech-driven industries.\n\nLooking at the salary of $207,172, this is high and aligns with senior roles.\n\nOption A: Corporate with 7 years, high salary, technical innovation \u2014 Corporate is strategic, high salary, innovation suggests leadership potential.\n\nOption B: R&D with 7 years, high salary, leading small teams \u2014 good, but leading small teams is more operational than strategic.\n\nOption C: Speciality Products with 7 years, high salary, technical innovation \u2014 Speciality Products is operational, less likely for senior management.\n\nOption D: Manufacturing with 7 years, high salary, operations management \u2014 operations is more operational.\n\nCorporate departments have more senior leadership roles, and technical innovation in a strategic department like Corporate is ideal.\n\nA"
+    }
+  ]
+}

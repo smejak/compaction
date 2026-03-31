@@ -18,7 +18,7 @@ from collections import defaultdict
 from pathlib import Path
 
 # Put directory containing qa_evaluation results. This script will aggregate them into 1 json file.
-EVAL_DIR = "logs/qa_evaluation/gemma12b-lh5"
+EVAL_DIR = "logs/qa_evaluation/llama-qasper"
 
 
 def extract_budget_path_id(hyperparameters):
@@ -165,7 +165,25 @@ def aggregate_method_stats(method_stats_list):
     aggregated["num_articles"] = sum(s.get("num_articles", 0) for s in method_stats_list)
 
     # Calculate overall accuracy
-    if aggregated["total_questions"] > 0:
+    # For QASPER/RULER, overall_accuracy is avg score (not total_correct/total_questions).
+    # Detect by presence of the respective key.
+    is_qasper = any("overall_qasper_avg_f1" in s for s in method_stats_list)
+    is_ruler = any("overall_ruler_avg_score" in s for s in method_stats_list)
+    if is_qasper or is_ruler:
+        # Weighted average of per-file overall_accuracy by num_questions
+        weighted_sum = sum(
+            s.get("overall_accuracy", 0.0) * s.get("total_questions", 0)
+            for s in method_stats_list
+        )
+        if aggregated["total_questions"] > 0:
+            aggregated["overall_accuracy"] = weighted_sum / aggregated["total_questions"]
+        else:
+            aggregated["overall_accuracy"] = 0.0
+        if is_qasper:
+            aggregated["overall_qasper_avg_f1"] = aggregated["overall_accuracy"] * 100
+        if is_ruler:
+            aggregated["overall_ruler_avg_score"] = aggregated["overall_accuracy"] * 100
+    elif aggregated["total_questions"] > 0:
         aggregated["overall_accuracy"] = aggregated["total_correct"] / aggregated["total_questions"]
     else:
         aggregated["overall_accuracy"] = 0.0
@@ -542,7 +560,12 @@ def main(max_articles=None, group_by_target_size=False):
                 num_articles = stats.get("num_articles", 0)
                 print(f"  {method_name}:")
                 print(f"    Articles: {num_articles}")
-                print(f"    Accuracy: {accuracy:.4f} ({stats.get('total_correct', 0)}/{stats.get('total_questions', 0)})")
+                if "overall_qasper_avg_f1" in stats:
+                    print(f"    Avg F1: {accuracy:.4f}")
+                elif "overall_ruler_avg_score" in stats:
+                    print(f"    Avg RULER score: {accuracy:.4f}")
+                else:
+                    print(f"    Accuracy: {accuracy:.4f} ({stats.get('total_correct', 0)}/{stats.get('total_questions', 0)})")
     else:
         # Original behavior: single output file
         aggregated_results = {}
@@ -579,7 +602,12 @@ def main(max_articles=None, group_by_target_size=False):
             num_articles = stats.get("num_articles", 0)
             print(f"{method_name}:")
             print(f"  Articles: {num_articles}")
-            print(f"  Accuracy: {accuracy:.4f} ({stats.get('total_correct', 0)}/{stats.get('total_questions', 0)})")
+            if "overall_qasper_avg_f1" in stats:
+                print(f"  Avg F1: {accuracy:.4f}")
+            elif "overall_ruler_avg_score" in stats:
+                print(f"  Avg RULER score: {accuracy:.4f}")
+            else:
+                print(f"  Accuracy: {accuracy:.4f} ({stats.get('total_correct', 0)}/{stats.get('total_questions', 0)})")
 
 
 if __name__ == "__main__":

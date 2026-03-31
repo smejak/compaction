@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ebc0c95a08c7b9b35de7f3",
+  "question_ids": [
+    "longbenchv2_66ebc0c95a08c7b9b35de7f3"
+  ],
+  "question_ids_hash": "e3b1253a4f8929a8",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ebc0c95a08c7b9b35de7f3",
+      "generated_text": "The pre-training data sources listed in Table 1 include:\n\n- CommonCrawl: 67%\n- C4: 15%\n- GitHub: 4.5%\n- Wikipedia: 4.5%\n- Gutenberg and Books3: 4.5%\n- ArXiv: 2.5%\n- StackExchange: 2.0%\n\nThe code-related data sources are GitHub and ArXiv.\n\n- GitHub: 4.5%\n- ArXiv: 2.5%\n\nAdding these: 4.5% + 2.5% = 7.0%\n\nHowever, the question asks for the percentage of code data used during pre-training. Since GitHub and ArXiv are the primary sources of code data, and GitHub is explicitly mentioned as a code repository, and ArXiv contains scientific data (including code), the most relevant code data is GitHub (4.5%).\n\nArXiv is more focused on scientific papers and LaTeX content, not primarily code.\n\nThus, the main code data source is GitHub at 4.5%.\n\nAnswer: C"
+    }
+  ]
+}

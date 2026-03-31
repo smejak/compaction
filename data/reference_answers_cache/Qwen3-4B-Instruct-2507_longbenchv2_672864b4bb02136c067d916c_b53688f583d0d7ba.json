@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_672864b4bb02136c067d916c",
+  "question_ids": [
+    "longbenchv2_672864b4bb02136c067d916c"
+  ],
+  "question_ids_hash": "b53688f583d0d7ba",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_672864b4bb02136c067d916c",
+      "generated_text": "The event type \"included\" refers to the action of being part of or falling within a larger category or definition.\n\nLooking at the options:\n- acb: not a common event type for inclusion\n- acx: not a standard event type\n- aec: could relate to \"being part of\" or \"included in\"\n- aes: could relate to \"being in\" or \"included\"\n\nGiven the context, \"included\" fits best with \"aec\" as it denotes being part of a group or definition.\n\nA"
+    }
+  ]
+}

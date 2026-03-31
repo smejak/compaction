@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f958b3bb02136c067c5219",
+  "question_ids": [
+    "longbenchv2_66f958b3bb02136c067c5219"
+  ],
+  "question_ids_hash": "185bb160a1ff0ce8",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f958b3bb02136c067c5219",
+      "generated_text": "The empirical data show a decline in urban renewal projects post-Kelo, despite no legislative reform and no judicial restriction. This suggests that local executives, not legislatures or courts, are adjusting their behavior in response to public opinion. The judiciary\u2019s decision expanded power, but local officials curtailed use of eminent domain due to public hostility, not legislative or judicial mandates. Thus, power shifted to the executive branch, which exercised discretion based on public sentiment. This reflects greater local autonomy and responsiveness, not judicial retreat or legislative restriction.\n\nC"
+    }
+  ]
+}

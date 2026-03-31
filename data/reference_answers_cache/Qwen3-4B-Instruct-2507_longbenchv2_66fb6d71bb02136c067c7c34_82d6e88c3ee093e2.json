@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66fb6d71bb02136c067c7c34",
+  "question_ids": [
+    "longbenchv2_66fb6d71bb02136c067c7c34"
+  ],
+  "question_ids_hash": "82d6e88c3ee093e2",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66fb6d71bb02136c067c7c34",
+      "generated_text": "Step by step:\n\n- In the 2024 report, the Court highlights that its workload is unprecedented, with extensive investigations, trials, appeals, and reparations.\n- It notes that security issues have become a \"highest priority\" due to threats and attacks.\n- Specifically, it mentions a serious cyberattack and that several judges and the Prosecutor have been targeted by the Russian Federation.\n- The report states that officials are under attack for carrying out their mandates, and the Court is \"gravely concerned\" about this trend.\n- While workload is high, the report emphasizes that the more serious issue is the external threats and attacks on officials, which go beyond mere operational difficulty.\n\nTherefore, the most serious issue compared to 2023 is the threat to the safety and security of court officials.\n\nD"
+    }
+  ]
+}

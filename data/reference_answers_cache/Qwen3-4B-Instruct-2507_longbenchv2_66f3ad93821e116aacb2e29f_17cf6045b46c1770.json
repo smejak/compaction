@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f3ad93821e116aacb2e29f",
+  "question_ids": [
+    "longbenchv2_66f3ad93821e116aacb2e29f"
+  ],
+  "question_ids_hash": "17cf6045b46c1770",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f3ad93821e116aacb2e29f",
+      "generated_text": "Let's evaluate each option step by step:\n\nA. This describes the FIN_WAIT_1 state correctly - when a party sends a FIN and waits for ACK. This is accurate.\n\nB. This is incorrect. After receiving a FIN, the receiving party sends an ACK and then sends its own FIN, but this is not required for termination. The connection terminates when both sides have sent FIN and received ACK.\n\nC. This is correct. The tcp->shutdown_waiting flag ensures that all data in the send buffer is sent before the connection is closed. It doesn't guarantee that packets are received, which is a key point.\n\nD. This is incorrect. Nagle's algorithm is for reducing small packets, not for ensuring connection termination.\n\nThe best answer is C because it correctly describes the purpose of tcp->shutdown_waiting.\n\nC"
+    }
+  ]
+}

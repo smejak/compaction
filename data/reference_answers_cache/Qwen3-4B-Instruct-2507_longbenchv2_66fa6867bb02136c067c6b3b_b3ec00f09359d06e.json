@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66fa6867bb02136c067c6b3b",
+  "question_ids": [
+    "longbenchv2_66fa6867bb02136c067c6b3b"
+  ],
+  "question_ids_hash": "b3ec00f09359d06e",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66fa6867bb02136c067c6b3b",
+      "generated_text": "Step 1: Identify what the question is asking \u2014 how do we know about Dupixent's indication treatment? This means which option correctly summarizes the approved indications and the evidence behind them.\n\nStep 2: Evaluate each option:\n\nOption A: Mentions global approvals and cites BOREAS and NOTUS studies for US FDA approval. This is accurate \u2014 the US approval was based on those pivotal studies. However, it doesn\u2019t cover all indications (like EoE, BP, etc.) comprehensively.\n\nOption B: Incorrect. EoE is not approved in more than 60 countries \u2014 it\u2019s approved in over 60 countries, but the specific age group (1\u201311 years) is a recent expansion. Also, the CHMP approval is for children, not a global approval. The statement is partially true but misleading in scope and detail.\n\nOption C: Claims Dupixent is approved for bullous pemphigoid, urticaria, EoE, and COPD. This is mostly true \u2014 it is approved in multiple indications. However, it says \"approved for use in the US, Europe, and other major markets\" without specifying that some indications are still under investigation or not yet approved. It oversimplifies and generalizes without precision.\n\nOption D: Correctly states that Dupixent inhibits IL-4 and IL-13, which is the mechanism. It also accurately notes that clinical studies are ongoing for chronic pruritus of unknown origin and bullous pemphigoid \u2014 these are under investigation, not yet approved. This reflects the current status of indications.\n\nStep 3: The best answer is D because it accurately describes the mechanism and current status of indications \u2014 not just approved ones, but also those still under investigation \u2014 which is what the question is asking about \"how do you know\" regarding indications.\n\nD"
+    }
+  ]
+}

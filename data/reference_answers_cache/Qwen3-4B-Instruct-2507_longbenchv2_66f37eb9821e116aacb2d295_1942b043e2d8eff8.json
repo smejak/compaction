@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f37eb9821e116aacb2d295",
+  "question_ids": [
+    "longbenchv2_66f37eb9821e116aacb2d295"
+  ],
+  "question_ids_hash": "1942b043e2d8eff8",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f37eb9821e116aacb2d295",
+      "generated_text": "Step by step:\n\n- Roe v. Wade established a constitutional right to abortion, but limited it by trimester and state interests, not full autonomy. So A is incorrect (it didn\u2019t give full rights).\n\n- The Fourteenth Amendment\u2019s protection of liberty was interpreted differently in each case\u2014Roe based it on privacy, Dobbs says it doesn\u2019t protect abortion rights. So B is partially true but too vague and not the central message.\n\n- Dobbs explicitly says abortion rights were not deeply rooted in history or tradition, and that society\u2019s views are divided. The recognition by society was not the message\u2014rather, the legal basis was rejected. So C is incorrect.\n\n- Dobbs says the Constitution does not protect abortion rights, and that the right was not implicit in the Fourteenth Amendment. The Court did not say fetal life interest trumped the woman\u2019s interest\u2014it said no such right existed. So D is incorrect in framing.\n\nThe best answer, though none are perfect, is that the core message is that the Fourteenth Amendment does not contain a right to abortion, and that the Court in Dobbs rejected the precedent of Roe.\n\nThus, the message is that the Fourteenth Amendment is not clear on abortion rights\u2014this is reflected in the case analysis.\n\nB\n\nB"
+    }
+  ]
+}

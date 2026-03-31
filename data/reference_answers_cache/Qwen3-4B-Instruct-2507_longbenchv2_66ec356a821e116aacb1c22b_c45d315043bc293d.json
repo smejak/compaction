@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ec356a821e116aacb1c22b",
+  "question_ids": [
+    "longbenchv2_66ec356a821e116aacb1c22b"
+  ],
+  "question_ids_hash": "c45d315043bc293d",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ec356a821e116aacb1c22b",
+      "generated_text": "Both cases revolve around the formation and enforceability of agreements, focusing on whether a binding contract existed despite the absence of a formal written document or the presence of subjective intent. In Lucy v. Zehmer, the court upheld the contract based on the reasonable outward expressions of intent, rejecting the defendants\u2019 claim that it was a joke. In Texaco v. Pennzoil, the court found that the parties intended to be bound by the agreement in principle, despite the use of conditional language, based on objective evidence of intent. Both emphasize that intent, as manifested in words and acts, governs contract formation, not secret or subjective intentions.\n\nC"
+    }
+  ]
+}

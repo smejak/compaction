@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ebee0a5a08c7b9b35e1d05",
+  "question_ids": [
+    "longbenchv2_66ebee0a5a08c7b9b35e1d05"
+  ],
+  "question_ids_hash": "41eb65b35da98262",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ebee0a5a08c7b9b35e1d05",
+      "generated_text": "The question asks how Meta-ControlNet influences gradients during backpropagation in the context of misaligned references and why this modulation is essential for generalization.\n\nStep-by-step:\n- The loss function in Phidias includes conditioning from both the concept image and the 3D reference (CCMs).\n- Misalignment between the reference and concept image can cause conflicts during generation, leading to artifacts or poor geometry.\n- Meta-ControlNet dynamically adjusts the conditioning strength based on similarity, not by forcing alignment or hallucinating parts.\n- The key is that when the reference is misaligned, the model should not rely too heavily on it, to avoid learning incorrect geometry.\n- The gradient from the reference should be reduced when misaligned, to prevent overfitting to poor references.\n- This modulation is essential because it ensures the model learns from the concept image's geometry while still using the reference for structural guidance, improving generalization across diverse and misaligned inputs.\n- The correct option must describe a dynamic, similarity-based scaling of gradients that reduces influence when misaligned, especially at high noise levels (global structure) and increases it at low noise (local details).\n\nOption A: Describes alignment-weighted gradients, reduces gradient contribution when misaligned, prevents overfitting, and ensures both global and local features are learned. This matches the described function of Meta-ControlNet.\n\nOption B: Suggests more influence at high noise (when noise is high, the model is more uncertain), which is counterintuitive because high noise means coarse structure, and the reference should be less influential. Also, \"forces the model to hallucinate\" is not consistent with the goal.\n\nOption C: Introduces an auxiliary loss to force alignment, which contradicts the idea of handling misalignment. This would make the model worse in cases of mismatch.\n\nOption D: Mentions dynamic scaling based on noise level and similarity, which is plausible. However, it says the matrix suppresses gradients at high noise and increases at low noise \u2014 this could be valid, but the paper emphasizes similarity-based modulation, not noise-dependent suppression. Also, the description is more complex than necessary.\n\nThe best answer is A, as it directly matches the described mechanism in the paper: similarity-based scaling of gradients to reduce influence when misaligned.\n\nA"
+    }
+  ]
+}

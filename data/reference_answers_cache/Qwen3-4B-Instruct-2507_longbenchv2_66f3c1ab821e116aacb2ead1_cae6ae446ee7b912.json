@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f3c1ab821e116aacb2ead1",
+  "question_ids": [
+    "longbenchv2_66f3c1ab821e116aacb2ead1"
+  ],
+  "question_ids_hash": "cae6ae446ee7b912",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f3c1ab821e116aacb2ead1",
+      "generated_text": "Let's evaluate each option step by step:\n\nA. France's key themes are correctly stated in the material (big data policy, four strategic sectors, R&D, workforce impact). \u2192 True.\n\nB. The figure for FY 2020 civilian agencies: USD 973.5 million \u2192 USD 1.1 billion after adjustments. For FY 2021: USD 1.5 billion, which is almost 55% higher than 2020 request. \u2192 Matches the text. \u2192 True.\n\nC. The \"1 + N\" AI program: \"1\" refers to forward-looking basic theories and key technologies (big data, cross-media, hybrid intelligence, etc.). \"N\" refers to national R&D projects. \u2192 Matches the text. \u2192 True.\n\nD. The material says: \"In fiscal year (FY) 2021, nondefense U.S. government agencies allocated a total of $1.53 billion to AI R&D spending, approximately 2.7 times what was spent in FY 2018\" \u2014 not FY 2019. Option D says \"roughly 2.7 times the amount spent in the fiscal year 2019\" \u2014 which is false. The text compares FY 2021 to FY 2018, not FY 2019.\n\n\u2192 D is false.\n\nD"
+    }
+  ]
+}

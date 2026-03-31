@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f53892821e116aacb33225",
+  "question_ids": [
+    "longbenchv2_66f53892821e116aacb33225"
+  ],
+  "question_ids_hash": "5fb16af1870a5bcb",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f53892821e116aacb33225",
+      "generated_text": "The article describes BERTSCORE, which computes similarity between tokens in the reference and candidate sentences using cosine similarity of their BERT embeddings. It specifically mentions that precision is calculated by matching each token in the candidate to the most similar token in the reference, which corresponds to option C.\n\nC"
+    }
+  ]
+}

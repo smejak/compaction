@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66ec1aef821e116aacb1aa1a",
+  "question_ids": [
+    "longbenchv2_66ec1aef821e116aacb1aa1a"
+  ],
+  "question_ids_hash": "0d89639f5da992c8",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66ec1aef821e116aacb1aa1a",
+      "generated_text": "The question asks for the best trade-off between motion control, temporal coherence, and computational efficiency for generating long videos from text prompts, considering the four methods.\n\nLet's evaluate the options briefly:\n\nA. Proposes combining FIFO-Diffusion (efficient, constant memory) with MotionCtrl (fine motion control). FIFO-Diffusion handles infinite generation efficiently, and MotionCtrl provides precise motion control via trajectories. This addresses all three criteria: efficiency (FIFO-Diffusion), coherence (FIFO-Diffusion\u2019s temporal consistency), and motion control (MotionCtrl). The reasoning is strong and directly addresses the balance.\n\nB. Combines FreeNoise (tuning-free, good coherence) with Direct-a-Video (customization). FreeNoise ensures temporal coherence, and Direct-a-Video allows customization. However, Direct-a-Video is not specifically designed for long videos, and its computational cost for detailed scenes is a drawback. The trade-off is good, but less focused on efficiency and coherence for long sequences.\n\nC. Combines FreeNoise and FIFO-Diffusion for infinite videos. Both are strong in temporal coherence and efficiency. However, FIFO-Diffusion struggles with complex motion sequences, and FreeNoise is not explicitly designed for motion control. This option underestimates the motion control capability and flexibility.\n\nD. Combines MotionCtrl and Direct-a-Video. Both offer strong motion control and customization, but neither is optimized for infinite video generation or tuning-free generation. The lack of support for infinite generation makes it less suitable for long videos.\n\nA is the most balanced and comprehensive, directly addressing all three criteria with the strengths of both methods.\n\nA"
+    }
+  ]
+}

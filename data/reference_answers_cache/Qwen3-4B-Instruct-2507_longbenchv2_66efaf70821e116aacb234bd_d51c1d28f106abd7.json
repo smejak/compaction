@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66efaf70821e116aacb234bd",
+  "question_ids": [
+    "longbenchv2_66efaf70821e116aacb234bd"
+  ],
+  "question_ids_hash": "d51c1d28f106abd7",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66efaf70821e116aacb234bd",
+      "generated_text": "The UK government's strategy to ensure SAF supply and use involves a combination of policy instruments, including a mandatory blending requirement (the SAF Mandate), tradeable certificates, sustainability criteria, and support for new technologies. Option A describes a specific R&D center, which is part of the support ecosystem but not the central mechanism for ensuring supply and emission reductions. Option B is a private-sector action by Jet2, not a government policy. Option D is incorrect because the HEFA cap limits its use, not allows it to meet all demand. Option C refers to future regulation of blending ratios, which is not the primary mechanism described in the document. The core policy is the SAF Mandate with targets, certificates, and sustainability criteria.\n\nC"
+    }
+  ]
+}

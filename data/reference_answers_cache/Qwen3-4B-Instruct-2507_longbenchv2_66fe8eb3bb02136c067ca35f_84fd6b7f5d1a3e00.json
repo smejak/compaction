@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66fe8eb3bb02136c067ca35f",
+  "question_ids": [
+    "longbenchv2_66fe8eb3bb02136c067ca35f"
+  ],
+  "question_ids_hash": "84fd6b7f5d1a3e00",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66fe8eb3bb02136c067ca35f",
+      "generated_text": "Step by step:\n\n- The paper discusses permanent neutrality as a legal status with defined obligations, such as abstention from military support, prevention of belligerent activities, and maintaining neutrality in war.\n- It states that permanent neutrality is a legal status with binding obligations, codified in treaties or customary law.\n- For non-alignment, the paper says it is a political doctrine, not a legal status. It emphasizes non-participation in military alliances and advocacy for disarmament, but not a legal framework.\n- The key distinction in jurisprudence is that permanent neutrality has a clear legal basis (treaties, obligations), while non-alignment is a political stance without a corresponding legal status.\n- Option B says non-aligned countries do not belong to any military alliance \u2014 this is a political position, not a legal status.\n- Option C claims that permanent neutral states are legally prohibited from non-violent defence \u2014 this is not directly stated; the paper says they must provide for defence in accordance with international standards, but does not say they are prohibited from non-violent defence.\n- Option A is incorrect because it misrepresents the legal status.\n- Option D says \"none of them\" \u2014 but option C, while not perfect, captures the core difference: permanent neutrality has legal obligations, non-alignment is a political doctrine without such legal binding.\n\nBest choice based on the paper's analysis:\n\nC"
+    }
+  ]
+}

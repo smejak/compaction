@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f7aa19bb02136c067c327e",
+  "question_ids": [
+    "longbenchv2_66f7aa19bb02136c067c327e"
+  ],
+  "question_ids_hash": "e973ca75b1de169a",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f7aa19bb02136c067c327e",
+      "generated_text": "Jump Over ASLR uses timing differences between the victim and spy processes to detect branch predictions, relying on execution time measurements. BunnyHop-Reload, however, does not measure execution time directly but instead checks if a target address is prefetched into the cache, which indicates a branch prediction. This is a direct observation of cache state rather than timing.\n\nC"
+    }
+  ]
+}

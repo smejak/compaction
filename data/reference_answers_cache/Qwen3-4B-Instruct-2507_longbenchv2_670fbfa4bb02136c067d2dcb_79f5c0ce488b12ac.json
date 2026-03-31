@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670fbfa4bb02136c067d2dcb",
+  "question_ids": [
+    "longbenchv2_670fbfa4bb02136c067d2dcb"
+  ],
+  "question_ids_hash": "79f5c0ce488b12ac",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670fbfa4bb02136c067d2dcb",
+      "generated_text": "The murderer put his head close to the body to read the dying message left by the deceased. The message, written in blood, was likely only visible up close and in the dim light of a flashlight. Since the victim was already dead and the body was prone, the murderer would need to get close to see the message clearly. This action confirms the murderer had a motive to verify the message, possibly to confirm the identity of the killer or to ensure the message was not a fake.\n\nC"
+    }
+  ]
+}

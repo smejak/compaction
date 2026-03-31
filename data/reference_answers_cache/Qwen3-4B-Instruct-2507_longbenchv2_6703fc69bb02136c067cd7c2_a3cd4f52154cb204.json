@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_6703fc69bb02136c067cd7c2",
+  "question_ids": [
+    "longbenchv2_6703fc69bb02136c067cd7c2"
+  ],
+  "question_ids_hash": "a3cd4f52154cb204",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_6703fc69bb02136c067cd7c2",
+      "generated_text": "Step by step:\n\n- Coercive isomorphism in Malaysia comes from federal oversight bodies mandating KPIs, which may conflict with state-specific priorities (e.g., urban vs. rural development).\n\n- Normative isomorphism, through professionalization of bureaucrats, promotes shared values, standards, and expertise. This could allow state-level bureaucrats to design context-specific KPIs, improving adaptability to local needs.\n\n- However, if normative forces dominate, there's a risk that state-level KPIs diverge from national goals, leading to inconsistent accountability standards across states.\n\n- This divergence could result in institutional decoupling: KPIs reflect local realities but not national policy, undermining national accountability frameworks.\n\n- While professionalization may improve local relevance, it may also lead to a lack of alignment with federal objectives if not balanced with coercive mechanisms.\n\n- Thus, normative isomorphism enhances adaptability but risks weakening consistency and accountability, leading to decoupling.\n\nCorrect option: A\n\nA"
+    }
+  ]
+}

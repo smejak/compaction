@@ -439,10 +439,31 @@ def load_longsweb_data(context_length: str = '64K') -> List[Dict]:
     return data
 
 
+LONGBENCHV2_CRITICAL_IDS = {
+    '671b3cabbb02136c067d5252', '66f958b3bb02136c067c5219', '66f3c1ab821e116aacb2ead1',
+    '66fcf2f2bb02136c067c9169', '670fb813bb02136c067d2bec', '6703a0ecbb02136c067cd11b',
+    '66ebd5125a08c7b9b35e0616', '66fbab85bb02136c067c81dc', '66ec3aff821e116aacb1c52e',
+    '66ec3d1d821e116aacb1c622', '66f55d66821e116aacb33734', '66eae4de5a08c7b9b35dd12d',
+    '66ec41d3821e116aacb1c874', '66f3918f821e116aacb2d8b7', '66fba2bcbb02136c067c8112',
+    '66f3ad93821e116aacb2e29f', '66ebd0ea5a08c7b9b35dff57', '6719b96abb02136c067d4358',
+    '66f0ed5a821e116aacb265ab', '66f37eb9821e116aacb2d295', '66f53f2b821e116aacb3335a',
+    '672864b4bb02136c067d916c', '66f7aa19bb02136c067c327e', '66f3fb15821e116aacb303dc',
+    '66ed3e90821e116aacb1f82f', '66ebd22e5a08c7b9b35e0126', '671b3e0cbb02136c067d52e5',
+    '671b2c05bb02136c067d50c8', '66ebd0825a08c7b9b35dfe9d', '66ec3352821e116aacb1c085',
+    '66f59d31821e116aacb340f6', '6704a442bb02136c067cdd91', '66f6bcf3bb02136c067c2703',
+    '66f55729821e116aacb3358b', '66f52c6d821e116aacb32cb0', '6725dcb2bb02136c067d85b7',
+    '66f68b33bb02136c067c2303', '67286ab8bb02136c067d92e4', '671b08c8bb02136c067d4e19',
+    '66f53b9b821e116aacb332fc', '671b080abb02136c067d4dde', '66ec052a5a08c7b9b35e29c7',
+    '66ec09ec821e116aacb19620', '66f8c6b4bb02136c067c4480', '66efa5ea821e116aacb23268',
+    '66f2ad89821e116aacb2ac92', '66f2a7a9821e116aacb2a721',
+}
+
+
 def load_longbench_v2_data(
     difficulty: str = None,
     length: str = None,
     max_tokens: int = None,
+    critical_only: bool = False,
 ) -> List[Dict]:
     """
     Load LongBench v2 dataset from HuggingFace.
@@ -458,38 +479,64 @@ def load_longbench_v2_data(
     length : str, optional
         Filter by context length category: 'short', 'medium', or 'long'. If None, load all.
     max_tokens : int, optional
-        Maximum context length in approximate tokens (chars / 4). If set, only include
-        examples whose context is shorter than this threshold.
+        Maximum context length in tokens (counted with the Qwen3-4B tokenizer).
+        If set, only include examples whose context is shorter than this threshold.
+    critical_only : bool, optional
+        If True, only include the 47 critical examples where original context helped
+        and no-context failed (default: False).
 
     Returns
     -------
     data : list of dict
         List of articles in standardized format
     """
-    from datasets import load_dataset as hf_load_dataset
+    import json
+    from pathlib import Path
 
-    print(f"Loading LongBench v2 from HuggingFace...")
+    _CACHE_PATH = Path(__file__).parent.parent / "data" / "longbenchv2_cache.jsonl"
+
+    print(f"Loading LongBench v2...")
     if difficulty:
         print(f"  Filtering by difficulty: {difficulty}")
     if length:
         print(f"  Filtering by length: {length}")
     if max_tokens:
         print(f"  Filtering by max_tokens: {max_tokens:,}")
+    if critical_only:
+        print(f"  Filtering to {len(LONGBENCHV2_CRITICAL_IDS)} critical examples")
 
-    dataset = hf_load_dataset('THUDM/LongBench-v2', split='train')
+    if _CACHE_PATH.exists():
+        print(f"  Using local cache: {_CACHE_PATH}")
+        with open(_CACHE_PATH) as f:
+            raw_entries = [json.loads(line) for line in f]
+    else:
+        from datasets import load_dataset as hf_load_dataset
+        print(f"  Fetching from HuggingFace (run scripts/build_longbenchv2_cache.py to cache locally)")
+        if max_tokens:
+            from transformers import AutoTokenizer
+            _tok_name = 'Qwen/Qwen3-4B'
+            print(f"  Using tokenizer '{_tok_name}' for token counting")
+            tokenizer = AutoTokenizer.from_pretrained(_tok_name)
+            tokenizer.model_max_length = int(1e9)
+        raw_entries = list(hf_load_dataset('THUDM/LongBench-v2', split='train'))
+        if max_tokens:
+            for entry in raw_entries:
+                entry['num_tokens'] = len(tokenizer.encode(entry['context'], add_special_tokens=False))
 
     letter_to_idx = {'A': 1, 'B': 2, 'C': 3, 'D': 4}
     data = []
     skipped_by_length = 0
 
-    for entry in dataset:
+    for entry in raw_entries:
         # Apply filters
         if difficulty and entry['difficulty'] != difficulty:
             continue
         if length and entry['length'] != length:
             continue
-        if max_tokens and len(entry['context']) > max_tokens * 4:
+        if max_tokens and entry.get('num_tokens', 0) > max_tokens:
             skipped_by_length += 1
+            continue
+        if critical_only and entry['_id'] not in LONGBENCHV2_CRITICAL_IDS:
             continue
 
         options = [entry['choice_A'], entry['choice_B'], entry['choice_C'], entry['choice_D']]
@@ -684,6 +731,127 @@ def load_ruler_data(
     return data
 
 
+def load_qasper_data() -> List[Dict]:
+    """
+    Load QASPER dataset from HuggingFace.
+
+    The QASPER dataset contains NLP research papers with information-seeking questions.
+    Each question has multiple annotator answers that can be extractive, abstractive
+    (free-form), yes/no, or unanswerable.
+
+    Uses the **validation** split (281 papers, ~1005 questions) since the test split
+    has no answers.
+
+    Returns
+    -------
+    data : list of dict
+        List of papers in standardized format:
+        - article_id: Unique identifier (e.g., 'qasper_1234.5678')
+        - title: Paper title
+        - article: Abstract + full text (sections concatenated)
+        - questions: List of questions, each with:
+            - question: Question text
+            - qasper_answers: List of reference answer strings (one per annotator)
+            - question_unique_id: Unique identifier
+    """
+    import io
+    import tarfile
+    import urllib.request
+
+    print("Loading QASPER dataset (validation split)...")
+
+    # Download from S3 (same source as the HuggingFace dataset script)
+    tgz_url = "https://qasper-dataset.s3.us-west-2.amazonaws.com/qasper-train-dev-v0.3.tgz"
+    cache_dir = Path('data/qasper_cache')
+    cache_file = cache_dir / 'qasper-dev-v0.3.json'
+
+    if not cache_file.exists():
+        print(f"  Downloading from {tgz_url}...")
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        response = urllib.request.urlopen(tgz_url)
+        tgz_bytes = io.BytesIO(response.read())
+        with tarfile.open(fileobj=tgz_bytes, mode='r:gz') as tar:
+            for member in tar.getmembers():
+                if member.name.endswith('qasper-dev-v0.3.json'):
+                    f = tar.extractfile(member)
+                    cache_file.write_bytes(f.read())
+                    break
+        print(f"  Cached to {cache_file}")
+
+    with open(cache_file, 'r') as f:
+        raw_data = json.load(f)  # {paper_id: {paper_data}}
+
+    print(f"  Loaded {len(raw_data)} papers from dev split")
+
+    data = []
+    total_questions = 0
+    skipped_questions = 0
+
+    for paper_id, paper in raw_data.items():
+        title = paper['title']
+        abstract = paper['abstract']
+
+        # Reconstruct full text from sections
+        full_text_parts = []
+        for section in paper['full_text']:
+            section_name = section['section_name']
+            paragraphs = section['paragraphs']
+            if section_name:
+                full_text_parts.append(f"## {section_name}")
+            full_text_parts.extend(paragraphs)
+
+        full_text = "\n\n".join(full_text_parts)
+        article_text = f"{abstract}\n\n{full_text}".strip()
+
+        # Process questions
+        questions = []
+        for qa in paper['qas']:
+            question_text = qa['question']
+            question_id = qa['question_id']
+
+            # Collect reference answers from all annotators
+            reference_answers = []
+            for annotator_answer in qa['answers']:
+                ans = annotator_answer['answer']
+
+                if ans['unanswerable']:
+                    reference_answers.append("Unanswerable")
+                elif ans['yes_no'] is not None:
+                    reference_answers.append("Yes" if ans['yes_no'] else "No")
+                elif ans['extractive_spans'] and len(ans['extractive_spans']) > 0:
+                    reference_answers.append(", ".join(ans['extractive_spans']))
+                elif ans['free_form_answer'] and ans['free_form_answer'].strip():
+                    reference_answers.append(ans['free_form_answer'].strip())
+                # else: skip empty answers
+
+            if not reference_answers:
+                skipped_questions += 1
+                continue
+
+            questions.append({
+                'question': question_text,
+                'qasper_answers': reference_answers,
+                'question_unique_id': f"qasper_{paper_id}_{question_id}",
+            })
+            total_questions += 1
+
+        if not questions:
+            continue
+
+        article_entry = {
+            'article_id': f"qasper_{paper_id}",
+            'title': title,
+            'article': article_text,
+            'questions': questions,
+        }
+        data.append(article_entry)
+
+    print(f"Loaded {len(data)} papers with {total_questions} total questions")
+    if skipped_questions:
+        print(f"  Skipped {skipped_questions} questions with no valid answers")
+    return data
+
+
 # Registry of available dataset loaders
 DATASET_LOADERS = {
     'quality': load_quality_data,
@@ -693,6 +861,7 @@ DATASET_LOADERS = {
     'aime2025': load_aime_data,
     'longbenchv2': load_longbench_v2_data,
     'ruler': load_ruler_data,
+    'qasper': load_qasper_data,
 }
 
 # Default dataset paths
@@ -722,6 +891,9 @@ def load_dataset(dataset_name: str, include_diagnosis: bool = True) -> List[Dict
         - 'longbenchv2_easy'/'longbenchv2_hard': Filter by difficulty
         - 'longbenchv2_short'/'longbenchv2_medium'/'longbenchv2_long': Filter by length category
         - 'longbenchv2_100k': Only contexts under ~100k tokens (similarly '32k', '64k', etc.)
+        - 'longbenchv2_critical': Only the 47 critical examples where context is essential
+        - 'longbenchv2_100k_critical': Critical examples filtered to under 100k tokens
+        - 'qasper': Load QASPER dataset (NLP papers with free-form QA, validation split)
     include_diagnosis : bool
         Whether to include diagnosis in patient info (default: True)
 
@@ -820,6 +992,9 @@ def load_dataset(dataset_name: str, include_diagnosis: bool = True) -> List[Dict
             task_filter = None
         return load_ruler_data(context_length=context_length, task_filter=task_filter)
 
+    elif dataset_name == 'qasper':
+        return load_qasper_data()
+
     elif dataset_name.startswith('longbenchv2'):
         # Parse optional filters from dataset name
         # Formats: 'longbenchv2', 'longbenchv2_easy', 'longbenchv2_hard',
@@ -829,9 +1004,15 @@ def load_dataset(dataset_name: str, include_diagnosis: bool = True) -> List[Dict
         difficulty = None
         length = None
         max_tokens = None
+        critical_only = False
         if suffix:
             suffix = suffix.lstrip('_')
-            if suffix in ('easy', 'hard'):
+            if suffix == '100k_critical':
+                max_tokens = 100_000
+                critical_only = True
+            elif suffix == 'critical':
+                critical_only = True
+            elif suffix in ('easy', 'hard'):
                 difficulty = suffix
             elif suffix in ('short', 'medium', 'long'):
                 length = suffix
@@ -841,17 +1022,18 @@ def load_dataset(dataset_name: str, include_diagnosis: bool = True) -> List[Dict
                 raise ValueError(
                     f"Unknown LongBench v2 filter: '{suffix}'. "
                     f"Use 'easy'/'hard' for difficulty, 'short'/'medium'/'long' for length, "
-                    f"or 'Nk' (e.g., '100k') for max token limit."
+                    f"'Nk' (e.g., '100k') for max token limit, or 'critical'/'100k_critical'."
                 )
-        return load_longbench_v2_data(difficulty=difficulty, length=length, max_tokens=max_tokens)
+        return load_longbench_v2_data(difficulty=difficulty, length=length, max_tokens=max_tokens, critical_only=critical_only)
 
     else:
         raise ValueError(
             f"Unknown dataset: {dataset_name}. "
             f"Supported formats: 'quality', 'longhealth', 'longhealthX' (e.g., 'longhealth10'), "
             f"'lqaXX' (e.g., 'lqa32k', 'lqa128k', 'lqa1m'), 'longsweb' or 'longswebXXk' (e.g., 'longsweb64k', 'longsweb128k'), "
-            f"'aime2025', 'longbenchv2' (or 'longbenchv2_easy', 'longbenchv2_hard', 'longbenchv2_short', 'longbenchv2_100k', etc.), "
-            f"'ruler_Xk' (e.g., 'ruler_4k', 'ruler_128k', 'ruler_4k_niah_single_1')"
+            f"'aime2025', 'longbenchv2' (or 'longbenchv2_easy', 'longbenchv2_hard', 'longbenchv2_short', 'longbenchv2_100k', 'longbenchv2_critical', 'longbenchv2_100k_critical', etc.), "
+            f"'ruler_Xk' (e.g., 'ruler_4k', 'ruler_128k', 'ruler_4k_niah_single_1'), "
+            f"'qasper'"
         )
 
 
@@ -904,3 +1086,28 @@ def is_ruler_dataset(dataset_name: str) -> bool:
         True if the dataset uses RULER-style evaluation
     """
     return dataset_name.startswith(RULER_DATASET_PREFIX)
+
+
+# Datasets that use token F1 evaluation (QASPER benchmark)
+QASPER_DATASET_PREFIX = 'qasper'
+
+
+def is_qasper_dataset(dataset_name: str) -> bool:
+    """
+    Check if a dataset uses QASPER-style token F1 evaluation.
+
+    QASPER datasets have questions with 'qasper_answers' (list of reference answer strings
+    from multiple annotators) instead of 'options'/'gold_label'. Evaluation uses token-level
+    F1 (SQuAD-style) with max F1 across annotators.
+
+    Parameters
+    ----------
+    dataset_name : str
+        Name of the dataset
+
+    Returns
+    -------
+    bool
+        True if the dataset uses QASPER-style evaluation
+    """
+    return dataset_name.startswith(QASPER_DATASET_PREFIX)

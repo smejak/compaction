@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66fcf2f2bb02136c067c9169",
+  "question_ids": [
+    "longbenchv2_66fcf2f2bb02136c067c9169"
+  ],
+  "question_ids_hash": "09e38c6d60933c46",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66fcf2f2bb02136c067c9169",
+      "generated_text": "Step by step:\n\n- Option A: The article states that carbon markets can play a role in filling the financing gap and closing affordability gaps, but notes that African countries have not yet benefited at scale. It also mentions challenges like integrity and lack of access. So while carbon markets have potential, the claim that \"African nations broadly benefit\" is overstated. Not the most reliable.\n\n- Option B: The article says \"nearly four in five people in Africa still cook their meals over open fires\" \u2014 that\u2019s 80%, which is higher than the global average of \"one in three.\" The claim that this is \"less than one half globally\" is incorrect \u2014 it's actually more than half. So this is factually wrong.\n\n- Option C: The article states that $4 billion annually is needed for Africa by 2030, and $8 billion globally. This is directly stated and consistent with the data. The mention of affordability issues is also in the text. This is accurate and well-supported.\n\n- Option D: While some specific amounts (e.g., Spark+, UK) are mentioned, the claim that \"Europe and the Netherlands are planning to contribute 12 million euros and 5 million euros\" is not accurate \u2014 the text says the EU contributes \u20ac150 million, and the Netherlands \u20ac5 million to RECCAWA, not 12 million. The UK support is mentioned as \u00a3265 million, but in context of a broader program, not specifically for clean cooking. This is inaccurate in specifics.\n\nBest-supported, factually correct, and directly from the text: C.\n\nC"
+    }
+  ]
+}

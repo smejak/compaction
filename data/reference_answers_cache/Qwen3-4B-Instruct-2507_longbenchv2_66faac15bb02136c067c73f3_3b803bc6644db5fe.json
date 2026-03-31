@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66faac15bb02136c067c73f3",
+  "question_ids": [
+    "longbenchv2_66faac15bb02136c067c73f3"
+  ],
+  "question_ids_hash": "3b803bc6644db5fe",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66faac15bb02136c067c73f3",
+      "generated_text": "Let's evaluate each option step by step:\n\nA. AndroidArena includes cross-APP tasks and constrained tasks (e.g., avoiding certain apps), which matches the description. B-MoCA includes 60 daily tasks, but it doesn't explicitly mention single vs. multi-app tasks or app restrictions. The article on B-MoCA focuses on diverse device configurations, not app collaboration. So this statement is not fully accurate.\n\nB. B-MoCA does not mention support for video models or Deep-Q learning. The article on B-MoCA describes a benchmark with text-based actions and does not mention Deep-Q learning. AndroidArena uses a prompt-based evaluation, not Deep-Q learning. This option is incorrect.\n\nC. AndroidArena uses an adaptive metric (LCS) to evaluate task completion, which aligns with the description. B-MoCA uses success detectors based on logs (rule-based), not LCS. The claim that AndroidArena calculates LCS and adds them up weighted is misleading \u2014 LCS is used to compute task completion ratio, not summed. This is inaccurate.\n\nD. Both benchmarks are based on Android emulators, not real Android machines. The paper explicitly states \"based on Android emulators\" for B-MoCA and \"supports real-time internet data exchange and dynamic APP management\" for AndroidArena, implying simulation, not physical devices. So D is false.\n\nNone are perfectly correct, but A is the closest \u2014 AndroidArena does have multi-app and constrained tasks, and B-MoCA has daily tasks that could be interpreted as single/multi-app, though not explicitly stated.\n\nA"
+    }
+  ]
+}

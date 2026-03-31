@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f91f2cbb02136c067c4b1e",
+  "question_ids": [
+    "longbenchv2_66f91f2cbb02136c067c4b1e"
+  ],
+  "question_ids_hash": "9bf2e23787d89cba",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f91f2cbb02136c067c4b1e",
+      "generated_text": "The mistake happens because Matthew and Marilla asked Mrs. Spencer to bring a boy, but Mrs. Spencer brought a girl. The text states that Mrs. Spencer said she would bring a girl, and the child confirms that Mrs. Spencer said distinctly that they wanted a girl. The communication was sent via Richard Spencer's folks at Carmody, and there is a misunderstanding in the message \u2014 they wanted a boy, but Mrs. Spencer interpreted it as wanting a girl. The text says: \"Mrs. Spencer said DISTINCTLY that you wanted a girl about eleven years old.\" This shows a miscommunication in the message passed through Richard Spencer's folks.\n\nD. Matthew and Marilla ask Mrs. Spencer to pick a boy via Richard Spencer's folks at Carmody. But there are some mistakes in between.\n\nD"
+    }
+  ]
+}

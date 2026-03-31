@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f7a96cbb02136c067c3255",
+  "question_ids": [
+    "longbenchv2_66f7a96cbb02136c067c3255"
+  ],
+  "question_ids_hash": "b3a86cf23090d035",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f7a96cbb02136c067c3255",
+      "generated_text": "THEMIS focuses on fair and efficient GPU cluster scheduling for ML training workloads, where multiple long-running training jobs are scheduled across GPUs, with a strong emphasis on fairness, placement sensitivity, and finish-time fairness. It involves training jobs that have long durations and require gang scheduling, and it uses auctions to allocate resources while ensuring fairness over time.\n\nAlphaServe focuses on serving multiple large models in inference, using model parallelism to improve statistical multiplexing and handle bursty workloads. It is designed for inference, not training, and emphasizes throughput and latency under dynamic traffic.\n\nThe scenario most aligned with THEMIS's focus is training, not inference, and involves multiple models being trained on shared GPUs, which matches option A: using 100 GPUs to train 20 deep learning models.\n\nA"
+    }
+  ]
+}

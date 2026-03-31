@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f618f1bb02136c067c16f9",
+  "question_ids": [
+    "longbenchv2_66f618f1bb02136c067c16f9"
+  ],
+  "question_ids_hash": "8152704b57ad75dc",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f618f1bb02136c067c16f9",
+      "generated_text": "Step by step:\n\n- Option A: The document is about continuing appropriations and extensions, not debt reduction. No mention of paying down debt. False.\n\n- Option B: Section 101 refers to appropriations for projects conducted in fiscal year 2024, and for which funding was available in prior appropriations Acts. It explicitly states that such appropriations are for continuing projects or activities from FY2024. So, yes, it may be used for projects specified in FY2024. This is supported by the text.\n\n- Option C: Section 304 mentions a pilot program for complementary and integrative health programs (including post-traumatic growth) that is extended \"until September 30, 2025.\" It does not say the programs have \"begun to become fully available.\" So, this is misleading or false.\n\n- Option D: Section 312 extends the authority to bury spouses and children in national cemeteries until September 30, 2025, not August 30. Also, no mention of August 30. False.\n\nCorrect answer: B\n\nB"
+    }
+  ]
+}

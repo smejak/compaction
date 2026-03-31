@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_670fbf5abb02136c067d2d9c",
+  "question_ids": [
+    "longbenchv2_670fbf5abb02136c067d2d9c"
+  ],
+  "question_ids_hash": "c5a3382664493dae",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_670fbf5abb02136c067d2d9c",
+      "generated_text": "The key evidence involves the bloodstains and wiping patterns. The blood was wiped after the murder, and the wiping was done within ten minutes. The blood soaked into the carpet, so wiping was done with a dry handkerchief. The water stain was not wiped and remained, indicating the wiping was recent. The utility knife was found in the victim's pocket, suggesting it was used to attack. The only place where a sharp object would be used to cut something after the murder and to wipe the scene is the carpet near the body. The cut on the carpet matches the wiping action. The killer used the box cutter to cut the carpet to wipe fingerprints.\n\nD"
+    }
+  ]
+}

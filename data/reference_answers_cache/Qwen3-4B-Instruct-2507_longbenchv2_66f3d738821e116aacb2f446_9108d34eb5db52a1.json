@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f3d738821e116aacb2f446",
+  "question_ids": [
+    "longbenchv2_66f3d738821e116aacb2f446"
+  ],
+  "question_ids_hash": "9108d34eb5db52a1",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f3d738821e116aacb2f446",
+      "generated_text": "Step by step:\n\n1. The key constraints are high cost of capital in EMDEs, limited DFI capacity, and rising public debt in EMDEs.\n2. We need to optimize private capital mobilization, reduce financial risks, and align with NZE targets.\n3. Option A: Global DFI pooling with hard currency loans \u2013 helps with capital access but hard currency increases risk and doesn\u2019t address local financial capacity or private capital mobilization.\n4. Option B: Green Sovereign Guarantee Fund with fiscal discipline \u2013 reduces cost of capital, aligns with climate, and ties to fiscal responsibility. This directly lowers risk for private investors and enables private capital to flow. It addresses the high cost of capital and risk concerns.\n5. Option C: Tiered carbon tax in advanced economies \u2013 shifts financial burden to developed nations, but does not directly solve the high cost of capital in EMDEs or mobilize private capital in those regions.\n6. Option D: Local-currency green bonds \u2013 promotes local market development and reduces currency risk, but requires strong local financial infrastructure and investor confidence, which may be lacking. Also, hedging and yield products are not a direct solution to systemic financial risk.\n\nBest fit: B directly addresses high cost of capital, reduces systemic risk via guarantees, and enables private capital flow while maintaining fiscal responsibility.\n\nB"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f95126bb02136c067c5070",
+  "question_ids": [
+    "longbenchv2_66f95126bb02136c067c5070"
+  ],
+  "question_ids_hash": "b5f7e60c764d1295",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f95126bb02136c067c5070",
+      "generated_text": "Step-by-step:\n\n- The question asks which point is *not* included in the improvement of Math-Shepherd compared to \"Let's Verify Step by Step\".\n\n- Option A: Math-Shepherd uses reinforcement learning (step-by-step PPO) to improve model capabilities \u2014 this is mentioned in the paper (Section 4.2 and 5.1), while \"Let's Verify\" focuses on verification and process supervision, not reinforcement learning. So this *is* an improvement.\n\n- Option B: Math-Shepherd proposes automatic labeling of PRM using a completer and estimation \u2014 this is a key innovation in the paper (Section 3.3), directly addressing the manual annotation bottleneck in \"Let's Verify\". So this is an improvement.\n\n- Option C: Math-Shepherd compares with Self-consistency; \"Let's Verify\" does not explicitly compare with Self-consistency. The paper in Section 4.1 shows comparisons with Self-consistency, while \"Let's Verify\" does not mention it. So this seems like a valid improvement.\n\n- Option D: Math-Shepherd introduces hard and soft estimation methods \u2014 this is explicitly stated in Section 3.3.2. So this is included.\n\nNow, the question is: which point is *not* included in the improvement?\n\nBut all four seem to be improvements. However, we must find the one that is *not* actually a true improvement or is not correctly stated.\n\nWait \u2014 Option C says: \"math-shepherd is compared with the Self-consistency method, while the lets verify article does not compare.\"\n\nBut in the \"Let's Verify\" paper, they do compare with Self-consistency (in Section 4.1, they say: \"In GSM8K, when combined with self-consistency, there\u2019s a drop in performance...\"). So the claim that \"Let's Verify\" does not compare is false.\n\nTherefore, Option C is incorrect \u2014 it misrepresents the original paper.\n\nSo the point that is *not* included in the improvement is C, because \"Let's Verify\" actually *does* compare with self-consistency.\n\nThus, C is the false statement.\n\nAnswer: C"
+    }
+  ]
+}

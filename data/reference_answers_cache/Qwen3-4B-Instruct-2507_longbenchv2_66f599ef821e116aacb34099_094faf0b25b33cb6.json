@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f599ef821e116aacb34099",
+  "question_ids": [
+    "longbenchv2_66f599ef821e116aacb34099"
+  ],
+  "question_ids_hash": "094faf0b25b33cb6",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f599ef821e116aacb34099",
+      "generated_text": "Let's evaluate each option step by step:\n\nA. StereoSet and CrowS-Pairs both use word-filling (fill-in-the-blank) methods. CrowS-Pairs uses two sentences with minimal differences, one stereotypical and one anti-stereotypical, and measures preference. StereoSet uses intrasentence and intersentence tests with three options: stereotype, anti-stereotype, and unrelated. The score is based on preference for stereotype over anti-stereotype, not proportion of choices including stereotype. So A is incorrect.\n\nB. ETHOS does not use irrelevant options; it classifies hate speech as \"hate\" or \"non-hate\". StereoSet does include an unrelated option. CrowS-Pairs does not include irrelevant options either \u2014 it has only stereotypical and anti-stereotypical options. So B is incorrect.\n\nC. ETHOS does not require a yes/no answer. It classifies as hate or non-hate. The model classifies based on content, not a binary yes/no. So C is incorrect.\n\nD. All three articles (CrowS-Pairs, StereoSet, ETHOS) cover race, religion, and sexism (gender bias). CrowS-Pairs has race, religion, age, gender, etc. StereoSet has gender, profession, race, religion. ETHOS has race, gender, religion. So D is correct.\n\nD"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_66f3c1c3821e116aacb2eaf6",
+  "question_ids": [
+    "longbenchv2_66f3c1c3821e116aacb2eaf6"
+  ],
+  "question_ids_hash": "58f2d9647f2b9bf0",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_66f3c1c3821e116aacb2eaf6",
+      "generated_text": "Step by step:\n\n- Nanjing Maritime Court emphasizes professionalism, international trust, and systematic planning in case handling. It highlights specific cases (like the international shipbuilding contract dispute) where it used professional judgment, especially during the pandemic, to resolve disputes efficiently and fairly. It won international trust and is noted for its professionalism and fair trial processes.\n\n- Guangzhou Maritime Court focuses on data-driven results: it presents statistics (e.g., case numbers, enforcement rates, mediation growth), and cites specific cases as examples of quality outcomes. It emphasizes measurable results and legal analysis rather than international reputation or trust.\n\n- Option A: Incorrect because Nanjing's focus is not just accuracy in handling but also international trust and professionalism; Guangzhou doesn\u2019t cite accuracy as the main point.\n\n- Option B: Correct because Nanjing is praised for gaining international trust through professional judicial ability (e.g., handling international disputes during pandemic), while Guangzhou uses data to illustrate its results \u2014 a clear contrast in focus.\n\n- Option C: Too vague and general; both promote quality, but the contrast isn't precise.\n\n- Option D: Too broad and lacks specificity in the difference in focus.\n\nCorrect option: B"
+    }
+  ]
+}

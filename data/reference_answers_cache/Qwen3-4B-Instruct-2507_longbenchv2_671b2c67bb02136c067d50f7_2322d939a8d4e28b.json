@@ -1,0 +1,15 @@
+{
+  "model_name": "Qwen/Qwen3-4B-Instruct-2507",
+  "article_id": "longbenchv2_671b2c67bb02136c067d50f7",
+  "question_ids": [
+    "longbenchv2_671b2c67bb02136c067d50f7"
+  ],
+  "question_ids_hash": "2322d939a8d4e28b",
+  "max_new_tokens": 2048,
+  "generations": [
+    {
+      "question_id": "longbenchv2_671b2c67bb02136c067d50f7",
+      "generated_text": "To determine which player contributed the second most tokens, we need to look at the \"records\" array for each player, which lists their contributions per round.\n\nTotal contributions = sum of records over 20 rounds.\n\nLet's compute the total contributions:\n\n- player_3: all 2s \u2192 20 rounds \u00d7 2 = 40\n- player_5: records: [5,4,5,2,5,5,2,2,5,5,5,2,5,3,5,5,2,2,5,2] \u2192 sum = 5+4+5+2+5+5+2+2+5+5+5+2+5+3+5+5+2+2+5+2 = let's add:\n  5\u00d78 = 40 (positions with 5)\n  4\u00d71 = 4 (one 4)\n  3\u00d72 = 6 (three 2s)\n  1\u00d73 = 3 (one 3)\n  Total = 40+4+6+3 = 53\n- player_7: all 2s \u2192 40\n- player_9: records: [5,5,2,5,2,5,5,2,5,5,5,5,2,5,3,2,1,0,2,5] \u2192 sum:\n  5\u00d710 = 50 (many 5s)\n  2\u00d76 = 12 (six 2s)\n  3\u00d71 = 3 (one 3)\n  1\u00d71 = 1 (one 1)\n  1\u00d71 = 1 (one 0)\n  Total = 50+12+3+1+1 = 67\n\nSo player_9 has the highest total (67), then player_5 (53), then others at 40.\n\nThus, the second most is player_5.\n\nB"
+    }
+  ]
+}

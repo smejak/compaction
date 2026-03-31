@@ -35,7 +35,7 @@ from .utils import (
     reload_model_to_gpu,
     compute_article_indices,
 )
-from .datasets import load_dataset, is_perplexity_dataset, is_ruler_dataset
+from .datasets import load_dataset, is_perplexity_dataset, is_ruler_dataset, is_qasper_dataset
 
 
 def ruler_string_match_all(pred: str, refs: List[str]) -> float:
@@ -55,6 +55,54 @@ def ruler_score_prediction(pred: str, refs: List[str], task: str) -> float:
         return ruler_string_match_part(pred, refs)
     else:
         return ruler_string_match_all(pred, refs)
+
+
+def _normalize_answer(s: str) -> str:
+    """Normalize answer string for token F1 computation (SQuAD-style).
+
+    Lowercases, removes punctuation, removes articles (a/an/the), and collapses whitespace.
+    """
+    import string
+    s = s.lower()
+    # Remove punctuation
+    s = ''.join(ch for ch in s if ch not in string.punctuation)
+    # Remove articles
+    s = ' '.join(word for word in s.split() if word not in ('a', 'an', 'the'))
+    # Collapse whitespace
+    s = ' '.join(s.split())
+    return s
+
+
+def compute_token_f1(prediction: str, gold: str) -> float:
+    """Compute token-level F1 between prediction and gold answer strings."""
+    pred_tokens = _normalize_answer(prediction).split()
+    gold_tokens = _normalize_answer(gold).split()
+    if not gold_tokens and not pred_tokens:
+        return 1.0
+    if not gold_tokens or not pred_tokens:
+        return 0.0
+    common = set(pred_tokens) & set(gold_tokens)
+    num_common = sum(min(pred_tokens.count(t), gold_tokens.count(t)) for t in common)
+    if num_common == 0:
+        return 0.0
+    precision = num_common / len(pred_tokens)
+    recall = num_common / len(gold_tokens)
+    return 2 * precision * recall / (precision + recall)
+
+
+def strip_thinking(text: str) -> str:
+    """Strip <think>...</think> block from model output, returning only the answer part."""
+    if '</think>' in text:
+        return text.split('</think>')[-1].strip()
+    return text
+
+
+def qasper_score_prediction(prediction: str, gold_answers: List[str]) -> float:
+    """Score a QASPER prediction: max token F1 across all reference answers."""
+    if not gold_answers:
+        return 0.0
+    prediction = strip_thinking(prediction)
+    return max(compute_token_f1(prediction, gold) for gold in gold_answers)
 
 
 class QAEvaluator:
@@ -106,6 +154,7 @@ class QAEvaluator:
         batch_size: int,
         results_per_question: List[Dict],
         is_ruler_eval: bool = False,
+        is_qasper_eval: bool = False,
     ):
         """
         Evaluate questions using batched generation with compacted cache.
@@ -127,6 +176,9 @@ class QAEvaluator:
         is_ruler_eval : bool
             If True, use RULER-style formatting (no MCQ, thinking OFF, answer_prefix)
             and string-match scoring instead of MCQ parsing
+        is_qasper_eval : bool
+            If True, use QASPER-style formatting (no MCQ, free-form generation)
+            and token F1 scoring instead of MCQ parsing
         """
         num_questions = len(questions)
 
@@ -158,12 +210,16 @@ class QAEvaluator:
                 if is_ruler_eval:
                     refs = batch_questions[i].get('ruler_outputs', [])
                     print(f"  Expected answers: {refs}")
+                elif is_qasper_eval:
+                    refs = batch_questions[i].get('qasper_answers', [])
+                    print(f"  Reference answers: {[r[:80] for r in refs]}")
                 elif opts:
                     for idx, opt in enumerate(opts):
                         print(f"  {chr(65+idx)}. {opt}")
                     print(f"  Gold answer: {chr(64+g_label)} ({g_label})")
 
-            # Format prompts — RULER uses thinking OFF and answer_prefix
+            # Format prompts — RULER uses thinking OFF and answer_prefix;
+            # QASPER uses free-form generation (no options, thinking ON)
             if is_ruler_eval:
                 formatted_questions = [
                     format_question(
@@ -175,6 +231,13 @@ class QAEvaluator:
                 ]
                 # Use per-task max_new_tokens for RULER (override the global default)
                 batch_max_new_tokens = batch_questions[0].get('max_new_tokens', max_new_tokens)
+            elif is_qasper_eval:
+                formatted_questions = [format_question(self.tokenizer,
+                                                       q_text + "\n\nAnswer as briefly as possible. Give only the answer, no explanation.",
+                                                       options=None,
+                                                       model_name=self.model_name)
+                                     for q_text in question_texts]
+                batch_max_new_tokens = max_new_tokens
             else:
                 formatted_questions = [format_question(self.tokenizer, q_text, opts, self.model_name)
                                      for q_text, opts in zip(question_texts, options_list)]
@@ -241,6 +304,25 @@ class QAEvaluator:
                         'num_generated_tokens': num_gen_tokens,
                         'time_per_token': batch_time_per_token,
                     }
+                elif is_qasper_eval:
+                    # QASPER token F1 scoring
+                    refs = q.get('qasper_answers', [])
+                    answer_for_scoring = strip_thinking(answer)
+                    score = qasper_score_prediction(answer_for_scoring, refs)
+                    is_correct = score == 1.0
+                    print(f"  QASPER F1: {score:.3f} | Refs: {[r[:60] for r in refs]}")
+
+                    question_result = {
+                        'question_id': q.get('question_unique_id', f'q_{q_idx}'),
+                        'question': q_text,
+                        'qasper_answers': refs,
+                        'model_answer_text': answer_for_scoring,
+                        'qasper_f1': score,
+                        'is_correct': is_correct,
+                        'generation_time': gen_time / actual_batch_size,
+                        'num_generated_tokens': num_gen_tokens,
+                        'time_per_token': batch_time_per_token,
+                    }
                 else:
                     # MCQ scoring
                     model_choice = None
@@ -288,6 +370,7 @@ class QAEvaluator:
         ignore_article_indices: bool = False,
         is_perplexity_eval: bool = False,
         is_ruler_eval: bool = False,
+        is_qasper_eval: bool = False,
     ) -> Dict:
         """
         Evaluate a compaction method on a single article.
@@ -832,6 +915,13 @@ class QAEvaluator:
                                     model_name=self.model_name, enable_thinking=False,
                                     answer_prefix=q.get('answer_prefix', ''),
                                 )
+                            elif is_qasper_eval:
+                                question_formatted = format_question(
+                                    self.tokenizer,
+                                    question_text + "\n\nAnswer as briefly as possible. Give only the answer, no explanation.",
+                                    options=None,
+                                    model_name=self.model_name,
+                                )
                             else:
                                 options = q.get('options', None)
                                 question_formatted = format_question(self.tokenizer, question_text, options, self.model_name)
@@ -873,6 +963,24 @@ class QAEvaluator:
                                     'ruler_outputs': refs,
                                     'model_answer_text': answer,
                                     'ruler_score': score,
+                                    'is_correct': is_correct,
+                                    'generation_time': per_question_time,
+                                    'num_generated_tokens': num_gen_tokens,
+                                    'time_per_token': time_per_token,
+                                })
+                            elif is_qasper_eval:
+                                refs = q.get('qasper_answers', [])
+                                answer_for_scoring = strip_thinking(answer)
+                                score = qasper_score_prediction(answer_for_scoring, refs)
+                                is_correct = score == 1.0
+                                print(f"Q{batch_start + i + 1}: {q['question'][:80]}...")
+                                print(f"  A: {answer_for_scoring[:100]}... | F1: {score:.3f}")
+                                results_per_question.append({
+                                    'question_id': q.get('question_unique_id', f'q_{batch_start + i}'),
+                                    'question': q['question'],
+                                    'qasper_answers': refs,
+                                    'model_answer_text': answer_for_scoring,
+                                    'qasper_f1': score,
                                     'is_correct': is_correct,
                                     'generation_time': per_question_time,
                                     'num_generated_tokens': num_gen_tokens,
@@ -930,6 +1038,7 @@ class QAEvaluator:
                     batch_size=effective_batch_size,
                     results_per_question=results_per_question,
                     is_ruler_eval=is_ruler_eval,
+                    is_qasper_eval=is_qasper_eval,
                 )
         else:
             print(f"\n{'='*60}")
@@ -1200,6 +1309,45 @@ class QAEvaluator:
             for task, score in per_task_accuracy.items():
                 count = len(task_scores[task])
                 print(f"    {task}: {score:.1f}% ({count} questions)")
+            print(f"  Total generation time: {total_gen_time:.2f}s")
+            if avg_time_per_token > 0:
+                print(f"  Avg time per token: {avg_time_per_token:.3f}s/token ({1.0/avg_time_per_token:.1f} tokens/s)")
+            print(f"{'='*60}")
+        elif is_qasper_eval and not perplexity_only:
+            # QASPER token F1 evaluation
+            total_questions = len(results_per_question)
+
+            # Compute generation timing metrics
+            total_gen_time = sum(r.get('generation_time', 0.0) for r in results_per_question)
+            total_gen_tokens = sum(r.get('num_generated_tokens', 0) for r in results_per_question)
+            avg_gen_time_per_question = total_gen_time / total_questions if total_questions > 0 else 0.0
+            avg_time_per_token = total_gen_time / total_gen_tokens if total_gen_tokens > 0 else 0.0
+
+            # Overall average F1
+            avg_f1 = sum(r.get('qasper_f1', 0.0) for r in results_per_question) / total_questions if total_questions > 0 else 0.0
+            perfect_answers = sum(1 for r in results_per_question if r.get('is_correct', False))
+
+            qa_results = {
+                'num_questions': len(questions),
+                'results_per_question': results_per_question,
+                'total_questions': total_questions,
+                'correct_answers': perfect_answers,
+                'parseable_answers': total_questions,  # All QASPER answers are "parseable"
+                'accuracy': avg_f1,
+                'parse_rate': 1.0,
+                'qasper_avg_f1': avg_f1 * 100,
+                'is_qasper_eval': True,
+                'total_generation_time': total_gen_time,
+                'total_generated_tokens': total_gen_tokens,
+                'avg_generation_time_per_question': avg_gen_time_per_question,
+                'avg_time_per_token': avg_time_per_token,
+            }
+
+            print(f"\n{'='*60}")
+            print(f"QASPER Results Summary:")
+            print(f"  Total questions: {total_questions}")
+            print(f"  Average token F1: {avg_f1 * 100:.1f}%")
+            print(f"  Perfect F1 (1.0): {perfect_answers}/{total_questions} ({perfect_answers/total_questions:.1%})")
             print(f"  Total generation time: {total_gen_time:.2f}s")
             if avg_time_per_token > 0:
                 print(f"  Avg time per token: {avg_time_per_token:.3f}s/token ({1.0/avg_time_per_token:.1f} tokens/s)")
@@ -1554,6 +1702,16 @@ class QAEvaluator:
             total_questions = sum(r['qa_results'].get('total_questions', 0) for r in method_results)
             total_correct = sum(r['qa_results'].get('correct_answers', 0) for r in method_results)
             total_parseable = sum(r['qa_results'].get('parseable_answers', 0) for r in method_results)
+            is_qasper = any(r['qa_results'].get('is_qasper_eval', False) for r in method_results)
+            is_ruler = any(r['qa_results'].get('is_ruler_eval', False) for r in method_results)
+            total_f1_sum = sum(
+                sum(q.get('qasper_f1', 0.0) for q in r['qa_results'].get('results_per_question', []))
+                for r in method_results
+            ) if is_qasper else None
+            total_ruler_score_sum = sum(
+                sum(q.get('ruler_score', 0.0) for q in r['qa_results'].get('results_per_question', []))
+                for r in method_results
+            ) if is_ruler else None
 
             # Aggregate timing metrics
             total_extraction_time = sum(r['extraction_time'] for r in method_results)
@@ -1724,12 +1882,20 @@ class QAEvaluator:
                 avg_perplexity_across_articles = sum(perplexities) / len(perplexities)
                 avg_log_perplexity_across_articles = sum(log_perplexities) / len(log_perplexities)
 
+            overall_avg_f1 = total_f1_sum / total_questions if (is_qasper and total_questions > 0) else None
+            overall_avg_ruler_score = total_ruler_score_sum / total_questions if (is_ruler and total_questions > 0) else None
+            if is_qasper:
+                overall_accuracy = overall_avg_f1
+            elif is_ruler:
+                overall_accuracy = overall_avg_ruler_score
+            else:
+                overall_accuracy = total_correct / total_questions if total_questions > 0 else 0.0
             overall_stats[method] = {
                 'num_articles': len(method_results),
                 'total_questions': total_questions,
                 'total_correct': total_correct,
                 'total_parseable': total_parseable,
-                'overall_accuracy': total_correct / total_questions if total_questions > 0 else 0.0,
+                'overall_accuracy': overall_accuracy,
                 'overall_parse_rate': total_parseable / total_questions if total_questions > 0 else 0.0,
                 'avg_target_size_param': avg_target_size_param,
                 'total_extraction_time': total_extraction_time,
@@ -1748,6 +1914,14 @@ class QAEvaluator:
                 'avg_tokens_per_second': avg_tokens_per_second,
                 'total_generated_tokens': total_generated_tokens,
             }
+
+            # Add QASPER avg F1 if applicable
+            if overall_avg_f1 is not None:
+                overall_stats[method]['overall_qasper_avg_f1'] = overall_avg_f1 * 100
+
+            # Add RULER avg score if applicable
+            if overall_avg_ruler_score is not None:
+                overall_stats[method]['overall_ruler_avg_score'] = overall_avg_ruler_score * 100
 
             # Add memory stats if available
             if memory_stats:
@@ -1804,7 +1978,12 @@ class QAEvaluator:
             print(f"{'-'*80}")
             print(f"  Articles evaluated: {stats['num_articles']}")
             print(f"  Total questions: {stats['total_questions']}")
-            print(f"  Overall accuracy: {stats['overall_accuracy']:.2%} ({stats['total_correct']}/{stats['total_questions']})")
+            if 'overall_qasper_avg_f1' in stats:
+                print(f"  Overall avg F1: {stats['overall_qasper_avg_f1']:.1f}%")
+            elif 'overall_ruler_avg_score' in stats:
+                print(f"  Overall avg RULER score: {stats['overall_ruler_avg_score']:.1f}%")
+            else:
+                print(f"  Overall accuracy: {stats['overall_accuracy']:.2%} ({stats['total_correct']}/{stats['total_questions']})")
             print(f"  Overall parse rate: {stats['overall_parse_rate']:.2%} ({stats['total_parseable']}/{stats['total_questions']})")
 
             # Perplexity if available
@@ -2040,6 +2219,11 @@ class QAEvaluator:
         if is_ruler_eval:
             print(f"Dataset '{dataset_name}' uses RULER string-match evaluation")
 
+        # Detect if this is a QASPER token F1 dataset
+        is_qasper_eval = is_qasper_dataset(dataset_name)
+        if is_qasper_eval:
+            print(f"Dataset '{dataset_name}' uses QASPER token F1 evaluation")
+
         all_results = []
 
         for method_name in compaction_methods:
@@ -2086,6 +2270,7 @@ class QAEvaluator:
                     ignore_article_indices=ignore_article_indices,
                     is_perplexity_eval=is_perplexity_eval,
                     is_ruler_eval=is_ruler_eval,
+                    is_qasper_eval=is_qasper_eval,
                 )
 
                 all_results.append(result)
