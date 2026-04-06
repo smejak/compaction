@@ -13,16 +13,34 @@ top-level `EXPERIMENT_LOG.md`; do not duplicate them — read them.
 | 3 | Fix torchvision mismatch | Done | `pip install --no-deps torchvision==0.21.0+cu124 --index-url https://download.pytorch.org/whl/cu124` (vllm pinned to 0.25.0 but isn't used in this run) |
 | 4 | Resubmit (233828) | Done | **All tasks failed** with `RuntimeError: ... Error 803: system has unsupported display driver / cuda driver combination` at `torch._C._cuda_init()`. Root cause: `module load cudatoolkit/12.5` prepends `/cm/shared/apps/nvhpc/24.7/Linux_x86_64/24.7/cuda/12.5/compat` to `LD_LIBRARY_PATH`, which shadows the H100 driver (565.57.01 / CUDA 12.7) and breaks torch's bundled cu124 runtime |
 | 5 | Remove module loads from `per_patient.sh` | Done | Stripped all three `module load` calls. Torch's pip-installed `nvidia-cuda-*-cu12` packages already ship the right runtime. Verified on n25 via `srun` interactive: `cuda available: True` without modules, `False` with them |
-| 6 | Resubmit (233882) | Done | `--array=1,8-19%8`. Submitted 2026-04-06 ~11:27. Tasks past CUDA init, model loaded, deep into AM-OMP-fast compaction loop |
-| 7 | Monitor logs and fix runtime errors | **In progress** — see "Current state" below |
+| 6 | Resubmit (233882) | Done | `--array=1,8-19%8`. Submitted 2026-04-06 ~11:27 |
+| 7 | Monitor logs and fix runtime errors | Done | Background poller `/tmp/marlowe_monitor.sh` → `/tmp/marlowe_monitor.log`, killed at end of session. No `.err` files exceeded the model-loading tqdm bar (~327 bytes) for any task |
+| 8 | Verify all 20 patients on disk | Done | All 20 of `long-health/patient_{01..20}/{cache.pt,results.json}` present |
 
-## Current state (2026-04-06 11:58 PDT)
+## Current state (2026-04-06 14:06 PDT) — DONE
 
-- Job **233882** running, 8 tasks active (`R`), 5 pending (`PD`, reason `Resources`)
-- All 8 active tasks past model loading, compacting layers at ~1.2-1.7 min/layer
-- Background monitor running on login-02 at PID via `/tmp/marlowe_monitor.sh` → `/tmp/marlowe_monitor.log`, polling every 60s
-- No errors in any `.err` file beyond the model-loading tqdm bar
-- patient_02 (task 1) past where it hung on Modal (now at layer 18/36 after 31 min)
+Job **233882** completed successfully. All 13 SLURM tasks finished, no failures, no scancel needed. Per-patient run rate was ~1.2-1.5 min/layer under 8-way contention; total wall time per patient ranged from 44 minutes (patient_09, fastest, finished first while node was uncontended) to 1h 23m (patient_19).
+
+### Final accuracies — all 13 SLURM patients
+
+| patient | accuracy | correct/total | notes |
+|---|---|---|---|
+| patient_02 | 90% | 18/20 | **previously hung on Modal twice — Marlowe finished it cleanly in 1h 12m** |
+| patient_09 | 95% | 19/20 | |
+| patient_10 | 95% | 19/20 | |
+| patient_11 | 85% | 17/20 | |
+| patient_12 | 95% | 19/20 | |
+| patient_13 | 75% | 15/20 | |
+| patient_14 | 70% | 14/20 | |
+| patient_15 | 95% | 19/20 | |
+| patient_16 | 85% | 17/20 | |
+| patient_17 | 90% | 18/20 | |
+| patient_18 | 80% | 16/20 | |
+| patient_19 | 75% | 15/20 | |
+| patient_20 | 75% | 15/20 | |
+| **mean (n=13)** | **0.850** |  |  |
+
+The Modal-baseline patients (01, 03..08) are still on disk untouched and were correctly skipped by `run_per_patient.py:65-67`.
 
 ## Job 233782 quick facts
 
