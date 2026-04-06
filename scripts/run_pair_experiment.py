@@ -156,6 +156,74 @@ def _attn_mass_before(cache_cpu, t_A_per_layer):
     return {"per_layer": per_layer, "mean_A": mean_a, "mean_B": mean_b}
 
 
+def _init_agg(num_layers):
+    """Per-position running sums for on-the-fly aggregation of attn_mass_after.
+
+    Returns dict keyed by question position (1, 2). Each entry holds:
+        n              : int sample count
+        {A,B,Q}_sum    : np.ndarray(num_layers,) running sum of per-layer mass
+        {A,B,Q}_sq_sum : np.ndarray(num_layers,) running sum of squares
+    """
+    import numpy as np
+    return {
+        pos: {
+            "n": 0,
+            "A_sum": np.zeros(num_layers, dtype=np.float64),
+            "B_sum": np.zeros(num_layers, dtype=np.float64),
+            "Q_sum": np.zeros(num_layers, dtype=np.float64),
+            "A_sq_sum": np.zeros(num_layers, dtype=np.float64),
+            "B_sq_sum": np.zeros(num_layers, dtype=np.float64),
+            "Q_sq_sum": np.zeros(num_layers, dtype=np.float64),
+        }
+        for pos in (1, 2)
+    }
+
+
+def _accumulate_agg(agg, position, layers_abq):
+    """Update the aggregator with one sample's per-layer (A, B, Q) triples."""
+    import numpy as np
+    A_arr = np.asarray([l["A"] for l in layers_abq], dtype=np.float64)
+    B_arr = np.asarray([l["B"] for l in layers_abq], dtype=np.float64)
+    Q_arr = np.asarray([l["Q"] for l in layers_abq], dtype=np.float64)
+    bucket = agg[position]
+    bucket["A_sum"] += A_arr
+    bucket["A_sq_sum"] += A_arr ** 2
+    bucket["B_sum"] += B_arr
+    bucket["B_sq_sum"] += B_arr ** 2
+    bucket["Q_sum"] += Q_arr
+    bucket["Q_sq_sum"] += Q_arr ** 2
+    bucket["n"] += 1
+
+
+def _finalize_agg(agg_pos):
+    """Convert one position's running sums into a serializable per-layer
+    mean+std dict. See contexts/06042026/ATTENTION_MASS_SPEC.md §3.2.
+    """
+    import numpy as np
+    n = agg_pos["n"]
+    if n == 0:
+        return {"n": 0, "per_layer": []}
+    A_mean = agg_pos["A_sum"] / n
+    B_mean = agg_pos["B_sum"] / n
+    Q_mean = agg_pos["Q_sum"] / n
+    A_var = np.maximum(agg_pos["A_sq_sum"] / n - A_mean ** 2, 0.0)
+    B_var = np.maximum(agg_pos["B_sq_sum"] / n - B_mean ** 2, 0.0)
+    Q_var = np.maximum(agg_pos["Q_sq_sum"] / n - Q_mean ** 2, 0.0)
+    A_std = np.sqrt(A_var)
+    B_std = np.sqrt(B_var)
+    Q_std = np.sqrt(Q_var)
+    per_layer = [
+        {
+            "layer": int(li),
+            "A_mean": float(A_mean[li]), "A_std": float(A_std[li]),
+            "B_mean": float(B_mean[li]), "B_std": float(B_std[li]),
+            "Q_mean": float(Q_mean[li]), "Q_std": float(Q_std[li]),
+        }
+        for li in range(len(A_mean))
+    ]
+    return {"n": int(n), "per_layer": per_layer}
+
+
 def _build_cache_gpu(cache_cpu, device, dtype):
     return tuple(
         (c1.to(device=device, dtype=dtype),
@@ -165,42 +233,47 @@ def _build_cache_gpu(cache_cpu, device, dtype):
     )
 
 
-def _run_instrumented_forward(model, tokenizer, prompts, cache_cpu, stacked_seq_len,
-                              t_A_per_layer, t_B_per_layer, device, dtype):
-    """Run one forward pass over (stacked_cache + prompts) and return per-layer
-    attention mass (averaged over heads and batch) over the three regions
-    {cache_A, cache_B, question} for the last question token of each item.
+def _run_instrumented_forward_single(model, tokenizer, prompt, cache_cpu,
+                                     stacked_seq_len, t_A_per_layer,
+                                     t_B_per_layer, device, dtype):
+    """Run one forward pass over (stacked_cache + a single prompt) and return
+    per-layer attention mass over {cache_A, cache_B, question} for the last
+    query token of that single sample.
 
-    Returns a list (one entry per prompt in the batch) of lists (per layer) of
-    dicts {"layer": int, "A": float, "B": float, "Q": float}.
+    batch_size is hardwired to 1 to keep peak GPU memory bounded — eager
+    attention with output_attentions=True materializes a per-layer
+    (B, H, q_len, k_len) tensor and stores all 36 of them in out.attentions
+    after the forward, so the peak scales linearly with B. See
+    contexts/06042026/ATTENTION_MASS_SPEC.md §5.
+
+    Returns a list of length num_layers, each entry a dict
+    {"layer": int, "A": float, "B": float, "Q": float}.
     """
     import torch
     from models.cache import CompactedPrefixCache
 
-    # Tokenize with left-padding to mirror generate_with_compacted_cache_batch.
+    # Tokenize a single prompt with left-padding (matches the convention used
+    # by generate_with_compacted_cache_batch so the last query token sits at
+    # input_len - 1 even though there's no padding to apply at B=1).
     original_padding_side = tokenizer.padding_side
     tokenizer.padding_side = "left"
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
-    enc = tokenizer(prompts, return_tensors="pt", padding=True,
+    enc = tokenizer([prompt], return_tensors="pt", padding=True,
                     truncation=False, add_special_tokens=False).to(device)
     tokenizer.padding_side = original_padding_side
 
-    input_ids = enc["input_ids"]
+    input_ids = enc["input_ids"]                # (1, input_len)
     input_attn_mask = enc["attention_mask"]
-    batch_size, input_len = input_ids.shape
+    input_len = int(input_ids.shape[1])
     pad_counts = (input_attn_mask == 0).sum(dim=1)
 
-    # Build cache_gpu and expand to batch size.
+    # Build cache_gpu (B=1, no expansion).
     expanded = []
     for (C1, beta, C2) in cache_cpu:
         c1 = C1.to(device=device, dtype=dtype)
         c2 = C2.to(device=device, dtype=dtype)
         bb = beta.to(device=device, dtype=dtype)
-        if c1.shape[0] == 1 and batch_size > 1:
-            c1 = c1.expand(batch_size, *c1.shape[1:]).contiguous()
-            c2 = c2.expand(batch_size, *c2.shape[1:]).contiguous()
-            bb = bb.expand(batch_size, *bb.shape[1:]).contiguous()
         expanded.append((c1, bb, c2))
 
     cache = CompactedPrefixCache(
@@ -214,7 +287,7 @@ def _run_instrumented_forward(model, tokenizer, prompts, cache_cpu, stacked_seq_
 
     if past_seen_tokens > 0:
         prefix_mask = torch.ones(
-            (batch_size, past_seen_tokens),
+            (1, past_seen_tokens),
             device=device, dtype=input_attn_mask.dtype,
         )
         attention_mask = torch.cat([prefix_mask, input_attn_mask], dim=1)
@@ -237,41 +310,34 @@ def _run_instrumented_forward(model, tokenizer, prompts, cache_cpu, stacked_seq_
             return_dict=True,
         )
 
-    attentions = out.attentions  # tuple of (B, heads, q_len, layer_kv_len) per layer
+    attentions = out.attentions  # tuple of (1, heads, q_len, layer_kv_len) per layer
     if attentions is None:
         raise RuntimeError(
             "model returned no attentions — ensure attn_implementation='eager'"
         )
 
-    # The last question token's index within input_ids (no padding stripping
-    # needed per-sample since padding is on the LEFT, so the last token is
-    # always at input_len - 1).
+    # Last query token (left-padded → always at index input_len - 1).
     q_last = input_len - 1
 
-    # Bucket per (batch, layer). Each layer's attention tensor has
-    # k_len = t_A_layer + t_B_layer + input_len (prompt goes after the cache).
-    per_item = [[] for _ in range(batch_size)]
+    layers_abq = []
     for layer_idx, attn in enumerate(attentions):
-        # attn: (B, heads, q_len, k_len)
+        # attn: (1, heads, q_len, k_len)
         t_a = t_A_per_layer[layer_idx]
         t_b = t_B_per_layer[layer_idx]
-        # Average over heads first (keep batch and k_len).
-        row = attn[:, :, q_last, :].float().mean(dim=1)  # (B, k_len)
-        # Bucket the k axis.
-        mass_a = row[:, :t_a].sum(dim=-1)                       # (B,)
-        mass_b = row[:, t_a:t_a + t_b].sum(dim=-1)              # (B,)
-        mass_q = row[:, t_a + t_b:].sum(dim=-1)                 # (B,)
-        for b in range(batch_size):
-            per_item[b].append({
-                "layer": layer_idx,
-                "A": float(mass_a[b]),
-                "B": float(mass_b[b]),
-                "Q": float(mass_q[b]),
-            })
+        row = attn[0, :, q_last, :].float().mean(dim=0)  # (k_len,)
+        mass_a = float(row[:t_a].sum())
+        mass_b = float(row[t_a:t_a + t_b].sum())
+        mass_q = float(row[t_a + t_b:].sum())
+        layers_abq.append({
+            "layer": layer_idx,
+            "A": mass_a,
+            "B": mass_b,
+            "Q": mass_q,
+        })
 
     del cache, expanded, out, attentions
     torch.cuda.empty_cache()
-    return per_item
+    return layers_abq
 
 
 def _load_model_eager(model_name, device):
@@ -371,6 +437,8 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
     batch_size = max(1, min(20, int(25000 / max_layer_len)))
     print(f"  batch_size={batch_size}")
 
+    num_layers = len(cache_cpu)
+    agg = _init_agg(num_layers)
     results = []
     for bs in range(0, len(questions), batch_size):
         be = min(bs + batch_size, len(questions))
@@ -378,15 +446,21 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
         prompts = [format_question(tokenizer, q["question"], q.get("options"), model_name)
                    for q in batch]
 
-        # (1) Instrumented forward pass for attn_mass_after. This mutates the
-        # cache inside CompactedPrefixCache via layer.update(), so we discard it
-        # and rebuild cache_gpu for the actual generation below.
-        attn_after_batch = _run_instrumented_forward(
-            model, tokenizer, prompts, cache_cpu, stacked_seq_len,
-            t_A_per_layer, t_B_per_layer, device, dtype,
-        )
+        # (1) Instrumented forwards: ONE prompt at a time at batch_size=1, with
+        # on-the-fly aggregation into the per-position accumulator. The
+        # instrumented pass mutates CompactedPrefixCache layers via
+        # layer.update(), so we discard it and rebuild cache_gpu for the real
+        # batched generation below. Per-question attention detail is
+        # intentionally not stored — see
+        # contexts/06042026/ATTENTION_MASS_SPEC.md.
+        for q, prompt in zip(batch, prompts):
+            layers_abq = _run_instrumented_forward_single(
+                model, tokenizer, prompt, cache_cpu, stacked_seq_len,
+                t_A_per_layer, t_B_per_layer, device, dtype,
+            )
+            _accumulate_agg(agg, q["position"], layers_abq)
 
-        # (2) Real generation with a fresh cache_gpu.
+        # (2) Real batched generation with a fresh cache_gpu.
         cache_gpu = _build_cache_gpu(cache_cpu, device, dtype)
         answers = generate_with_compacted_cache_batch(
             model, tokenizer, prompts, cache_gpu,
@@ -406,7 +480,6 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
                 "correct": ok,
                 "pred": mc,
                 "gold": gold,
-                "attn_mass_after": attn_after_batch[i],
             })
             print(f"    Q{bs+i+1}: {'ok' if ok else 'x'}  pred={mc} gold={gold}  "
                   f"[{q['patient']} pos{q['position']}]")
@@ -429,6 +502,10 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
         "t_A_per_layer": t_A_per_layer,
         "t_B_per_layer": t_B_per_layer,
         "attn_mass_before": amb,
+        "attn_mass_after_aggregate": {
+            "position_1": _finalize_agg(agg[1]),
+            "position_2": _finalize_agg(agg[2]),
+        },
         "overall_accuracy": accuracy,
         "correct": correct,
         "total": total,

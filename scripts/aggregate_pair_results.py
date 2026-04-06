@@ -61,7 +61,7 @@ def _build_matrices(results):
     pos1 = _nan_matrix()
     pos2 = _nan_matrix()
     attn_before_A = _nan_matrix()  # cache_A share from attn_mass_before, averaged over layers
-    attn_after_A = _nan_matrix()   # cache_A share from attn_mass_after, averaged across layers and questions
+    attn_after_A = _nan_matrix()   # cache_A share from attn_mass_after_aggregate, averaged across positions and layers
 
     for r in results:
         pid_a, pid_b = r["pair"]
@@ -72,11 +72,16 @@ def _build_matrices(results):
         pos1[i, j] = r["acc_pos1"]
         pos2[i, j] = r["acc_pos2"]
         attn_before_A[i, j] = r["attn_mass_before"]["mean_A"]
-        # Average attn_mass_after cache_A share across layers and questions.
+        # Average attn_mass_after cache_A share across both positions and all
+        # layers. New schema: attn_mass_after_aggregate.position_<n>.per_layer
+        # holds per-layer A_mean / B_mean / Q_mean. See
+        # contexts/06042026/ATTENTION_MASS_SPEC.md §6.
+        agg = r.get("attn_mass_after_aggregate", {})
         a_vals = []
-        for q in r["per_question"]:
-            for entry in q["attn_mass_after"]:
-                a_vals.append(entry["A"])
+        for pos_key in ("position_1", "position_2"):
+            pos_data = agg.get(pos_key) or {}
+            for entry in pos_data.get("per_layer", []):
+                a_vals.append(entry["A_mean"])
         if a_vals:
             attn_after_A[i, j] = float(np.mean(a_vals))
 
@@ -165,7 +170,10 @@ def _plot_attention_mass(results_by_variant, out_dir):
         return
 
     # Gather per-layer averages for each (variant, position) combination.
-    # attn_mass_after is stored per question as a list of {layer, A, B, Q} dicts.
+    # New schema: each pair contributes one (num_layers,) per-layer mean array
+    # per (position, region), drawn from
+    # attn_mass_after_aggregate.position_<n>.per_layer. We then average across
+    # pairs. See contexts/06042026/ATTENTION_MASS_SPEC.md §6.
     data = {v: {1: {"A": None, "B": None, "Q": None},
                 2: {"A": None, "B": None, "Q": None}}
             for v in variants}
@@ -174,18 +182,21 @@ def _plot_attention_mass(results_by_variant, out_dir):
         results = results_by_variant[v]
         if not results:
             continue
-        # Gather per-position lists: sums[pos][region] -> list of per-question
-        # per-layer arrays.
+        # Per-position lists of (num_layers,) per-pair mean arrays.
         per_pos_A = {1: [], 2: []}
         per_pos_B = {1: [], 2: []}
         per_pos_Q = {1: [], 2: []}
         for r in results:
-            for q in r["per_question"]:
-                pos = q["position"]
-                layers = q["attn_mass_after"]
-                per_pos_A[pos].append([l["A"] for l in layers])
-                per_pos_B[pos].append([l["B"] for l in layers])
-                per_pos_Q[pos].append([l["Q"] for l in layers])
+            agg = r.get("attn_mass_after_aggregate", {})
+            for pos in (1, 2):
+                pos_key = f"position_{pos}"
+                pos_data = agg.get(pos_key) or {}
+                layers = pos_data.get("per_layer", [])
+                if not layers:
+                    continue
+                per_pos_A[pos].append([l["A_mean"] for l in layers])
+                per_pos_B[pos].append([l["B_mean"] for l in layers])
+                per_pos_Q[pos].append([l["Q_mean"] for l in layers])
         for pos in (1, 2):
             if per_pos_A[pos]:
                 data[v][pos]["A"] = np.mean(np.array(per_pos_A[pos]), axis=0)

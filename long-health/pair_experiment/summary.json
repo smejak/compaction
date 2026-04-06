@@ -1,0 +1,50 @@
+{
+  "naive": {
+    "by_first_position": {
+      "P01": 0.725,
+      "P03": null,
+      "P04": null,
+      "P05": null,
+      "P06": null,
+      "P07": null,
+      "P08": null
+    },
+    "by_second_position": {
+      "P01": null,
+      "P03": 0.725,
+      "P04": null,
+      "P05": null,
+      "P06": null,
+      "P07": null,
+      "P08": null
+    },
+    "overall_mean": 0.725,
+    "acc_pos1_mean": 0.7,
+    "acc_pos2_mean": 0.75,
+    "recency_bias_estimate": 0.050000000000000044
+  },
+  "rope_shift": {
+    "by_first_position": {
+      "P01": 0.7,
+      "P03": null,
+      "P04": null,
+      "P05": null,
+      "P06": null,
+      "P07": null,
+      "P08": null
+    },
+    "by_second_position": {
+      "P01": null,
+      "P03": 0.7,
+      "P04": null,
+      "P05": null,
+      "P06": null,
+      "P07": null,
+      "P08": null
+    },
+    "overall_mean": 0.7,
+    "acc_pos1_mean": 0.6,
+    "acc_pos2_mean": 0.8,
+    "recency_bias_estimate": 0.20000000000000007
+  }
+}
