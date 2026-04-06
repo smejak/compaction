@@ -25,14 +25,12 @@
 set -euo pipefail
 
 # -------- Environment ------------------------------------------------ #
-# Marlowe setup: modules + conda env `hard_drive`. We call the env's python
-# directly rather than `conda activate` because the conda/24.3.0-0 module
-# leaves the base mambaforge bin ahead of the env bin in PATH, shadowing the
-# right python.
-module load cudatoolkit/12.5
-module load cudnn/cuda12/9.3.0.75
-module load conda/24.3.0-0
-
+# Marlowe setup: call the env's python directly. Do NOT load the cudatoolkit
+# or cudnn modules — they prepend nvhpc's CUDA 12.5 compat libs to
+# LD_LIBRARY_PATH, which shadow the H100 driver (565.57.01 / CUDA 12.7) and
+# break torch's bundled cu124 runtime with `cudaErrorSystemDriverMismatch`
+# (error 803). Torch's pip-installed nvidia-cuda-*-cu12 packages already
+# ship the right runtime, so the system modules are unnecessary.
 PY="${PY:-/users/jsmekal/.conda/envs/hard_drive/bin/python}"
 
 cd "${SLURM_SUBMIT_DIR:-$HOME/compaction}"
