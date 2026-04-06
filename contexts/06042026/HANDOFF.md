@@ -1,7 +1,7 @@
 # Session Handoff — Marlowe per-patient SLURM run
 
 This is a session handoff so a fresh agent can pick up the in-flight monitoring
-work without re-deriving context. Companion to `scripts/marlowe/PLAN.md` and
+work without re-deriving context. Companion to `contexts/06042026/PLAN.md` and
 top-level `EXPERIMENT_LOG.md`; do not duplicate them — read them.
 
 ## Where we are in the 3-task workflow
