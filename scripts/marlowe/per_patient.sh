@@ -25,31 +25,38 @@
 set -euo pipefail
 
 # -------- Environment ------------------------------------------------ #
-# Edit VENV_PATH (or export it before sbatch) if your venv lives elsewhere.
-VENV_PATH="${VENV_PATH:-$HOME/compaction/.venv}"
-# shellcheck disable=SC1091
-source "$VENV_PATH/bin/activate"
+# Marlowe setup: modules + conda env `hard_drive`. We call the env's python
+# directly rather than `conda activate` because the conda/24.3.0-0 module
+# leaves the base mambaforge bin ahead of the env bin in PATH, shadowing the
+# right python.
+module load cudatoolkit/12.5
+module load cudnn/cuda12/9.3.0.75
+module load conda/24.3.0-0
+
+PY="${PY:-/users/jsmekal/.conda/envs/hard_drive/bin/python}"
 
 cd "${SLURM_SUBMIT_DIR:-$HOME/compaction}"
 
-export HF_HOME="${HF_HOME:-$HOME/.cache/huggingface}"
+# HF_HOME is set in ~/.bashrc to /projects/m000120/jsmekal/.cache/huggingface,
+# but .bashrc is skipped in non-interactive SLURM shells, so set it here too.
+export HF_HOME="${HF_HOME:-/projects/m000120/jsmekal/.cache/huggingface}"
 export PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"
 
 mkdir -p logs long-health
 
 # -------- Job info --------------------------------------------------- #
 start_time=$(date +%s)
-echo "Start: $(date -d @"$start_time")"
-echo "Node:  $(hostname)"
-echo "Job:   $SLURM_JOB_NAME ($SLURM_ARRAY_JOB_ID[$SLURM_ARRAY_TASK_ID])"
-echo "Task:  patient_idx=$SLURM_ARRAY_TASK_ID"
-echo "CWD:   $PWD"
-echo "Venv:  $VENV_PATH"
-echo "Python: $(python --version 2>&1)"
+echo "Start:  $(date -d @"$start_time")"
+echo "Node:   $(hostname)"
+echo "Job:    $SLURM_JOB_NAME ($SLURM_ARRAY_JOB_ID[$SLURM_ARRAY_TASK_ID])"
+echo "Task:   patient_idx=$SLURM_ARRAY_TASK_ID"
+echo "CWD:    $PWD"
+echo "Python: $PY"
+"$PY" --version
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 
 # -------- Run single patient ---------------------------------------- #
-python -u scripts/run_per_patient.py \
+"$PY" -u scripts/run_per_patient.py \
     --patient-idx "$SLURM_ARRAY_TASK_ID" \
     --results-dir long-health
 
