@@ -1,0 +1,172 @@
+{
+  "n_pairs_per_variant": {
+    "naive": 380,
+    "rope_shift": 380
+  },
+  "pair_asymmetry_top10": {
+    "naive": [
+      {
+        "a": "patient_04",
+        "b": "patient_15",
+        "acc_ab": 0.875,
+        "acc_ba": 0.75,
+        "delta": 0.125
+      },
+      {
+        "a": "patient_07",
+        "b": "patient_10",
+        "acc_ab": 0.95,
+        "acc_ba": 0.825,
+        "delta": 0.125
+      },
+      {
+        "a": "patient_01",
+        "b": "patient_04",
+        "acc_ab": 0.8,
+        "acc_ba": 0.7,
+        "delta": 0.10000000000000009
+      },
+      {
+        "a": "patient_17",
+        "b": "patient_20",
+        "acc_ab": 0.7,
+        "acc_ba": 0.8,
+        "delta": 0.10000000000000009
+      },
+      {
+        "a": "patient_03",
+        "b": "patient_15",
+        "acc_ab": 0.775,
+        "acc_ba": 0.875,
+        "delta": 0.09999999999999998
+      },
+      {
+        "a": "patient_03",
+        "b": "patient_16",
+        "acc_ab": 0.8,
+        "acc_ba": 0.9,
+        "delta": 0.09999999999999998
+      },
+      {
+        "a": "patient_04",
+        "b": "patient_11",
+        "acc_ab": 0.85,
+        "acc_ba": 0.75,
+        "delta": 0.09999999999999998
+      },
+      {
+        "a": "patient_06",
+        "b": "patient_07",
+        "acc_ab": 0.725,
+        "acc_ba": 0.825,
+        "delta": 0.09999999999999998
+      },
+      {
+        "a": "patient_06",
+        "b": "patient_12",
+        "acc_ab": 0.825,
+        "acc_ba": 0.725,
+        "delta": 0.09999999999999998
+      },
+      {
+        "a": "patient_06",
+        "b": "patient_14",
+        "acc_ab": 0.65,
+        "acc_ba": 0.75,
+        "delta": 0.09999999999999998
+      }
+    ],
+    "rope_shift": [
+      {
+        "a": "patient_06",
+        "b": "patient_12",
+        "acc_ab": 0.55,
+        "acc_ba": 0.85,
+        "delta": 0.29999999999999993
+      },
+      {
+        "a": "patient_03",
+        "b": "patient_04",
+        "acc_ab": 0.85,
+        "acc_ba": 0.575,
+        "delta": 0.275
+      },
+      {
+        "a": "patient_03",
+        "b": "patient_05",
+        "acc_ab": 0.825,
+        "acc_ba": 0.6,
+        "delta": 0.22499999999999998
+      },
+      {
+        "a": "patient_05",
+        "b": "patient_11",
+        "acc_ab": 0.55,
+        "acc_ba": 0.775,
+        "delta": 0.22499999999999998
+      },
+      {
+        "a": "patient_06",
+        "b": "patient_08",
+        "acc_ab": 0.55,
+        "acc_ba": 0.775,
+        "delta": 0.22499999999999998
+      },
+      {
+        "a": "patient_06",
+        "b": "patient_15",
+        "acc_ab": 0.625,
+        "acc_ba": 0.85,
+        "delta": 0.22499999999999998
+      },
+      {
+        "a": "patient_06",
+        "b": "patient_16",
+        "acc_ab": 0.6,
+        "acc_ba": 0.8,
+        "delta": 0.20000000000000007
+      },
+      {
+        "a": "patient_11",
+        "b": "patient_18",
+        "acc_ab": 0.8,
+        "acc_ba": 0.6,
+        "delta": 0.20000000000000007
+      },
+      {
+        "a": "patient_05",
+        "b": "patient_13",
+        "acc_ab": 0.525,
+        "acc_ba": 0.725,
+        "delta": 0.19999999999999996
+      },
+      {
+        "a": "patient_01",
+        "b": "patient_07",
+        "acc_ab": 0.875,
+        "acc_ba": 0.7,
+        "delta": 0.17500000000000004
+      }
+    ]
+  },
+  "correctness_flip_contingency_by_position": {
+    "1": {
+      "both_c": 4814,
+      "both_w": 1331,
+      "n_only": 1073,
+      "r_only": 382
+    },
+    "2": {
+      "both_c": 5398,
+      "both_w": 1145,
+      "n_only": 451,
+      "r_only": 606
+    }
+  },
+  "n_flipped_questions_by_cell": {
+    "rope_only_pos1": 382,
+    "naive_only_pos1": 1073,
+    "rope_only_pos2": 606,
+    "naive_only_pos2": 451
+  }
+}
