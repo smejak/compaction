@@ -1,0 +1,153 @@
+{
+  "patient_id": "patient_17",
+  "patient_name": "Brian Carter",
+  "model": "Qwen/Qwen3-4B",
+  "ratio": 0.1,
+  "accuracy": 0.9,
+  "correct": 18,
+  "total": 20,
+  "compaction_time": 3412.54243850708,
+  "max_layer_len": 10457,
+  "per_question": [
+    {
+      "qid": "patient_17_q0",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is asking for the date Mr. Brian Carter initially presented to the facility with symptoms.\n\nLooking at the context provided, there are several texts. Let's check each one.\n\nIn text_0, under \"Current Presentation,\" it says he presented on foot on 09/28/2021 with "
+    },
+    {
+      "qid": "patient_17_q1",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is asking which medication Mr. Carter was taking for bronchial asthma upon admission. The options are Prednisone, Methotrexate, Montelukast, Desloratadine, and Candesartan.\n\nFirst, I need to look through the provided texts to find the medications listed upon adm"
+    },
+    {
+      "qid": "patient_17_q2",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is about how long Mr. Carter was recommended to continue antifungal therapy after the detection of Aspergillus.\n\nLooking through the texts, specifically text_2 and text_3. In text_2, it says: \"the treatment duration formally 4-6 weeks\". Then in text_3, there's a"
+    },
+    {
+      "qid": "patient_17_q3",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let me check the context. The question is about the therapy initiated on 09/30/2021 due to radiological suspicion of atypical pneumonia in Mr. Carter.\n\nLooking at text_1 under \"Therapy and Progression\": \"We initiated empirical anti-infective therapy with Piperacillin/Tazobactam, Clarit"
+    },
+    {
+      "qid": "patient_17_q4",
+      "correct": false,
+      "pred": 5,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mr. Carter's hemoglobin level at his last discharge. The options are A to E.\n\nLooking through the texts, text_2 mentions a hemoglobin level of 12.8 g/dL during his hospital stay. Then in text_3, under the lab results upon discharge, the hemoglobin is"
+    },
+    {
+      "qid": "patient_17_q5",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's see. The question is asking which antibiotic therapy Mr. Carter was on that was escalated to Meropenem on 10/05/2021.\n\nLooking through the texts, specifically text 1 and text 2. In text 1, under \"Therapy and Progression,\" it mentions that initially, they started with Piperacillin"
+    },
+    {
+      "qid": "patient_17_q6",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mr. Carter's TSH level. I need to look through the provided texts to find any mention of TSH.\n\nLooking at text_2 under \"Lab results\": Thyroid Stimulating Hormone (TSH) is listed with a value of 4.1 mIU/L, which is within the reference range of 0.27-4"
+    },
+    {
+      "qid": "patient_17_q7",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about which lab parameter in Mr. Carter's results showed a normalization trend from November 2021 to February 2022 but was still below the reference range.\n\nFirst, I need to look at the lab results provided in the texts. The relevant information is in text_3 "
+    },
+    {
+      "qid": "patient_17_q8",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is about which therapy was discontinued and replaced with Dexamethasone 10 mg when Mr. Carter's oxygenation deteriorated on 09/30/2021.\n\nLooking at the provided texts, specifically text_1 and text_2. In text_1 under \"Therapy and Progression,\" it mentions that th"
+    },
+    {
+      "qid": "patient_17_q9",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking about the duration of Mr. Carter's prone positioning therapy as part of conservative ARDS therapy.\n\nFirst, I need to look through the provided texts to find the relevant information. Let me check each text one by one.\n\nLooking at text 1 un"
+    },
+    {
+      "qid": "patient_17_q10",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's see. The question is about Mr. Carter's arterial blood gas analysis showing an oxygenation disorder with a paO2 value. I need to find the correct number from the options given.\n\nLooking back at the provided texts, specifically text_0. In the \"Therapy and Progression\" section, it "
+    },
+    {
+      "qid": "patient_17_q11",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The question is about why Methotrexate (Trexall) 25 mg was started upon admission for Mr. Carter.\n\nLooking at the context provided, there are several texts. The first text mentions other diagnoses including uveitis and rheumatoid arthritis. The second text also lists rheumat"
+    },
+    {
+      "qid": "patient_17_q12",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The question is asking which of the options was NOT listed under Mr. Carter's \"Other Diagnoses.\" The options are A. Uveitis, B. Depression, C. Bronchial asthma, D. Pulmonary embolism, E. Arterial hypertension.\n\nFirst, I need to check the provided texts to find where \"Other D"
+    },
+    {
+      "qid": "patient_17_q13",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about a condition indicated by an echo-free cystic structure in the right lower lobe found on an ultrasound abdomen on 11/01/2021.\n\nLooking at the provided text, specifically text_3, there's a section about the ultrasound abdomen. The assessment mentions: \"In"
+    },
+    {
+      "qid": "patient_17_q14",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking which medication Mr. Carter was prescribed upon his last discharge that wasn't part of his initial admission medications.\n\nFirst, I need to look at the initial medications upon admission. From text_0, the medications listed upon admission "
+    },
+    {
+      "qid": "patient_17_q15",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mr. Carter's transesophageal echocardiogram on 11/26/2020, specifically the hypokinesia region.\n\nLooking through the provided texts, text 3 mentions a cardiology consultation on 10/29/2021. Wait, but the question is about 11/26/2020. Let me check tex"
+    },
+    {
+      "qid": "patient_17_q16",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking about a significant change in Mr. Carter's thorax imaging on 10/16/2021 compared to previous exams. The options are A to E.\n\nFirst, I need to look through the provided texts, specifically text_3, since that's where the chest X-ray findings"
+    },
+    {
+      "qid": "patient_17_q17",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is asking about the initial intubation period of Mr. Carter based on the reports provided.\n\nLooking at the texts, I need to find when he was intubated and when he was extubated. Let's check each text.\n\nIn text 1, under \"Therapy and Progression,\" it says: \"Intuba"
+    },
+    {
+      "qid": "patient_17_q18",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is about a change in Mr. Carter's blood profile from November 2021 to February 2022 that suggests improved hepatic function. The options are A to E.\n\nFirst, I need to recall what liver function tests typically include. Hepatic function is often assessed through "
+    },
+    {
+      "qid": "patient_17_q19",
+      "correct": false,
+      "pred": 5,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's tackle this question. The user wants the correct chronological order of the radiological imaging studies Mr. Carter received based on the provided texts.\n\nFirst, I need to go through each text and note when each imaging study was done. Let's start with text_0. In the \"Status at T"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{
+  "patient_id": "patient_11",
+  "patient_name": "Bruno Hurley",
+  "model": "Qwen/Qwen3-4B",
+  "ratio": 0.1,
+  "accuracy": 0.85,
+  "correct": 17,
+  "total": 20,
+  "compaction_time": 4590.426321268082,
+  "max_layer_len": 11781,
+  "per_question": [
+    {
+      "qid": "patient_11_q0",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let me try to figure this out. The question is asking for the initial reason Mr. Hurley was hospitalized in October 2019. The options are A to E.\n\nLooking at the provided texts, specifically text_0 and text_1. In text_0, under \"Medical History,\" it says: \"The patient reported temperatu"
+    },
+    {
+      "qid": "patient_11_q1",
+      "correct": true,
+      "pred": 5,
+      "gold": 5,
+      "answer": "<think>\nOkay, let's see. The question is asking which medication was initially omitted from Mr. Hurley's tuberculosis treatment due to pancytopenia.\n\nI need to look through the provided texts to find where pancytopenia is mentioned and which drug was omitted. \n\nLooking at text_0 under the \"Therapy\" "
+    },
+    {
+      "qid": "patient_11_q2",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is asking what was last detected in Mr. Hurley's sputum as of 01/02/20.\n\nLooking at the text_0, under the Microbiology section, there's a part that says: \"01/02/20 Sputum: Last cultural detection of Mycobacterium tuberculosis.\" So that's B. But then in the same "
+    },
+    {
+      "qid": "patient_11_q3",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is asking about the primary purpose of Mr. Hurley's admission for allogeneic stem cell transplantation. The options are A to E.\n\nLooking at the texts provided, especially text 1 and text 3, there's a lot of information about his medical history. He was diagnosed"
+    },
+    {
+      "qid": "patient_11_q4",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking about a significant change in Mr. Hurley's CT Thorax from 02/23/21 compared to previous scans. The options are A to E.\n\nFirst, I need to look through the provided texts, especially text 3, which has detailed CT findings. Let me check the r"
+    },
+    {
+      "qid": "patient_11_q5",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is asking about the initial imaging finding suggestive of tuberculosis in Mr. Hurley. The options are A to E.\n\nLooking at the context provided, specifically in text_0, under the \"Imaging\" section, there's a mention of a chest CT from 11/01/19 showing a mediastin"
+    },
+    {
+      "qid": "patient_11_q6",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is asking which imaging study done on 01/04/20 indicated progression of Mr. Hurley's tuberculosis.\n\nLooking at the provided texts, specifically text_3, there's a section about imaging studies. In text_3, under the \"Imaging\" section, there's a part that mentions "
+    },
+    {
+      "qid": "patient_11_q7",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The user is asking about the significant finding in Mr. Hurley's chest CT done on 10/02/20. I need to check the provided texts to find the answer.\n\nLooking at text_3, there's a section about the CT on 10/02/20. The assessment mentions that compared to the previous exam on 06"
+    },
+    {
+      "qid": "patient_11_q8",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's see. The question is asking which medication was added to Mr. Hurley's treatment in February 2021. The options are Azacitidine, Levofloxacin, Rifampicin, Ethambutol, or Pyrazinamide.\n\nFirst, I need to look through the provided texts to find any mentions of medication changes arou"
+    },
+    {
+      "qid": "patient_11_q9",
+      "correct": false,
+      "pred": 2,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The question is asking for Mr. Hurley's hemoglobin level upon his last recorded discharge. The options are A to E.\n\nLooking through the provided texts, I need to find where his hemoglobin levels are mentioned during discharge. \n\nIn text_1, under \"Lab results upon Discharge,\""
+    },
+    {
+      "qid": "patient_11_q10",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let me try to figure this out. The question is asking which therapy was initiated in February 2021 due to a low basal interferon-gamma level in Mr. Hurley.\n\nFirst, I need to look through the provided texts to find the relevant information. Let me check the texts again.\n\nLooking at text"
+    },
+    {
+      "qid": "patient_11_q11",
+      "correct": false,
+      "pred": 2,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about Mr. Hurley's liver lesions as of 06/11/21. I need to look through the provided texts to find the relevant information.\n\nLooking at text_3, there's a section about CT findings on 06/12/2021. The assessment mentions \"Mid-term constant hypodense liver lesi"
+    },
+    {
+      "qid": "patient_11_q12",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The user is asking about the percentage of blasts in Mr. Hurley's bone marrow biopsy in January 2021.\n\nI need to look through the provided texts to find the relevant information. Let me check each text one by one.\n\nLooking at text 1, under \"Other Diagnoses,\" there's a mentio"
+    },
+    {
+      "qid": "patient_11_q13",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is asking which combination therapy was started in March 2021 for Mr. Hurley. The options are A to E.\n\nFirst, I need to look through the provided texts to find any mentions of therapies starting in March 2021. Let me check each text.\n\nLooking at text_1, there's "
+    },
+    {
+      "qid": "patient_11_q14",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about the source of stem cells for Mr. Hurley's allogeneic transplantation in July 2021. I need to look through the provided texts to find the answer.\n\nLooking at text 1, under \"Current Presentation,\" it says he was admitted for allogeneic stem cell transplan"
+    },
+    {
+      "qid": "patient_11_q15",
+      "correct": true,
+      "pred": 5,
+      "gold": 5,
+      "answer": "<think>\nOkay, let's see. The question is asking which medication is NOT part of Mr. Hurley's post-transplantation regimen. The options are Acyclovir, Entecavir, Mycophenolate Mofetil, Cyclosporine, and Methotrexate.\n\nFirst, I need to look through the provided texts to find out what medications he's "
+    },
+    {
+      "qid": "patient_11_q16",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about when Mr. Hurley's next bone marrow puncture should be scheduled post-transplantation based on current recommendations.\n\nLooking at the provided texts, particularly text_1 and text_2, there's a mention of bone marrow puncture. In text_1, under \"Current P"
+    },
+    {
+      "qid": "patient_11_q17",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking when Mr. Hurley's Myelodysplastic Syndrome (MDS) was diagnosed as having ring sideroblasts. The options are dates from July 10, August 20, December 19, January 20, or July 21.\n\nFirst, I need to look through the provided texts to find the r"
+    },
+    {
+      "qid": "patient_11_q18",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's tackle this question step by step. The user wants to know the correct chronological order of key medical events for Mr. Bruno Hurley since his initial hospitalization in October 2019.\n\nFirst, I'll look at each option and compare them against the information provided in the texts."
+    },
+    {
+      "qid": "patient_11_q19",
+      "correct": false,
+      "pred": null,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's tackle this question. The user wants the chronological sequence of the radiology exams Mr. Hurley underwent based on the provided texts. The options are A to E, each with a different order.\n\nFirst, I need to extract all the dates from the texts where each imaging exam was done. L"
+    }
+  ]
+}

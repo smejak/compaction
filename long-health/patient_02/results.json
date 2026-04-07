@@ -1,0 +1,153 @@
+{
+  "patient_id": "patient_02",
+  "patient_name": "Jane Done",
+  "model": "Qwen/Qwen3-4B",
+  "ratio": 0.1,
+  "accuracy": 0.9,
+  "correct": 18,
+  "total": 20,
+  "compaction_time": 4183.989485740662,
+  "max_layer_len": 11418,
+  "per_question": [
+    {
+      "qid": "patient_02_q0",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The user is asking about the PD-L1 TPS for Mrs. Done. I need to check the provided documents to find this information.\n\nLooking at text_0, under the \"Mutation analysis\" section, it says: \"PD-L1 status: PD-L1 tumor proportion score (TPS): <1%. Immune cell infiltrate (IC): 2% "
+    },
+    {
+      "qid": "patient_02_q1",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is about the cumulative dose of Pembrolizumab in Mrs. Jane Done's adjuvant chemotherapy. The options are A to E.\n\nFirst, I need to look through the provided documents to find where Pembrolizumab is mentioned. Let me check each text.\n\nIn text_0, under System Ther"
+    },
+    {
+      "qid": "patient_02_q2",
+      "correct": false,
+      "pred": 5,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's see. The question is asking where Mrs. Done showed metastases. The options are A through E.\n\nLooking at the provided texts, especially text_1, text_2, text_3, and text_4, there are multiple mentions of metastases in various locations. \n\nIn text_1, there's mention of brain metasta"
+    },
+    {
+      "qid": "patient_02_q3",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The question is asking when Mrs. Done started radiotherapy. The options are March 2020, January 2020, May 2020, February 2020, or June 2020.\n\nLooking at the provided texts, specifically text_1 and text_2. In text_1, under \"Therapies to date,\" it mentions: \"02/20: Excision of"
+    },
+    {
+      "qid": "patient_02_q4",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking which lab values were outside the reference ranges for Mrs. Done upon discharge. The options are A through E.\n\nFirst, I need to look through the provided documents to find the lab results upon discharge. The relevant sections are in text_0"
+    },
+    {
+      "qid": "patient_02_q5",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking for the total duration of Mrs. Jane Done's most recent hospital stay. The options are A to E, each with different dates.\n\nFirst, I need to look through the provided texts to find the most recent admission. The texts are numbered 0 to 4, ea"
+    },
+    {
+      "qid": "patient_02_q6",
+      "correct": false,
+      "pred": 2,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's go through each option one by one.\n\nOption A says she had a microsurgical resection for a left frontal hemorrhaged metastasis on 01/20. Looking at the documents, in text 1, under \"Operation report (01/02/2020)\", it mentions a microsurgical resection of the right frontal mass. So "
+    },
+    {
+      "qid": "patient_02_q7",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about the SUVmax of a lesion abutting the left ventricle from the most recent PET-CT findings in Mrs. Done.\n\nLooking at the provided text, specifically text_4, there's a section on the PET-CT scan findings. Under the \"Findings\" part for the thorax, it mention"
+    },
+    {
+      "qid": "patient_02_q8",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about the mutation found in Mrs. Done's molecular profile that's targeted by the recommended therapy. The options are ALK-EML4, RAS, BRAF V600E, EGFR, KRAS.\n\nLooking back at the provided texts, in text_0, under the \"Mutation analysis\" section, it mentions \"BR"
+    },
+    {
+      "qid": "patient_02_q9",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is about which parameter warrants immediate medical attention for Mrs. Done based on the treatment regimen mentioned in the provided texts.\n\nLooking through the documents, especially text 4, there's a discussion about the treatment regimen. The relevant part say"
+    },
+    {
+      "qid": "patient_02_q10",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The user is asking about the closest approach of the resection margins to the tumor based on the macroscopy report in Mrs. Done's case.\n\nLooking through the provided texts, the relevant part is in text_3 under the \"Microscopic Description\" section. The text mentions: \"The cl"
+    },
+    {
+      "qid": "patient_02_q11",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about Mrs. Jane Done's SARS-CoV-2 status based on the discharge letter. The options are about the trend of viral load and Ct values from admission to discharge.\n\nLooking at the discharge letter, specifically text_3. In the virology section, upon admission, th"
+    },
+    {
+      "qid": "patient_02_q12",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking about the surgical steps taken during Mrs. Done's neck dissection on 01/05/2021. The options are A to E, each describing different actions regarding nerves.\n\nFirst, I need to look through the provided text, specifically the surgery report "
+    },
+    {
+      "qid": "patient_02_q13",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The user is asking about the initial procedure performed for Mrs. Jane Done in February 2018. The options are A to E.\n\nLooking at the provided texts, specifically text_0 and text_1, there's mention of a procedure in February 2018. In text_0, under the \"Operation report\" sect"
+    },
+    {
+      "qid": "patient_02_q14",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is asking which medication was given to Mrs. Done for eczema treatment during her hospital stay from 10/23/2020 to 11/01/2020.\n\nFirst, I need to look through the provided texts to find any mention of eczema treatment during that specific time frame. Let me check"
+    },
+    {
+      "qid": "patient_02_q15",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The user is asking about the histopathological diagnosis of the excised melanoma from February 23, 2018, for Mrs. Done.\n\nLooking at the provided texts, specifically text_0, there's a section under \"Histology Dermatohistology\" from 02/23/2018. The diagnosis there is stated as"
+    },
+    {
+      "qid": "patient_02_q16",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let me try to figure this out. The question is about what the MRI brain report from 01/04/2020 indicated after Mrs. Done's microsurgical resection on 01/02/2020.\n\nLooking at the provided text, specifically text_1, there's a section titled \"MRI brain report (01/04/2020)\". The findings m"
+    },
+    {
+      "qid": "patient_02_q17",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about an incident that occurred on 10/28/2020 during Mrs. Done's stay from 10/23/2020 to 11/01/2020. The options are A to E.\n\nLooking at the provided texts, specifically text_1, which covers the period from 10/23/2020 to 11/01/2020. In text_1, under the \"Inci"
+    },
+    {
+      "qid": "patient_02_q18",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The question is about which cervical lymph node level did NOT show increased FDG uptake in Mrs. Done's PET/CT findings.\n\nLooking at the PET/CT report from 01/02/2021 in text_3, the findings mention multiple pathologically enlarged cervical lymph nodes in bilateral level II, "
+    },
+    {
+      "qid": "patient_02_q19",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mrs. Done's hemoglobin levels upon discharge. I need to check the lab results provided in the documents.\n\nLooking through the texts, in text_3, under \"Lab values upon discharge,\" the Hemoglobin (Hb) result is listed as 12.4 g/dL. The reference range "
+    }
+  ]
+}

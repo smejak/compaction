@@ -1,0 +1,153 @@
+{
+  "patient_id": "patient_20",
+  "patient_name": "Hilary Sanders",
+  "model": "Qwen/Qwen3-4B",
+  "ratio": 0.1,
+  "accuracy": 0.75,
+  "correct": 15,
+  "total": 20,
+  "compaction_time": 3884.889763355255,
+  "max_layer_len": 10965,
+  "per_question": [
+    {
+      "qid": "patient_20_q0",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is asking which immunoglobulin class showed a complete deficiency in Mrs. Sanders. The options are IgE, IgD, IgG, IgB, or none of the above.\n\nLooking back at the provided texts, especially the first one, the diagnoses listed include Common Variable Immunodeficie"
+    },
+    {
+      "qid": "patient_20_q1",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is asking how long Mrs. Sanders had recurrent respiratory infections as of 2016.\n\nLooking at the text_0, under the \"Current Presentation\" section, it says she has experienced recurrent respiratory infections for about 3 years. The date mentioned is 10/09/2016. T"
+    },
+    {
+      "qid": "patient_20_q2",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's see. The user is asking which medication was initiated for Mrs. Sanders in 2016.\n\nLooking through the texts, the first mention is in text_0. The diagnoses include Common Variable Immunodeficiency (CVID), and the recommendations mention initiating subcutaneous immunoglobulin thera"
+    },
+    {
+      "qid": "patient_20_q3",
+      "correct": false,
+      "pred": 1,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mrs. Sanders' sodium level from October 2017.\n\nFirst, I need to look through the provided texts to find the lab results from that time. The texts are labeled text_0 to text_6, each with different dates. The question is about October 2017, so I should"
+    },
+    {
+      "qid": "patient_20_q4",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's see. The question is about what additional therapy was discussed for Mr. Sanders due to skin hardening at injection sites in 2017.\n\nFirst, I need to look through the provided texts to find the relevant information. The user mentioned 2017, so I should check the texts from that ye"
+    },
+    {
+      "qid": "patient_20_q5",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let me check the context provided. The user is asking about the abdominal ultrasound findings from March 4, 2017, for Mrs. Sanders.\n\nLooking through the texts, in text_0, under the abdominal ultrasound section on 03/04/2017, it mentions: \"Hepatosplenomegaly and retroperitoneal lymphade"
+    },
+    {
+      "qid": "patient_20_q6",
+      "correct": true,
+      "pred": 5,
+      "gold": 5,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mrs. Sanders' primary complaint as of 2016. The options are A to E.\n\nLooking at the text_0, which is from 2016. The first part mentions she presented to the outpatient clinic on 10/09/2016. The current presentation section says she has experienced re"
+    },
+    {
+      "qid": "patient_20_q7",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The question is about what treatment was continued for Mrs. Sanders in 2019 despite gastrointestinal issues. The options are A to E.\n\nFirst, I need to recall the information from the provided texts. The user mentioned texts 0 to 6, but the question is specifically about 2019"
+    },
+    {
+      "qid": "patient_20_q8",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let me try to figure this out. The user is asking about an important finding from Mrs. Sanders' liver biopsy in 2023. The options are A to E.\n\nLooking back at the provided texts, specifically text_6, which mentions the liver biopsy. In the summary part of text_6, it says that the biops"
+    },
+    {
+      "qid": "patient_20_q9",
+      "correct": true,
+      "pred": 4,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The user is asking about the result of Mrs. Sanders' capsule endoscopy in 2023. I need to look through the provided texts to find the relevant information.\n\nLooking at text_6, which is the most recent one, under the section \"Capsule endoscopy: Incomplete capsule enteroscopy "
+    },
+    {
+      "qid": "patient_20_q10",
+      "correct": false,
+      "pred": 5,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The user is asking about a significant finding in Mrs. Sanders' CT scan in 2021. The options are A to E.\n\nFirst, I need to look through the provided texts to find mentions of a CT scan in 2021. Let me check each text.\n\nLooking at text_5, which is from 2021. The summary menti"
+    },
+    {
+      "qid": "patient_20_q11",
+      "correct": false,
+      "pred": 2,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mrs. Sanders' serum Immunoglobulin G (IgG) levels upon her discharge in October 2017. I need to find the correct value from the provided texts.\n\nLooking at the texts, text_1 mentions lab results upon discharge. In text_1, under the \"Lab results upon "
+    },
+    {
+      "qid": "patient_20_q12",
+      "correct": false,
+      "pred": null,
+      "gold": 4,
+      "answer": "<think>\nOkay, let's see. The question is asking which of the options was NOT a component of Mrs. Sanders' lab results in October 2017. The options are A to E.\n\nFirst, I need to look through the provided text_0, text_1, text_2, etc., to find the lab results from October 2017. Let me check text_1, whi"
+    },
+    {
+      "qid": "patient_20_q13",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The user is asking about what was observed during Mrs. Sanders' EGD in March 2023. The options are A to E.\n\nI need to look back at the provided text_6. Let me check that. In text_6, under the \"Esophagogastroduodenoscopy (EGD) on 04/01/2023\" section, it says: \"Esophagogastrod"
+    },
+    {
+      "qid": "patient_20_q14",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's tackle this question. The user is asking about Mrs. Sanders' IgG levels between 03/04/2017 and 10/06/2017.\n\nFirst, I need to look at the lab results provided in the texts. Let me check text_0, text_1, and text_2 for the relevant data.\n\nIn text_0 (03/04/2017), the IgG level was 51"
+    },
+    {
+      "qid": "patient_20_q15",
+      "correct": true,
+      "pred": 3,
+      "gold": 3,
+      "answer": "<think>\nOkay, let's see. The user is asking to compare the Gamma-Globulin in Serum percentage from October 9, 2016, and March 4, 2017, for Mrs. Sanders.\n\nFirst, I need to find the lab results for both dates. Let me check the provided texts.\n\nLooking at text_0 (the first one), under \"Lab results\" on "
+    },
+    {
+      "qid": "patient_20_q16",
+      "correct": true,
+      "pred": 5,
+      "gold": 5,
+      "answer": "<think>\nOkay, let's see. The user is asking about Mrs. Sanders' \u03b2-2-microglobulin levels from October 9, 2016, to March 4, 2017. I need to check the lab results provided in the texts.\n\nLooking at text_0, under \"Lab results\" on 10/09/2016, the \u03b2-2-Microglobulin is 3.6 mg/L, which is within the normal"
+    },
+    {
+      "qid": "patient_20_q17",
+      "correct": true,
+      "pred": 2,
+      "gold": 2,
+      "answer": "<think>\nOkay, let's see. The question is about comparing Mrs. Sanders' platelet count on 11/15/2019 to that on 03/04/2017.\n\nFirst, I need to look through the provided texts for the platelet counts on those dates. \n\nLooking at text_0 (03/04/2017), the lab results show Platelets: 174 K/uL. The referen"
+    },
+    {
+      "qid": "patient_20_q18",
+      "correct": false,
+      "pred": 2,
+      "gold": 1,
+      "answer": "<think>\nOkay, let's tackle this question. The user wants the correct chronological order of radiological imaging studies that Mrs. Sanders received based on the provided texts.\n\nFirst, I need to go through each text and note the dates and types of imaging studies mentioned. Let's start with text_0. "
+    },
+    {
+      "qid": "patient_20_q19",
+      "correct": true,
+      "pred": 1,
+      "gold": 1,
+      "answer": "<think>\nOkay, let me check the EGD report from 04/01/2023. The summary mentions that the upper esophageal sphincter was normal, with sufficient closure. The mucosa in the upper, middle, and distal esophagus was unremarkable. The Z-line was sharply demarcated. In the stomach, there were multiple glan"
+    }
+  ]
+}
