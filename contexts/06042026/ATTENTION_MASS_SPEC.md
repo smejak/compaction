@@ -45,7 +45,7 @@ once with `output_attentions=True`.
 - Captures per-question per-layer A/B/Q triples in memory **and** writes them
   back into the per_question entry in `results.json`. The OOM concern is
   about GPU memory during the forward pass, not about JSON size — at
-  ~43 KB per pair × 84 pairs the storage cost is negligible (~3.5 MB total),
+  ~43 KB per pair × 760 pairs the storage cost is negligible (~33 MB total),
   and per-question raw data preserves flexibility for any re-analysis we
   haven't thought of yet.
 - **Splits the aggregate by `(position, correctness)`**, not just position.
@@ -207,7 +207,7 @@ preemptively** — only if `batch_size=1` is insufficient.
 
 `scripts/aggregate_pair_results.py` is now intentionally lean:
 
-- **`_accuracy_matrices`** builds 7×7 accuracy matrices (overall, pos1, pos2,
+- **`_accuracy_matrices`** builds 20×20 accuracy matrices (overall, pos1, pos2,
   delta) from each pair's `overall_accuracy`/`acc_pos1`/`acc_pos2`. These
   feed `_marginals` → `summary.json`. They are **not** plotted as heatmaps
   any more.

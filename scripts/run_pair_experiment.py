@@ -12,8 +12,8 @@ Usage:
     python -u scripts/run_pair_experiment.py --pair-idx 0 --variant naive
     python -u scripts/run_pair_experiment.py --pair-idx 0 --variant rope_shift
 
-Pair indices 0..41 index into a deterministic list of all ordered pairs of the
-7 already-compacted patients (excluding self-pairs). Outputs land at:
+Pair indices 0..379 index into a deterministic list of all ordered pairs of the
+20 LongHealth patients (excluding self-pairs). Outputs land at:
 
     <results-dir>/<variant>/pair_<A>_<B>/results.json
 
@@ -36,18 +36,17 @@ if _REPO_ROOT not in sys.path:
 # ---------------------------------------------------------------------------
 MODEL_NAME = "Qwen/Qwen3-4B"
 
-# Patients whose compacted caches are already on disk (from the per-patient run).
+# Patients whose compacted caches are on disk (all 20 LongHealth patients
+# now compacted; phase 1 used only the first 7, phase 2 uses all 20).
 PATIENT_IDS = [
-    "patient_01",
-    "patient_03",
-    "patient_04",
-    "patient_05",
-    "patient_06",
-    "patient_07",
-    "patient_08",
+    "patient_01", "patient_02", "patient_03", "patient_04",
+    "patient_05", "patient_06", "patient_07", "patient_08",
+    "patient_09", "patient_10", "patient_11", "patient_12",
+    "patient_13", "patient_14", "patient_15", "patient_16",
+    "patient_17", "patient_18", "patient_19", "patient_20",
 ]
 
-# Deterministic ordered pair list (excludes self-pairs). len == 42.
+# Deterministic ordered pair list (excludes self-pairs). len == 380.
 PAIRS = [(a, b) for a in PATIENT_IDS for b in PATIENT_IDS if a != b]
 
 

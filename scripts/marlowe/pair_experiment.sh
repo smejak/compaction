@@ -7,37 +7,40 @@
 #SBATCH --cpus-per-gpu=4
 #SBATCH --mem-per-cpu=16G
 #SBATCH --time=08:00:00
-#SBATCH --array=0-6
+#SBATCH --array=0-15
 #SBATCH --error=logs/pair_%x_%A_%a.err
 #SBATCH --output=logs/pair_%x_%A_%a.out
 
 # Evaluate stacked pairs of pre-computed LongHealth KV caches.
 #
-# Each array task processes a CHUNK of pair indices (default: 6 pairs/task,
-# 7 tasks → all 42 pairs) — chunking exists because the marlowe-m000120-pm05
-# account has a per-account submit limit of 32 jobs in the medium QOS, and
-# 42 + 42 individual array tasks for both variants would routinely exceed
-# that limit when other users have jobs queued. With 6 pairs/task we land
-# at 7 tasks per variant (14 total) — comfortable headroom.
+# Each array task processes a CHUNK of pair indices (default: 24 pairs/task,
+# 16 tasks → all 380 pairs) — chunking exists because the marlowe-m000120-pm05
+# account has a per-account submit limit of 32 jobs in the medium QOS. The
+# 16-tasks-per-variant sizing is the largest chunking that still lets us
+# chain naive + rope_shift via --dependency=afterok and stay at exactly the
+# 32-job ceiling at peak (16 naive R/PD + 16 rope_shift PD/Dependency). The
+# aggregator (1 extra job) must therefore be submitted manually after both
+# arrays complete, not as a third dependency.
 #
-# Pair indices 0..41 map to a deterministic ordered-pair list over the 7
-# patients in long-health/ (patient_01, patient_03..patient_08), excluding
-# self-pairs. See scripts/run_pair_experiment.py:PAIRS.
+# Pair indices 0..379 map to a deterministic ordered-pair list over all 20
+# LongHealth patients (patient_01..patient_20), excluding self-pairs. See
+# scripts/run_pair_experiment.py:PAIRS.
 #
 # VARIANT env var selects the stacking strategy:
-#   naive       — concat cache tensors without RoPE correction (phase 1)
+#   naive       — concat cache tensors without RoPE correction
 #   rope_shift  — shift cache_B's keys by original_seq_len_A before concat
-#                 (phase 2)
 #
-# PAIRS_PER_TASK env var (default 6) controls the chunk size; if you change
+# PAIRS_PER_TASK env var (default 24) controls the chunk size; if you change
 # it, also adjust the #SBATCH --array directive above so the last task lands
-# at index ceil(42 / PAIRS_PER_TASK) - 1.
+# at index ceil(380 / PAIRS_PER_TASK) - 1, AND verify naive+rope_shift fit
+# under the 32-job submit limit.
 #
 # Submit naive (default):
-#   sbatch scripts/marlowe/pair_experiment.sh
+#   JID_N=$(sbatch --parsable scripts/marlowe/pair_experiment.sh)
 #
-# Submit rope_shift in parallel:
-#   VARIANT=rope_shift sbatch --export=ALL,VARIANT scripts/marlowe/pair_experiment.sh
+# Submit rope_shift chained on naive completion:
+#   VARIANT=rope_shift sbatch --dependency=afterok:${JID_N} \
+#       --export=ALL,VARIANT scripts/marlowe/pair_experiment.sh
 #
 # Monitor:  squeue -u $USER ; tail -f logs/pair_*.out
 
@@ -45,8 +48,8 @@ set -uo pipefail   # NB: no `-e` because we want the inner pair loop to keep
                    # going past a single failed pair and report at the end.
 
 VARIANT="${VARIANT:-naive}"
-PAIRS_PER_TASK="${PAIRS_PER_TASK:-6}"
-TOTAL_PAIRS=42
+PAIRS_PER_TASK="${PAIRS_PER_TASK:-24}"
+TOTAL_PAIRS=380
 
 # -------- Environment ------------------------------------------------ #
 # Marlowe setup: call the env's python directly. Do NOT load the cudatoolkit

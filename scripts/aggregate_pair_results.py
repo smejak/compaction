@@ -30,13 +30,11 @@ import seaborn as sns  # noqa: E402
 sns.set_style("whitegrid")
 
 PATIENT_IDS = [
-    "patient_01",
-    "patient_03",
-    "patient_04",
-    "patient_05",
-    "patient_06",
-    "patient_07",
-    "patient_08",
+    "patient_01", "patient_02", "patient_03", "patient_04",
+    "patient_05", "patient_06", "patient_07", "patient_08",
+    "patient_09", "patient_10", "patient_11", "patient_12",
+    "patient_13", "patient_14", "patient_15", "patient_16",
+    "patient_17", "patient_18", "patient_19", "patient_20",
 ]
 LABELS = [p.replace("patient_", "P") for p in PATIENT_IDS]
 PID_TO_IDX = {p: i for i, p in enumerate(PATIENT_IDS)}
