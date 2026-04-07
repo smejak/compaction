@@ -157,16 +157,18 @@ def _attn_mass_before(cache_cpu, t_A_per_layer):
 
 
 def _init_agg(num_layers):
-    """Per-position running sums for on-the-fly aggregation of attn_mass_after.
+    """Running sums for on-the-fly aggregation of attn_mass_after, split by
+    (position, correctness).
 
-    Returns dict keyed by question position (1, 2). Each entry holds:
+    Returns dict keyed by (position, is_correct) — 4 buckets total. Each
+    bucket holds:
         n              : int sample count
         {A,B,Q}_sum    : np.ndarray(num_layers,) running sum of per-layer mass
         {A,B,Q}_sq_sum : np.ndarray(num_layers,) running sum of squares
     """
     import numpy as np
     return {
-        pos: {
+        (pos, corr): {
             "n": 0,
             "A_sum": np.zeros(num_layers, dtype=np.float64),
             "B_sum": np.zeros(num_layers, dtype=np.float64),
@@ -176,16 +178,18 @@ def _init_agg(num_layers):
             "Q_sq_sum": np.zeros(num_layers, dtype=np.float64),
         }
         for pos in (1, 2)
+        for corr in (True, False)
     }
 
 
-def _accumulate_agg(agg, position, layers_abq):
-    """Update the aggregator with one sample's per-layer (A, B, Q) triples."""
+def _accumulate_agg(agg, position, correct, layers_abq):
+    """Update the aggregator with one sample's per-layer (A, B, Q) triples,
+    routed to the (position, correct) bucket."""
     import numpy as np
     A_arr = np.asarray([l["A"] for l in layers_abq], dtype=np.float64)
     B_arr = np.asarray([l["B"] for l in layers_abq], dtype=np.float64)
     Q_arr = np.asarray([l["Q"] for l in layers_abq], dtype=np.float64)
-    bucket = agg[position]
+    bucket = agg[(position, bool(correct))]
     bucket["A_sum"] += A_arr
     bucket["A_sq_sum"] += A_arr ** 2
     bucket["B_sum"] += B_arr
@@ -195,20 +199,19 @@ def _accumulate_agg(agg, position, layers_abq):
     bucket["n"] += 1
 
 
-def _finalize_agg(agg_pos):
-    """Convert one position's running sums into a serializable per-layer
-    mean+std dict. See contexts/06042026/ATTENTION_MASS_SPEC.md §3.2.
-    """
+def _finalize_bucket(bucket):
+    """Convert one bucket's running sums into a serializable per-layer
+    mean+std dict."""
     import numpy as np
-    n = agg_pos["n"]
+    n = bucket["n"]
     if n == 0:
         return {"n": 0, "per_layer": []}
-    A_mean = agg_pos["A_sum"] / n
-    B_mean = agg_pos["B_sum"] / n
-    Q_mean = agg_pos["Q_sum"] / n
-    A_var = np.maximum(agg_pos["A_sq_sum"] / n - A_mean ** 2, 0.0)
-    B_var = np.maximum(agg_pos["B_sq_sum"] / n - B_mean ** 2, 0.0)
-    Q_var = np.maximum(agg_pos["Q_sq_sum"] / n - Q_mean ** 2, 0.0)
+    A_mean = bucket["A_sum"] / n
+    B_mean = bucket["B_sum"] / n
+    Q_mean = bucket["Q_sum"] / n
+    A_var = np.maximum(bucket["A_sq_sum"] / n - A_mean ** 2, 0.0)
+    B_var = np.maximum(bucket["B_sq_sum"] / n - B_mean ** 2, 0.0)
+    Q_var = np.maximum(bucket["Q_sq_sum"] / n - Q_mean ** 2, 0.0)
     A_std = np.sqrt(A_var)
     B_std = np.sqrt(B_var)
     Q_std = np.sqrt(Q_var)
@@ -222,6 +225,20 @@ def _finalize_agg(agg_pos):
         for li in range(len(A_mean))
     ]
     return {"n": int(n), "per_layer": per_layer}
+
+
+def _finalize_agg(agg):
+    """Convert all buckets into the nested
+    {position_<n>: {correct, incorrect}} schema. See
+    contexts/06042026/ATTENTION_MASS_SPEC.md §3.2.
+    """
+    return {
+        f"position_{pos}": {
+            "correct":   _finalize_bucket(agg[(pos, True)]),
+            "incorrect": _finalize_bucket(agg[(pos, False)]),
+        }
+        for pos in (1, 2)
+    }
 
 
 def _build_cache_gpu(cache_cpu, device, dtype):
@@ -446,19 +463,20 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
         prompts = [format_question(tokenizer, q["question"], q.get("options"), model_name)
                    for q in batch]
 
-        # (1) Instrumented forwards: ONE prompt at a time at batch_size=1, with
-        # on-the-fly aggregation into the per-position accumulator. The
-        # instrumented pass mutates CompactedPrefixCache layers via
+        # (1) Instrumented forwards: ONE prompt at a time at batch_size=1.
+        # Capture per-question per-layer (A, B, Q) triples in memory; we'll
+        # route them into the (position, correctness) accumulator AFTER the
+        # generation step has labelled each question correct/incorrect.
+        # The instrumented pass mutates CompactedPrefixCache layers via
         # layer.update(), so we discard it and rebuild cache_gpu for the real
-        # batched generation below. Per-question attention detail is
-        # intentionally not stored — see
-        # contexts/06042026/ATTENTION_MASS_SPEC.md.
+        # batched generation below.
+        batch_layers_abq = []
         for q, prompt in zip(batch, prompts):
             layers_abq = _run_instrumented_forward_single(
                 model, tokenizer, prompt, cache_cpu, stacked_seq_len,
                 t_A_per_layer, t_B_per_layer, device, dtype,
             )
-            _accumulate_agg(agg, q["position"], layers_abq)
+            batch_layers_abq.append(layers_abq)
 
         # (2) Real batched generation with a fresh cache_gpu.
         cache_gpu = _build_cache_gpu(cache_cpu, device, dtype)
@@ -469,10 +487,15 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
         del cache_gpu
         torch.cuda.empty_cache()
 
+        # (3) Parse, record correctness, accumulate the captured attention
+        # masses into the (position, correctness) bucket, and store the
+        # per-question raw triples in the per_question entry.
         for i, (q, ans) in enumerate(zip(batch, answers)):
             mc = parse_model_choice(ans, max_options=len(q.get("options", [])))
             gold = q.get("gold_label")
             ok = (mc == gold) if mc and gold else False
+            layers_abq = batch_layers_abq[i]
+            _accumulate_agg(agg, q["position"], ok, layers_abq)
             results.append({
                 "qid": q["question_unique_id"],
                 "patient": q["patient"],
@@ -480,6 +503,11 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
                 "correct": ok,
                 "pred": mc,
                 "gold": gold,
+                "attn_per_layer": {
+                    "A": [l["A"] for l in layers_abq],
+                    "B": [l["B"] for l in layers_abq],
+                    "Q": [l["Q"] for l in layers_abq],
+                },
             })
             print(f"    Q{bs+i+1}: {'ok' if ok else 'x'}  pred={mc} gold={gold}  "
                   f"[{q['patient']} pos{q['position']}]")
@@ -502,10 +530,7 @@ def run_pair(pair_idx: int, variant: str, results_dir: str, caches_dir: str,
         "t_A_per_layer": t_A_per_layer,
         "t_B_per_layer": t_B_per_layer,
         "attn_mass_before": amb,
-        "attn_mass_after_aggregate": {
-            "position_1": _finalize_agg(agg[1]),
-            "position_2": _finalize_agg(agg[2]),
-        },
+        "attn_mass_after_aggregate": _finalize_agg(agg),
         "overall_accuracy": accuracy,
         "correct": correct,
         "total": total,

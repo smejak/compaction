@@ -1,7 +1,9 @@
 # Pair-Stacked KV Cache Eval — Build Summary & Handoff
 
-Status as of this commit: **all code written, nothing submitted to SLURM yet**.
-Plan file: `~/.claude/plans/adaptive-stargazing-curry.md` (final approved plan).
+Status: **Phase 1 complete (42/42 ordered pairs × 2 variants, all `COMPLETED 0:0` 2026-04-06).**
+Phase 2 expansion to 20 patients planned — see `PAIR_EXPERIMENT_REPORT.md` § Phase 2 full sweep.
+Plan file: `~/.claude/plans/adaptive-stargazing-curry.md` (original phase-1 plan);
+`~/.claude/plans/declarative-wandering-fox.md` (phase-1 closeout + phase-2 launch).
 
 ## Goal
 
@@ -84,7 +86,7 @@ sbatch scripts/marlowe/aggregate_pair.sh
 1. **OOM on the instrumented forward** — eager attention materializes a full `(B, heads, q_len, k_len)` tensor per layer. If pair 0 OOMs during the `_run_instrumented_forward` step, the fix is to drop the instrumented batch size to 1 (generation can stay at the normal batch size). The current implementation uses one shared batch size for both, which is conservative but may still be tight on large pairs.
 2. **Wall-clock budget** — eager is slower than SDPA, and we do ~2× forwards per question. 8 h per pair should be enough (40 questions, ≤21 k stacked context), but watch the first few completions. If they're pushing past 4 h each, bump `--time` or lower `max_new_tokens` on the generation call.
 3. **First pair is the smoke test** — don't launch phase 2 until you've verified pair_idx=0 naive completes cleanly AND the numbers in `results.json` look sane (accuracies in a plausible range, attention-mass fractions summing to ~1 per layer).
-4. **`patient_02` is not in the pair set** — it's still missing from `long-health/` (was hung on Modal, retry-via-Marlowe is tracked in a separate handoff). The pair experiment uses only the 7 present patients.
+4. **All 20 patients now have `cache.pt` on disk** (per `PER_PATIENT_RUN_SUMMARY.md`). The original 7-patient pair set is the phase-1 baseline; phase 2 expands `PATIENT_IDS` in `scripts/run_pair_experiment.py` to all 20 patients (P01–P20) and re-runs the SLURM array — phase-1 results are skipped via the existing idempotency check.
 
 ## Quick file index
 

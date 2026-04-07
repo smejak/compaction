@@ -2,9 +2,14 @@
 Aggregate pair-stacked eval results from scripts/run_pair_experiment.py.
 
 Reads all per-pair JSON files from long-health/pair_experiment/{variant}/pair_*
-for each requested variant, builds 7x7 accuracy matrices (rows = first-position
-patient, cols = second-position patient; diagonal masked), plots heatmaps, and
-writes a summary JSON.
+for each requested variant, writes a comprehensive per-layer attention-mass
+figure (split by variant × position × correctness, with mean ± std bands), and
+a summary JSON of accuracy marginals.
+
+Accuracy heatmaps and the attn_mass_before heatmap are deliberately not
+generated as figures any more — the underlying numbers live in summary.json
+and the per-pair results.json files. See
+contexts/06042026/PAIR_EXPERIMENT_REPORT.md for the index.
 
 Usage:
     python -u scripts/aggregate_pair_results.py
@@ -15,7 +20,6 @@ import argparse
 import glob
 import json
 import os
-import sys
 
 import matplotlib
 matplotlib.use("Agg")  # noqa: E402
@@ -38,10 +42,20 @@ LABELS = [p.replace("patient_", "P") for p in PATIENT_IDS]
 PID_TO_IDX = {p: i for i, p in enumerate(PATIENT_IDS)}
 N = len(PATIENT_IDS)
 
+REGION_COLORS = {
+    "A": "tab:blue",
+    "B": "tab:orange",
+    "Q": "tab:green",
+}
+REGION_LABELS = {
+    "A": "cache_A",
+    "B": "cache_B",
+    "Q": "question",
+}
+
 
 def _nan_matrix():
-    m = np.full((N, N), np.nan, dtype=float)
-    return m
+    return np.full((N, N), np.nan, dtype=float)
 
 
 def _load_variant(results_dir, variant):
@@ -55,14 +69,12 @@ def _load_variant(results_dir, variant):
     return results
 
 
-def _build_matrices(results):
-    """Return dict of 7x7 matrices keyed by metric name."""
+def _accuracy_matrices(results):
+    """Per-variant 7x7 accuracy matrices needed for the marginals in
+    summary.json. Diagonal cells are NaN (no self-pairs)."""
     overall = _nan_matrix()
     pos1 = _nan_matrix()
     pos2 = _nan_matrix()
-    attn_before_A = _nan_matrix()  # cache_A share from attn_mass_before, averaged over layers
-    attn_after_A = _nan_matrix()   # cache_A share from attn_mass_after_aggregate, averaged across positions and layers
-
     for r in results:
         pid_a, pid_b = r["pair"]
         if pid_a not in PID_TO_IDX or pid_b not in PID_TO_IDX:
@@ -71,189 +83,156 @@ def _build_matrices(results):
         overall[i, j] = r["overall_accuracy"]
         pos1[i, j] = r["acc_pos1"]
         pos2[i, j] = r["acc_pos2"]
-        attn_before_A[i, j] = r["attn_mass_before"]["mean_A"]
-        # Average attn_mass_after cache_A share across both positions and all
-        # layers. New schema: attn_mass_after_aggregate.position_<n>.per_layer
-        # holds per-layer A_mean / B_mean / Q_mean. See
-        # contexts/06042026/ATTENTION_MASS_SPEC.md §6.
-        agg = r.get("attn_mass_after_aggregate", {})
-        a_vals = []
-        for pos_key in ("position_1", "position_2"):
-            pos_data = agg.get(pos_key) or {}
-            for entry in pos_data.get("per_layer", []):
-                a_vals.append(entry["A_mean"])
-        if a_vals:
-            attn_after_A[i, j] = float(np.mean(a_vals))
-
-    delta = pos2 - pos1
     return {
         "overall": overall,
         "acc_pos1": pos1,
         "acc_pos2": pos2,
-        "delta": delta,
-        "attn_before_A": attn_before_A,
-        "attn_after_A": attn_after_A,
+        "delta": pos2 - pos1,
     }
 
 
-def _plot_variant_grid(mats, variant, out_dir):
-    fig, axes = plt.subplots(2, 2, figsize=(13, 11))
-    specs = [
-        ("overall",  axes[0, 0], "Overall accuracy", "RdYlGn", 0.0, 1.0, ".0%", False),
-        ("acc_pos1", axes[0, 1], "Accuracy: first-position patient", "RdYlGn", 0.0, 1.0, ".0%", False),
-        ("acc_pos2", axes[1, 0], "Accuracy: second-position patient", "RdYlGn", 0.0, 1.0, ".0%", False),
-        ("delta",    axes[1, 1], "Delta (pos2 - pos1)", "RdBu_r", None, None, "+.0%", True),
-    ]
-    for key, ax, title, cmap, vmin, vmax, fmt, center in specs:
-        m = mats[key]
-        kwargs = dict(
-            annot=True, fmt=fmt, cmap=cmap,
-            xticklabels=LABELS, yticklabels=LABELS,
-            cbar_kws={"shrink": 0.8},
-            ax=ax, square=True, linewidths=0.5,
+def _gather_attn_after(results, position, correctness):
+    """For one (position, correctness) cell, gather per-pair (num_layers,)
+    arrays of mean and std for each region from each pair's
+    attn_mass_after_aggregate. Returns dict with stacked arrays plus the
+    total sample count across pairs.
+
+    Each pair contributes one observation per layer per region — the
+    per-pair-conditional mean (and std) for that bucket. We then average
+    across pairs to get the cross-pair mean and pool the per-pair stds (mean
+    of stds, weighted equally) for the band. The pooled std is approximate
+    but adequate for an exploratory band.
+    """
+    means = {region: [] for region in "ABQ"}
+    stds = {region: [] for region in "ABQ"}
+    n_total = 0
+    n_pairs = 0
+    for r in results:
+        bucket = (
+            r.get("attn_mass_after_aggregate", {})
+            .get(f"position_{position}", {})
+            .get(correctness, {})
         )
-        if center:
-            span = np.nanmax(np.abs(m)) if np.isfinite(m).any() else 1.0
-            kwargs.update(vmin=-span, vmax=span, center=0)
-        else:
-            kwargs.update(vmin=vmin, vmax=vmax)
-        sns.heatmap(m, **kwargs)
-        ax.set_title(title)
-        ax.set_xlabel("Second-position patient (B)")
-        ax.set_ylabel("First-position patient (A)")
-
-    fig.suptitle(f"Pair-stacked eval — variant: {variant}", fontsize=14)
-    fig.tight_layout()
-    png = os.path.join(out_dir, f"pair_accuracy_{variant}.png")
-    pdf = os.path.join(out_dir, f"pair_accuracy_{variant}.pdf")
-    fig.savefig(png, dpi=200)
-    fig.savefig(pdf)
-    plt.close(fig)
-    print(f"  wrote {png}")
-
-
-def _plot_cross_variant_diff(mats_by_variant, out_dir):
-    if "naive" not in mats_by_variant or "rope_shift" not in mats_by_variant:
-        print("  skipping cross-variant diff (need both naive and rope_shift)")
-        return
-    naive = mats_by_variant["naive"]
-    shift = mats_by_variant["rope_shift"]
-    keys = ["overall", "acc_pos1", "acc_pos2", "delta"]
-    fig, axes = plt.subplots(2, 2, figsize=(13, 11))
-    for ax, key in zip(axes.flat, keys):
-        diff = shift[key] - naive[key]
-        span = np.nanmax(np.abs(diff)) if np.isfinite(diff).any() else 1.0
-        sns.heatmap(
-            diff, annot=True, fmt="+.0%", cmap="RdBu_r",
-            xticklabels=LABELS, yticklabels=LABELS,
-            vmin=-span, vmax=span, center=0,
-            cbar_kws={"shrink": 0.8},
-            ax=ax, square=True, linewidths=0.5,
-        )
-        ax.set_title(f"{key}: rope_shift − naive")
-        ax.set_xlabel("Second-position patient (B)")
-        ax.set_ylabel("First-position patient (A)")
-    fig.suptitle("Cross-variant difference (rope_shift minus naive)", fontsize=14)
-    fig.tight_layout()
-    png = os.path.join(out_dir, "pair_accuracy_diff.png")
-    pdf = os.path.join(out_dir, "pair_accuracy_diff.pdf")
-    fig.savefig(png, dpi=200)
-    fig.savefig(pdf)
-    plt.close(fig)
-    print(f"  wrote {png}")
+        layers = bucket.get("per_layer") if bucket else None
+        n = bucket.get("n", 0) if bucket else 0
+        if not layers or n == 0:
+            continue
+        n_total += int(n)
+        n_pairs += 1
+        for region in "ABQ":
+            means[region].append([entry[f"{region}_mean"] for entry in layers])
+            stds[region].append([entry[f"{region}_std"] for entry in layers])
+    if not n_pairs:
+        return None
+    out = {"n_total": n_total, "n_pairs": n_pairs}
+    for region in "ABQ":
+        m = np.asarray(means[region], dtype=np.float64)  # (n_pairs, num_layers)
+        s = np.asarray(stds[region], dtype=np.float64)
+        out[f"{region}_mean"] = m.mean(axis=0)
+        out[f"{region}_std"] = s.mean(axis=0)
+    return out
 
 
 def _plot_attention_mass(results_by_variant, out_dir):
-    """Per-layer line plots of attention mass by region, position, and variant."""
-    variants = sorted(results_by_variant.keys())
+    """Comprehensive per-layer attention-mass figure.
+
+    Layout: 2 rows × (n_variants × 2) cols.
+        rows = question position (1, 2)
+        cols = (variant, correctness) — for each variant, two columns
+               (correct, incorrect) side by side
+    Each subplot: 3 lines (cache_A, cache_B, question) with mean ± std bands.
+
+    The std band is the average over pairs of each pair's per-position
+    per-correctness per-layer std (a rough pooled estimate, not a confidence
+    interval; see contexts/06042026/ATTENTION_MASS_SPEC.md §7).
+    """
+    # Preserve a deterministic variant order: naive first, then rope_shift,
+    # then anything else alphabetically.
+    preferred = ["naive", "rope_shift"]
+    variants = [v for v in preferred if v in results_by_variant]
+    variants += sorted(v for v in results_by_variant if v not in preferred)
     if not variants:
         return
 
-    # Gather per-layer averages for each (variant, position) combination.
-    # New schema: each pair contributes one (num_layers,) per-layer mean array
-    # per (position, region), drawn from
-    # attn_mass_after_aggregate.position_<n>.per_layer. We then average across
-    # pairs. See contexts/06042026/ATTENTION_MASS_SPEC.md §6.
-    data = {v: {1: {"A": None, "B": None, "Q": None},
-                2: {"A": None, "B": None, "Q": None}}
-            for v in variants}
-
+    col_specs = []  # list of (variant, correctness)
     for v in variants:
-        results = results_by_variant[v]
-        if not results:
-            continue
-        # Per-position lists of (num_layers,) per-pair mean arrays.
-        per_pos_A = {1: [], 2: []}
-        per_pos_B = {1: [], 2: []}
-        per_pos_Q = {1: [], 2: []}
-        for r in results:
-            agg = r.get("attn_mass_after_aggregate", {})
-            for pos in (1, 2):
-                pos_key = f"position_{pos}"
-                pos_data = agg.get(pos_key) or {}
-                layers = pos_data.get("per_layer", [])
-                if not layers:
-                    continue
-                per_pos_A[pos].append([l["A_mean"] for l in layers])
-                per_pos_B[pos].append([l["B_mean"] for l in layers])
-                per_pos_Q[pos].append([l["Q_mean"] for l in layers])
-        for pos in (1, 2):
-            if per_pos_A[pos]:
-                data[v][pos]["A"] = np.mean(np.array(per_pos_A[pos]), axis=0)
-                data[v][pos]["B"] = np.mean(np.array(per_pos_B[pos]), axis=0)
-                data[v][pos]["Q"] = np.mean(np.array(per_pos_Q[pos]), axis=0)
+        for corr in ("correct", "incorrect"):
+            col_specs.append((v, corr))
+    n_cols = len(col_specs)
 
-    fig, axes = plt.subplots(len(variants), 2, figsize=(12, 4 * len(variants)),
-                             squeeze=False)
-    for row, v in enumerate(variants):
-        for col, pos in enumerate((1, 2)):
+    # Pre-gather all (variant, position, correctness) cells.
+    cells = {}
+    for v in variants:
+        for pos in (1, 2):
+            for corr in ("correct", "incorrect"):
+                cells[(v, pos, corr)] = _gather_attn_after(
+                    results_by_variant[v], pos, corr
+                )
+
+    fig, axes = plt.subplots(
+        2, n_cols,
+        figsize=(3.6 * n_cols, 7.5),
+        squeeze=False,
+        sharey=True,
+        sharex=True,
+    )
+
+    for col, (v, corr) in enumerate(col_specs):
+        for row, pos in enumerate((1, 2)):
             ax = axes[row, col]
-            d = data[v][pos]
-            if d["A"] is None:
-                ax.set_title(f"{v} — position {pos} (no data)")
+            d = cells.get((v, pos, corr))
+            head = f"{v} — {corr}\nposition {pos}"
+            if d is None:
+                ax.set_title(f"{head}\n(no data)")
+                if row == 1:
+                    ax.set_xlabel("layer")
+                if col == 0:
+                    ax.set_ylabel("attn mass (last Q token)")
                 continue
-            layers_idx = np.arange(len(d["A"]))
-            ax.plot(layers_idx, d["A"], label="cache_A", color="tab:blue")
-            ax.plot(layers_idx, d["B"], label="cache_B", color="tab:orange")
-            ax.plot(layers_idx, d["Q"], label="question", color="tab:green")
-            ax.set_title(f"{v} — question about pos-{pos} patient")
-            ax.set_xlabel("layer index")
-            ax.set_ylabel("mean attn mass (last Q token)")
+            n_layers = len(d["A_mean"])
+            xs = np.arange(n_layers)
+            for region in "ABQ":
+                mean = d[f"{region}_mean"]
+                std = d[f"{region}_std"]
+                color = REGION_COLORS[region]
+                ax.plot(xs, mean, color=color, label=REGION_LABELS[region], linewidth=1.5)
+                ax.fill_between(
+                    xs,
+                    np.clip(mean - std, 0.0, 1.0),
+                    np.clip(mean + std, 0.0, 1.0),
+                    color=color,
+                    alpha=0.18,
+                    linewidth=0,
+                )
+            ax.set_title(
+                f"{head}\nn={d['n_total']} q over {d['n_pairs']} pair(s)",
+                fontsize=10,
+            )
+            if row == 1:
+                ax.set_xlabel("layer")
+            if col == 0:
+                ax.set_ylabel("attn mass (last Q token)")
             ax.set_ylim(0, 1)
-            ax.legend(loc="best", fontsize=8)
-    fig.suptitle("attn_mass_after — per-layer mean over questions", fontsize=13)
-    fig.tight_layout()
+            if row == 0 and col == 0:
+                ax.legend(loc="upper right", fontsize=8, framealpha=0.85)
+
+    fig.suptitle(
+        "attn_mass_after — per-layer mean ± std, split by variant × position × correctness",
+        fontsize=12,
+    )
+    fig.tight_layout(rect=[0, 0, 1, 0.96])
     png = os.path.join(out_dir, "attn_mass_after_per_layer.png")
     pdf = os.path.join(out_dir, "attn_mass_after_per_layer.pdf")
     fig.savefig(png, dpi=200)
     fig.savefig(pdf)
     plt.close(fig)
     print(f"  wrote {png}")
-
-    # Also plot attn_mass_before as a 7x7 heatmap per variant.
-    fig, axes = plt.subplots(1, len(variants), figsize=(6 * len(variants), 5),
-                             squeeze=False)
-    for col, v in enumerate(variants):
-        mats = _build_matrices(results_by_variant[v])
-        ax = axes[0, col]
-        sns.heatmap(
-            mats["attn_before_A"], annot=True, fmt=".2f", cmap="coolwarm",
-            vmin=0, vmax=1, center=0.5,
-            xticklabels=LABELS, yticklabels=LABELS,
-            cbar_kws={"shrink": 0.8}, ax=ax, square=True, linewidths=0.5,
-        )
-        ax.set_title(f"{v}: cache_A share of attn_mass_before")
-        ax.set_xlabel("Second-position patient (B)")
-        ax.set_ylabel("First-position patient (A)")
-    fig.tight_layout()
-    png = os.path.join(out_dir, "attn_mass_before_heatmap.png")
-    fig.savefig(png, dpi=200)
-    plt.close(fig)
-    print(f"  wrote {png}")
+    print(f"  wrote {pdf}")
 
 
 def _marginals(mats):
-    """Row means (by first-position patient) and column means (by second-position)."""
+    """Row means (by first-position patient) and column means (by second-position),
+    plus overall and per-position scalar means and the recency-bias estimate."""
     def _safe_nanmean(x):
         if np.isfinite(x).any():
             return float(np.nanmean(x))
@@ -283,7 +262,6 @@ def main():
     os.makedirs(fig_dir, exist_ok=True)
 
     results_by_variant = {}
-    mats_by_variant = {}
     summary = {}
     for variant in args.variants:
         variant_dir = os.path.join(args.results_dir, variant)
@@ -295,13 +273,8 @@ def main():
             print(f"  variant={variant}: no results found, skipping")
             continue
         results_by_variant[variant] = results
-        mats = _build_matrices(results)
-        mats_by_variant[variant] = mats
-        _plot_variant_grid(mats, variant, fig_dir)
+        mats = _accuracy_matrices(results)
         summary[variant] = _marginals(mats)
-
-    if len(mats_by_variant) >= 2:
-        _plot_cross_variant_diff(mats_by_variant, fig_dir)
 
     if results_by_variant:
         _plot_attention_mass(results_by_variant, fig_dir)
