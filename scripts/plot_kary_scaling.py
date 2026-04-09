@@ -18,7 +18,6 @@ any other k) land to refresh the figure.
 """
 import argparse
 import json
-import math
 from pathlib import Path
 
 import matplotlib
@@ -32,16 +31,6 @@ PATIENTS = ["patient_01", "patient_03", "patient_04", "patient_05", "patient_06"
 VARIANTS = ["naive", "rope_shift"]
 COLORS = {"naive": "#d62728", "rope_shift": "#1f77b4"}  # red, blue
 LABELS = {"naive": "naive", "rope_shift": "rope_shift"}
-
-
-def wilson_ci(p, n, z=1.96):
-    """95% Wilson score interval for a binomial proportion."""
-    if n == 0:
-        return (0.0, 0.0)
-    denom = 1 + z * z / n
-    center = (p + z * z / (2 * n)) / denom
-    half = z * math.sqrt((p * (1 - p) + z * z / (4 * n)) / n) / denom
-    return (max(0.0, center - half), min(1.0, center + half))
 
 
 def load_k1(root):
@@ -122,11 +111,7 @@ def main():
             if d is None:
                 print(f"k={k} {v}: (missing)")
             else:
-                lo, hi = wilson_ci(d["acc"], d["n"])
-                print(
-                    f"k={k} {v}: {d['acc']:.3f} "
-                    f"(n={d['n']}, 95% CI [{lo:.3f}, {hi:.3f}])"
-                )
+                print(f"k={k} {v}: {d['acc']:.3f} (n={d['n']})")
 
     # ---- Plot ----
     fig, ax = plt.subplots(figsize=(7.5, 5.0))
@@ -142,30 +127,24 @@ def main():
             label=f"k=1 baseline (mean of 5) = {k1['acc']:.0%}",
         )
 
-    # Per-variant lines + binomial error bars + value annotations
+    # Per-variant lines + value annotations
     for v in VARIANTS:
-        ks, accs, los, his = [], [], [], []
+        ks, accs = [], []
         for k in sorted(by_variant[v]):
             d = by_variant[v][k]
             if d is None:
                 continue
-            lo, hi = wilson_ci(d["acc"], d["n"])
             ks.append(k)
             accs.append(d["acc"])
-            los.append(d["acc"] - lo)
-            his.append(hi - d["acc"])
         if not ks:
             continue
-        ax.errorbar(
+        ax.plot(
             ks,
             accs,
-            yerr=[los, his],
             color=COLORS[v],
             marker="o",
             markersize=8,
             linewidth=2,
-            capsize=4,
-            capthick=1.3,
             zorder=3,
             label=LABELS[v],
         )
